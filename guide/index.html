@@ -104,6 +104,53 @@ a:hover{color:var(--link-hi)}
 .site-nav a:hover{color:var(--fg);background:var(--panel)}
 .site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
 
+/* guides drop-down — plain <details>, so it works with JS off */
+.navmenu{position:relative}
+.navmenu summary{
+  list-style:none;cursor:pointer;user-select:none;
+  color:var(--fg-2);padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:.4rem;
+}
+.navmenu summary::-webkit-details-marker{display:none}
+.navmenu summary::marker{content:""}
+.navmenu summary:hover{color:var(--fg);background:var(--panel)}
+.navmenu[data-on] summary{color:var(--fg);background:var(--panel)}
+.chev{
+  width:.4rem;height:.4rem;border-right:1.6px solid currentColor;
+  border-bottom:1.6px solid currentColor;transform:translateY(-1px) rotate(45deg);
+  transition:transform .16s;
+}
+.navmenu[open] summary{color:var(--fg);background:var(--panel)}
+.navmenu[open] .chev{transform:translateY(1px) rotate(-135deg)}
+.navmenu-panel{
+  position:absolute;right:0;top:calc(100% + .45rem);z-index:40;
+  min-width:15.5rem;padding:.35rem;
+  background:var(--panel);border:1px solid var(--line);border-radius:.65rem;
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+  display:grid;gap:.06rem;
+}
+.navmenu-panel a{
+  display:block;padding:.44rem .62rem;border-radius:.4rem;
+  font:500 .93rem/1.35 Barlow,sans-serif;letter-spacing:0;text-transform:none;
+  color:var(--fg-2);white-space:nowrap;
+}
+.navmenu-panel a:hover{background:var(--panel-2);color:var(--fg)}
+.navmenu-panel a[aria-current="page"]{color:var(--fg);background:var(--panel-2);font-weight:600}
+@media (max-width:26rem){
+  .navmenu-panel{min-width:min(17rem,calc(100vw - 2rem))}
+  .navmenu-panel a{white-space:normal}
+}
+/* on a narrow phone the logo is already the link home, so drop the duplicate
+   and keep the header one line tall */
+.logo{white-space:nowrap}
+@media (max-width:30rem){
+  .head-in{gap:.6rem}
+  .navhome{display:none}
+  .logo{font-size:.97rem}
+}
+
 /* hero */
 .hero{
   display:grid;grid-template-columns:1fr;gap:2.5rem;
@@ -221,7 +268,24 @@ td .mono{white-space:nowrap}
 <body>
 <header class="site-head"><div class="head-in">
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
-<nav class="site-nav"><a href="/">Calculator</a><a href="/guide/" aria-current="page">Full guide</a><a href="/fractions/">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+<nav class="site-nav">
+<a class="navhome" href="/">Calculator</a>
+<details class="navmenu" data-on="1">
+<summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
+<div class="navmenu-panel">
+  <a href="/guide/" aria-current="page">The complete key guide</a>
+  <a href="/fractions/">Fractions &amp; exact answers</a>
+  <a href="/powers-roots/">Powers &amp; roots</a>
+  <a href="/percentages/">Percentages</a>
+  <a href="/logarithms/">Logarithms</a>
+  <a href="/memory/">Memory &amp; Ans</a>
+  <a href="/scientific-notation/">Scientific notation</a>
+  <a href="/degrees-radians/">Degrees &amp; radians</a>
+  <a href="/complex-numbers/">Complex numbers</a>
+  <a href="/errors/">Errors &amp; fixes</a>
+</div>
+</details>
+</nav>
 </div></header>
 <main class="wrap"><article class="article">
 <p class="kicker">Guide</p>
@@ -323,7 +387,38 @@ radians. <a href="/degrees-radians/">That deserves its own page.</a></p>
 <tr><td class="mono">ENG</td><td>Shifts the answer to the nearest power of ten that is a multiple of three &mdash; engineering notation.</td></tr>
 <tr><td class="mono">CALC</td><td>Type an expression with letters in it, press CALC, and it asks you for each value in turn.</td></tr>
 <tr><td class="mono">SOLVE</td><td><kbd>SHIFT</kbd> <kbd>CALC</kbd>. Finds the value of <code>X</code> that makes the expression zero.</td></tr>
+<tr><td class="mono">Abs</td><td><kbd>SHIFT</kbd> <kbd>hyp</kbd>. Absolute value &mdash; and the modulus of a complex number.</td></tr>
+<tr><td class="mono">&ang;</td><td><kbd>SHIFT</kbd> <kbd>(&minus;)</kbd>. Types a complex number in polar form, as <span class="mono">r&ang;&theta;</span>. CMPLX mode only.</td></tr>
+<tr><td class="mono">Pol( / Rec(</td><td><kbd>SHIFT</kbd> <kbd>+</kbd> and <kbd>SHIFT</kbd> <kbd>&minus;</kbd>. Convert between rectangular and polar coordinates. Both answers appear at once, and are left in <code>X</code> and <code>Y</code>.</td></tr>
+<tr><td class="mono">DRG&#9654;</td><td><kbd>SHIFT</kbd> <kbd>Ans</kbd>. Tags a number with the unit it is written in, and converts it into the unit you are working in.</td></tr>
+<tr><td class="mono">Rnd</td><td><kbd>SHIFT</kbd> <kbd>0</kbd>. Cuts a value down to exactly what the display is showing, so later steps use the rounded figure.</td></tr>
+<tr><td class="mono">Ran# / RanInt</td><td><kbd>SHIFT</kbd> <kbd>.</kbd> gives a random decimal; <kbd>ALPHA</kbd> <kbd>.</kbd> gives <span class="mono">RanInt#(1,6)</span> for a random whole number in a range.</td></tr>
+<tr><td class="mono">CLR</td><td><kbd>SHIFT</kbd> <kbd>9</kbd>. Clears the setup, the memories, or both.</td></tr>
 </tbody></table></div>
+
+<h2>Coordinate conversion</h2>
+<p>Surveying, vectors and phasors all need the same two moves, and there is a key
+for each.</p>
+<ul>
+  <li><strong>Pol(x,y)</strong> turns a point into a distance and a bearing.
+  <code>Pol(3,4)</code> gives <span class="mono">r=5</span> and
+  <span class="mono">&theta;=53.13&deg;</span>, both on screen at once.</li>
+  <li><strong>Rec(r,&theta;)</strong> goes back the other way.
+  <code>Rec(2,60)</code> gives <span class="mono">X=1</span> and
+  <span class="mono">Y=&radic;3</span>.</li>
+</ul>
+<p>Separate the two arguments with a comma &mdash; <kbd>SHIFT</kbd> <kbd>)</kbd>.
+Both results are stored in <code>X</code> and <code>Y</code>, so you can use them
+in the next calculation without copying anything down.</p>
+
+<h2>Converting an angle you have already typed</h2>
+<p><kbd>SHIFT</kbd> <kbd>Ans</kbd> is <strong>DRG&#9654;</strong>. It asks which
+unit the number in front of it is written in, then converts it into whichever
+unit the calculator is currently set to.</p>
+<p>So in radian mode, <code>180</code> <kbd>SHIFT</kbd> <kbd>Ans</kbd>
+<kbd>1</kbd> gives <span class="mono">&pi;</span>. In degree mode,
+<code>&pi;</code> <kbd>SHIFT</kbd> <kbd>Ans</kbd> <kbd>2</kbd> gives 180. It saves
+remembering which way round the &pi;&frasl;180 goes.</p>
 
 <h2>Making the calculator bigger</h2>
 <p>The <span class="mono">&minus;</span> and <span class="mono">+</span> buttons
@@ -349,21 +444,64 @@ full precision internally, so chained calculations do not accumulate rounding
 error.</p>
 
 <p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
-</article></main>
+</article>
+
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>
   <a href="/">Calculator</a>
   <a href="/guide/">Guide</a>
   <a href="/fractions/">Fractions</a>
-  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/powers-roots/">Powers</a>
+  <a href="/percentages/">Percentages</a>
+  <a href="/logarithms/">Logarithms</a>
+  <a href="/memory/">Memory</a>
+  <a href="/scientific-notation/">Notation</a>
+  <a href="/degrees-radians/">Angles</a>
   <a href="/complex-numbers/">Complex</a>
+  <a href="/errors/">Errors</a>
   <a href="/privacy/">Privacy</a>
 </nav>
 <p class="disclaim">An independent scientific calculator. Not affiliated with,
 endorsed by, or connected to any calculator manufacturer. Runs entirely in your
 browser &mdash; nothing you type is sent anywhere.</p>
 </div></footer>
+<script>
+(function(){
+  var m = document.querySelector('.site-nav .navmenu');
+  if(!m) return;
+  document.addEventListener('click', function(e){ if(!m.contains(e.target)) m.open = false; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') m.open = false; });
+  m.querySelectorAll('.navmenu-panel a').forEach(function(a){
+    a.addEventListener('click', function(){ m.open = false; });
+  });
+})();
+</script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e8796ea8cbc54493aedd303b128ecee6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

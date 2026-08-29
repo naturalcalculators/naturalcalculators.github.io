@@ -104,6 +104,53 @@ a:hover{color:var(--link-hi)}
 .site-nav a:hover{color:var(--fg);background:var(--panel)}
 .site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
 
+/* guides drop-down — plain <details>, so it works with JS off */
+.navmenu{position:relative}
+.navmenu summary{
+  list-style:none;cursor:pointer;user-select:none;
+  color:var(--fg-2);padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:.4rem;
+}
+.navmenu summary::-webkit-details-marker{display:none}
+.navmenu summary::marker{content:""}
+.navmenu summary:hover{color:var(--fg);background:var(--panel)}
+.navmenu[data-on] summary{color:var(--fg);background:var(--panel)}
+.chev{
+  width:.4rem;height:.4rem;border-right:1.6px solid currentColor;
+  border-bottom:1.6px solid currentColor;transform:translateY(-1px) rotate(45deg);
+  transition:transform .16s;
+}
+.navmenu[open] summary{color:var(--fg);background:var(--panel)}
+.navmenu[open] .chev{transform:translateY(1px) rotate(-135deg)}
+.navmenu-panel{
+  position:absolute;right:0;top:calc(100% + .45rem);z-index:40;
+  min-width:15.5rem;padding:.35rem;
+  background:var(--panel);border:1px solid var(--line);border-radius:.65rem;
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+  display:grid;gap:.06rem;
+}
+.navmenu-panel a{
+  display:block;padding:.44rem .62rem;border-radius:.4rem;
+  font:500 .93rem/1.35 Barlow,sans-serif;letter-spacing:0;text-transform:none;
+  color:var(--fg-2);white-space:nowrap;
+}
+.navmenu-panel a:hover{background:var(--panel-2);color:var(--fg)}
+.navmenu-panel a[aria-current="page"]{color:var(--fg);background:var(--panel-2);font-weight:600}
+@media (max-width:26rem){
+  .navmenu-panel{min-width:min(17rem,calc(100vw - 2rem))}
+  .navmenu-panel a{white-space:normal}
+}
+/* on a narrow phone the logo is already the link home, so drop the duplicate
+   and keep the header one line tall */
+.logo{white-space:nowrap}
+@media (max-width:30rem){
+  .head-in{gap:.6rem}
+  .navhome{display:none}
+  .logo{font-size:.97rem}
+}
+
 /* hero */
 .hero{
   display:grid;grid-template-columns:1fr;gap:2.5rem;
@@ -229,7 +276,24 @@ td .mono{white-space:nowrap}
 <body>
 <header class="site-head"><div class="head-in">
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
-<nav class="site-nav"><a href="/" aria-current="page">Calculator</a><a href="/guide/">Full guide</a><a href="/fractions/">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+<nav class="site-nav">
+<a class="navhome" href="/" aria-current="page">Calculator</a>
+<details class="navmenu">
+<summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
+<div class="navmenu-panel">
+  <a href="/guide/">The complete key guide</a>
+  <a href="/fractions/">Fractions &amp; exact answers</a>
+  <a href="/powers-roots/">Powers &amp; roots</a>
+  <a href="/percentages/">Percentages</a>
+  <a href="/logarithms/">Logarithms</a>
+  <a href="/memory/">Memory &amp; Ans</a>
+  <a href="/scientific-notation/">Scientific notation</a>
+  <a href="/degrees-radians/">Degrees &amp; radians</a>
+  <a href="/complex-numbers/">Complex numbers</a>
+  <a href="/errors/">Errors &amp; fixes</a>
+</div>
+</details>
+</nav>
 </div></header>
 <main class="wrap">
 <div class="hero">
@@ -377,6 +441,9 @@ td .mono{white-space:nowrap}
   scrollbar-width:none;min-height:1.3em;
 }
 .result::-webkit-scrollbar{display:none}
+/* Pol( and Rec( put two values on the display at once */
+.pairv{display:inline-block;margin-left:1.1em}
+.pairv:first-child{margin-left:0}
 .menu{
   flex:1;font-family:"Share Tech Mono",monospace;font-size:1.32em;line-height:1.42;
   white-space:pre-wrap;padding-top:.15em;
@@ -561,7 +628,7 @@ var S = {
   root: [], cur: null,
   shift:false, alpha:false, hyp:false, sto:false, rcl:false,
   io:'Math', angle:'D', fmt:{t:'Norm', n:1},
-  mode:'COMP', polar:false, hadDot:false, zoom:1,
+  mode:'COMP', polar:false, hadDot:false, zoom:1, pair:null,
   vars:{A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0},
   ans:0,
   exact:null, dec:null, dms:false, showDec:false, eng:0,
@@ -716,7 +783,8 @@ function err(m){ throw new CalcError(m); }
 
 var NAMES = ['asinh','acosh','atanh','sinh','cosh','tanh','asin','acos','atan',
              'sin','cos','tan','logb','log','ln','sqrt','nrt','abs',
-             'intg','ddx','sum','Ans','Ran#','nCr','nPr','arg','conj'];
+             'intg','ddx','sum','Ans','RanInt#','Ran#','Rnd','nCr','nPr','arg','conj',
+             'Pol','Rec'];
 var CONSTS = {'π':Math.PI, 'e':Math.E};
 var VARNAMES = 'ABCDEFXYM';
 
@@ -741,7 +809,7 @@ function lex(s){
     if(c === 'i'){ t.push({k:'name', v:'i'}); i++; continue; }
     if(CONSTS[c] !== undefined){ t.push({k:'name', v:c}); i++; continue; }
     if(VARNAMES.indexOf(c) >= 0){ t.push({k:'var', v:c}); i++; continue; }
-    if('+-*/^(),!%°'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
+    if('+-*/^(),!%°∠ᴰᴿᴳ'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
     err('Syntax ERROR');
   }
   return t;
@@ -801,6 +869,11 @@ function parse(str){
     for(;;){
       if(isOp('!')){ p++; a={t:'post', o:'!', a:a}; continue; }
       if(isOp('%')){ p++; a={t:'post', o:'%', a:a}; continue; }
+      if(isOp('ᴰ') || isOp('ᴿ') || isOp('ᴳ')){
+        var u = t[p].v; p++;
+        a = {t:'post', o:'drg', u:{'ᴰ':'D','ᴿ':'R','ᴳ':'G'}[u], a:a};
+        continue;
+      }
       if(isOp('°')){
         p++;
         var div = 60, node = a;
@@ -831,11 +904,19 @@ function parse(str){
     while(startsPrimary()) a = {t:'b', o:'*', l:a, r:unary()};
     return a;
   }
-  function permcomb(){
+  function angleop(){
     var a = implicit();
+    while(isOp('∠')){
+      p++;
+      a = {t:'ang', r:a, th:implicit()};
+    }
+    return a;
+  }
+  function permcomb(){
+    var a = angleop();
     while(t[p] && t[p].k==='name' && (t[p].v==='nCr' || t[p].v==='nPr')){
       var o = t[p].v; p++;
-      a = {t:'b', o:o, l:a, r:implicit()};
+      a = {t:'b', o:o, l:a, r:angleop()};
     }
     return a;
   }
@@ -943,6 +1024,11 @@ function ev(nd, env){
     case 'post':{
       var v = ev(nd.a, env);
       if(nd.o==='!'){ if(isC(v)) err('Math ERROR'); return fact(v); }
+      if(nd.o==='drg'){
+        if(isC(v)) err('Math ERROR');
+        var rad = nd.u==='D' ? v*Math.PI/180 : nd.u==='G' ? v*Math.PI/200 : v;
+        return clean(fromRad(rad));
+      }
       return isC(v) ? C(v.re/100, v.im/100) : v/100;
     }
     case 'b':{
@@ -962,6 +1048,13 @@ function ev(nd, env){
       }
       err('Syntax ERROR');
       break;
+    }
+    case 'ang':{
+      if(S.mode !== 'CMPLX') err('Syntax ERROR');
+      var rr = ev(nd.r, env), tt = ev(nd.th, env);
+      if(isC(rr) || isC(tt)) err('Math ERROR');
+      var th = toRad(tt);
+      return norm(C(clean(rr*Math.cos(th)), clean(rr*Math.sin(th))));
     }
     case 'f': return fn(nd, env);
   }
@@ -1021,6 +1114,27 @@ function fn(nd, env){
     case 'abs':{
       var v8 = ac(0);
       return isC(v8) ? Math.sqrt(v8.re*v8.re + v8.im*v8.im) : Math.abs(v8);
+    }
+    case 'Rnd': return roundToFormat(a(0));
+    case 'RanInt#':{
+      var lo = Math.round(a(0)), hi = Math.round(a(1));
+      if(hi < lo) err('Math ERROR');
+      return lo + Math.floor(Math.random() * (hi - lo + 1));
+    }
+    case 'Pol':{
+      var px = a(0), py = a(1);
+      var pr = clean(Math.sqrt(px*px + py*py));
+      var pt = clean(fromRad(Math.atan2(py, px)));
+      S.vars.X = pr; S.vars.Y = pt;
+      PAIR = [['r', pr], ['&theta;', pt]];
+      return pr;
+    }
+    case 'Rec':{
+      var rr2 = a(0), th2 = toRad(a(1));
+      var rx = clean(rr2*Math.cos(th2)), ry = clean(rr2*Math.sin(th2));
+      S.vars.X = rx; S.vars.Y = ry;
+      PAIR = [['X', rx], ['Y', ry]];
+      return rx;
     }
     case 'arg':{
       var v9 = ac(0);
@@ -1212,7 +1326,20 @@ function dmsHTML(x){
 /* ============================================================
    8. EVALUATE
    ============================================================ */
+/* Rnd collapses a value to exactly what the display is currently showing, so a
+   later calculation uses the rounded figure rather than the full-precision one. */
+function roundToFormat(v){
+  if(S.fmt.t === 'Fix'){ var p = Math.pow(10, S.fmt.n); return Math.round(v*p)/p; }
+  if(S.fmt.t === 'Sci'){ return +v.toPrecision(Math.max(1, Math.min(10, S.fmt.n))); }
+  return +v.toPrecision(10);
+}
+
+/* Pol( and Rec( each produce two numbers; this carries the pair out to the
+   display, the way the hardware shows both at once. */
+var PAIR = null;
+
 function evaluate(){
+  PAIR = null;
   var src = eRow(S.root);
   if(src.trim() === '') { S.err = null; return; }
   try{
@@ -1232,13 +1359,14 @@ function evaluate(){
     }
     S.ans = v;
     S.dec = v;
+    S.pair = PAIR;
     S.err = null;
     S.hist.unshift(cloneRow(S.root));
     if(S.hist.length > 30) S.hist.pop();
     S.histIdx = -1;
   }catch(e){
-    if(e instanceof CalcError){ S.err = e.msg; S.exact = null; S.dec = null; }
-    else { S.err = 'Syntax ERROR'; S.exact = null; S.dec = null; }
+    if(e instanceof CalcError){ S.err = e.msg; S.exact = null; S.dec = null; S.pair = null; }
+    else { S.err = 'Syntax ERROR'; S.exact = null; S.dec = null; S.pair = null; }
   }
   S.done = true;
 }
@@ -1253,6 +1381,11 @@ function cloneRow(row){
 }
 function resultHTML(){
   if(S.err) return S.err;
+  if(S.pair){
+    return S.pair.map(function(p){
+      return '<span class="pairv">' + p[0] + '=' + decHTML(p[1]) + '</span>';
+    }).join('');
+  }
   if(S.dec === null || S.dec === undefined) return '';
   if(isC(S.dec)) return complexHTML(S.dec);
   if(S.dms) return dmsHTML(S.dec);
@@ -1267,7 +1400,7 @@ var K = {};   /* id -> handler */
 function clearAll(){
   S.root.length = 0;
   S.cur = {row:S.root, i:0};
-  S.exact = S.dec = null; S.err = null; S.done = false;
+  S.exact = S.dec = null; S.err = null; S.done = false; S.pair = null;
   S.showDec = false; S.dms = false; S.eng = 0;
   S.menu = null; S.prompt = null; S.histIdx = -1;
 }
@@ -1276,7 +1409,7 @@ function freshIfDone(startWithAns){
   S.done = false;
   S.root.length = 0;
   S.cur = {row:S.root, i:0};
-  S.exact = S.dec = null; S.err = null; S.dms = false; S.eng = 0;
+  S.exact = S.dec = null; S.err = null; S.dms = false; S.eng = 0; S.pair = null;
   if(startWithAns) insCh('Ans','Ans');
 }
 function editIfDone(){
@@ -1329,6 +1462,39 @@ function openSetup(){
     }
   };
 }
+/* DRG> — tag a number with the unit it is written in, and the calculator
+   converts it into whatever unit the display is currently set to. */
+function openDrg(){
+  S.menu = {
+    lines:['1:&deg;   2:r   3:g'],
+    pick:function(d){
+      var ch = {'1':'ᴰ','2':'ᴿ','3':'ᴳ'}[d];
+      var disp = {'1':'°','2':'ʳ','3':'ᵍ'}[d];
+      if(!ch) return;
+      S.menu = null;
+      insCh(ch, disp);
+    }
+  };
+}
+
+/* CLR — the tidy-up menu. */
+function openClr(){
+  S.menu = {
+    lines:['1:Setup  2:Memory', '3:All'],
+    pick:function(d){
+      if(d === '1'){
+        S.io='Math'; S.angle='D'; S.fmt={t:'Norm',n:1}; S.polar=false; S.menu=null;
+      } else if(d === '2'){
+        S.vars={A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0}; S.ans=0; S.menu=null;
+      } else if(d === '3'){
+        S.vars={A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0}; S.ans=0; S.hist=[];
+        S.io='Math'; S.angle='D'; S.fmt={t:'Norm',n:1}; S.polar=false;
+        S.menu=null; clearAll();
+      }
+    }
+  };
+}
+
 function openMode(){
   S.menu = {
     lines:['1:COMP','2:CMPLX','3:STAT  (not in this build)'],
@@ -1479,13 +1645,21 @@ var HANDLERS = {
   ln:    function(){ if(S.shift){ S.shift=false; freshIfDone(false); insCh('e'); insert(mk('pow')); }
                      else { freshIfDone(false); insCh('ln(','ln('); } },
 
-  neg:   function(){ if(varAction('neg')) return; freshIfDone(false); insCh('-','−'); },
+  neg:   function(){
+           if(varAction('neg')) return;
+           if(S.shift){ S.shift=false; freshIfDone(false); insCh('∠','∠'); return; }
+           freshIfDone(false); insCh('-','−');
+         },
   dms:   function(){
            if(varAction('dms')) return;
            if(S.shift){ S.shift=false; if(S.done && S.dec!==null && !isC(S.dec)) S.dms = !S.dms; return; }
            freshIfDone(false); insCh('°');
          },
-  hyp:   function(){ if(varAction('hyp')) return; S.hyp = !S.hyp; },
+  hyp:   function(){
+           if(varAction('hyp')) return;
+           if(S.shift){ S.shift=false; freshIfDone(false); insCh('abs(','Abs('); return; }
+           S.hyp = !S.hyp;
+         },
   sin:   function(){ if(varAction('sin')) return; trig('sin'); },
   cos:   function(){ if(varAction('cos')) return; trig('cos'); },
   tan:   function(){ if(varAction('tan')) return; trig('tan'); },
@@ -1531,8 +1705,14 @@ var HANDLERS = {
 
   mul: function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('nPr','P'); return; } insOp('*','×')(); },
   div: function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('nCr','C'); return; } insOp('/','÷')(); },
-  add: insOp('+','+'),
-  sub: insOp('-','−'),
+  add: function(){
+         if(S.shift){ S.shift=false; freshIfDone(false); insCh('Pol(','Pol('); return; }
+         insOp('+','+')();
+       },
+  sub: function(){
+         if(S.shift){ S.shift=false; freshIfDone(false); insCh('Rec(','Rec('); return; }
+         insOp('-','−')();
+       },
 
   exp: function(){
         if(S.alpha){ S.alpha=false; freshIfDone(false); insCh('e'); return; }
@@ -1542,10 +1722,14 @@ var HANDLERS = {
         insCh('10'); insert(mk('pow'));
        },
   dot: function(){
+        if(S.alpha){ S.alpha=false; freshIfDone(false); insCh('RanInt#(','RanInt#('); return; }
         if(S.shift){ S.shift=false; freshIfDone(false); insCh('Ran#','Ran#'); return; }
         freshIfDone(false); insCh('.');
        },
-  ans: function(){ freshIfDone(false); insCh('Ans','Ans'); },
+  ans: function(){
+        if(S.shift){ S.shift=false; openDrg(); return; }
+        freshIfDone(false); insCh('Ans','Ans');
+       },
   eq:  function(){
         if(S.prompt){ promptCommit(); return; }
         if(S.shift) S.shift = false;
@@ -1585,6 +1769,8 @@ function trig(base){
   HANDLERS['d'+d] = function(){
     if(S.menu){ S.menu.pick(d); return; }
     if(S.shift && d === '2' && S.mode === 'CMPLX'){ S.shift = false; openCmplx(); return; }
+    if(S.shift && d === '0'){ S.shift = false; freshIfDone(false); insCh('Rnd(','Rnd('); return; }
+    if(S.shift && d === '9'){ S.shift = false; openClr(); return; }
     if(S.sto || S.rcl){ S.sto=S.rcl=false; }
     freshIfDone(false);
     insCh(d);
@@ -1644,9 +1830,9 @@ var FN = [
   {id:'log',  main:'log', s:'10<sup>x</sup>', cls:'k fn'},
   {id:'ln',   main:'ln', s:'e<sup>x</sup>', cls:'k fn'},
 
-  {id:'neg',  main:'(&minus;)', a:'A', cls:'k fn sm'},
+  {id:'neg',  main:'(&minus;)', s:'&ang;', a:'A', cls:'k fn sm'},
   {id:'dms',  main:'°′″', s:'←°′″', a:'B', cls:'k fn sm'},
-  {id:'hyp',  main:'hyp', a:'C', cls:'k fn sm'},
+  {id:'hyp',  main:'hyp', s:'Abs', a:'C', cls:'k fn sm'},
   {id:'sin',  main:'sin', s:'sin<sup>-1</sup>', a:'D', cls:'k fn sm'},
   {id:'cos',  main:'cos', s:'cos<sup>-1</sup>', a:'E', cls:'k fn sm'},
   {id:'tan',  main:'tan', s:'tan<sup>-1</sup>', a:'F', cls:'k fn sm'},
@@ -1659,18 +1845,18 @@ var FN = [
   {id:'mplus',main:'M+', s:'M&minus;', a:'M', cls:'k fn sm'}
 ];
 var NUM = [
-  {id:'d7', main:'7', cls:'k num'}, {id:'d8', main:'8', cls:'k num'}, {id:'d9', main:'9', cls:'k num'},
+  {id:'d7', main:'7', cls:'k num'}, {id:'d8', main:'8', cls:'k num'}, {id:'d9', main:'9', s:'CLR', cls:'k num'},
   {id:'del', main:'DEL', s:'INS', cls:'k ac sm'}, {id:'ac', main:'AC', s:'OFF', cls:'k ac sm'},
 
   {id:'d4', main:'4', cls:'k num'}, {id:'d5', main:'5', cls:'k num'}, {id:'d6', main:'6', cls:'k num'},
   {id:'mul', main:'&times;', s:'nPr', cls:'k'}, {id:'div', main:'&divide;', s:'nCr', cls:'k'},
 
-  {id:'d1', main:'1', cls:'k num'}, {id:'d2', main:'2', cls:'k num'}, {id:'d3', main:'3', cls:'k num'},
-  {id:'add', main:'+', cls:'k'}, {id:'sub', main:'&minus;', cls:'k'},
+  {id:'d1', main:'1', cls:'k num'}, {id:'d2', main:'2', s:'CMPLX', cls:'k num'}, {id:'d3', main:'3', cls:'k num'},
+  {id:'add', main:'+', s:'Pol(', cls:'k'}, {id:'sub', main:'&minus;', s:'Rec(', cls:'k'},
 
-  {id:'d0', main:'0', cls:'k num'}, {id:'dot', main:'.', s:'Ran#', cls:'k num'},
+  {id:'d0', main:'0', s:'Rnd', cls:'k num'}, {id:'dot', main:'.', s:'Ran#', a:'RanInt', cls:'k num'},
   {id:'exp', main:'&times;10<sup>x</sup>', s:'&pi;', a:'e', cls:'k xs'},
-  {id:'ans', main:'Ans', cls:'k sm'}, {id:'eq', main:'=', cls:'k eq'}
+  {id:'ans', main:'Ans', s:'DRG&#9654;', cls:'k sm'}, {id:'eq', main:'=', cls:'k eq'}
 ];
 
 function buildKey(k){
@@ -1921,17 +2107,25 @@ window.__fx = {
   knowing.</p>
   <div class="cards">
     <a class="card" href="/guide/"><h3>The complete key guide</h3>
-      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never
-      discover.</p></a>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
     <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
-      <p>Why a third stays a third, how surds are simplified, and when to switch
-      to a decimal.</p></a>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
     <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
-      <p>How to switch, which to use when, and the single most common wrong
-      answer in trigonometry.</p></a>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
     <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
-      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus
-      and argument, and polar form.</p></a>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
   </div>
 </section>
 </main>
@@ -1941,14 +2135,31 @@ window.__fx = {
   <a href="/">Calculator</a>
   <a href="/guide/">Guide</a>
   <a href="/fractions/">Fractions</a>
-  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/powers-roots/">Powers</a>
+  <a href="/percentages/">Percentages</a>
+  <a href="/logarithms/">Logarithms</a>
+  <a href="/memory/">Memory</a>
+  <a href="/scientific-notation/">Notation</a>
+  <a href="/degrees-radians/">Angles</a>
   <a href="/complex-numbers/">Complex</a>
+  <a href="/errors/">Errors</a>
   <a href="/privacy/">Privacy</a>
 </nav>
 <p class="disclaim">An independent scientific calculator. Not affiliated with,
 endorsed by, or connected to any calculator manufacturer. Runs entirely in your
 browser &mdash; nothing you type is sent anywhere.</p>
 </div></footer>
+<script>
+(function(){
+  var m = document.querySelector('.site-nav .navmenu');
+  if(!m) return;
+  document.addEventListener('click', function(e){ if(!m.contains(e.target)) m.open = false; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') m.open = false; });
+  m.querySelectorAll('.navmenu-panel a').forEach(function(a){
+    a.addEventListener('click', function(){ m.open = false; });
+  });
+})();
+</script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e8796ea8cbc54493aedd303b128ecee6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

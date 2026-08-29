@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>Scientific Notation on a Calculator — the ×10ˣ Key, E, and ENG</title>
+<meta name="description" content="What the ×10ˣ key does, why an answer comes back as 1.2×10⁻⁵ or with an E in it, how to read it, and what the ENG key is for.">
+<link rel="canonical" href="https://naturalcalculators.github.io/scientific-notation/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="Scientific Notation on a Calculator — the ×10ˣ Key, E, and ENG">
+<meta property="og:description" content="What the ×10ˣ key does, why an answer comes back as 1.2×10⁻⁵ or with an E in it, how to read it, and what the ENG key is for.">
+<meta property="og:url" content="https://naturalcalculators.github.io/scientific-notation/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,7 +270,7 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
@@ -279,7 +279,7 @@ td .mono{white-space:nowrap}
   <a href="/percentages/">Percentages</a>
   <a href="/logarithms/">Logarithms</a>
   <a href="/memory/">Memory &amp; Ans</a>
-  <a href="/scientific-notation/">Scientific notation</a>
+  <a href="/scientific-notation/" aria-current="page">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
   <a href="/complex-numbers/">Complex numbers</a>
   <a href="/errors/">Errors &amp; fixes</a>
@@ -288,53 +288,116 @@ td .mono{white-space:nowrap}
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Scientific notation and the E</h1>
+<p class="standfirst">Why a perfectly ordinary calculation suddenly comes back as 1.219325915&times;10&#x0B9;&#x2074;, and how to type numbers like that yourself.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>Reading the answer</h2>
+<p>When a result is too long to show in full, it is written in
+<strong>scientific notation</strong>: one digit, a decimal point, the rest, and
+then a power of ten telling you where the point really belongs.</p>
+<p><span class="mono">1.219325915&times;10&#x0B9;&#x2074;</span> means: take
+1.219325915 and move the decimal point fourteen places to the right. That is
+about 122 trillion.</p>
+<p>A <em>negative</em> power moves it the other way.
+<span class="mono">1.2&times;10&#x207B;&#x2075;</span> is 0.000012 &mdash; the
+point moves five places left.</p>
+<div class="callout"><b>On many calculators this is shown as
+<code>1.2E&minus;05</code>.</b> The <code>E</code> stands for exponent and means
+exactly the same thing: &ldquo;times ten to the power of&rdquo;. It is not the
+number <em>e</em> from natural logarithms, and it is not an error message. This
+calculator writes it out properly as <span class="mono">&times;10</span> with a
+raised power, which is harder to misread.</div>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>Typing it yourself</h2>
+<p>Use the <span class="mono">&times;10&#9632;</span> key, not a multiplication
+sign and a power. Type <code>2.5</code>, press
+<span class="mono">&times;10&#9632;</span>, type <code>12</code>: that is
+2.5&times;10&sup1;&sup2;, in three keystrokes.</p>
+<p>For a negative exponent, press <kbd>(&minus;)</kbd> &mdash; the one in
+brackets, not the subtraction key &mdash; before the number. The subtraction key
+would ask the calculator to take something away instead.</p>
+<p>Doing it the long way, <code>2.5 &times; 10 x&#9632; 12</code>, gives the same
+answer but takes more presses and leaves more room for the
+<a href="/powers-roots/">exponent-box mistake</a>.</p>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h2>Why an answer switches to it without being asked</h2>
+<p>Because there is not enough room. The display shows ten significant digits. A
+number needing more than that &mdash; very large or very small &mdash; has to be
+written as a power of ten or not written at all.</p>
+<p>The threshold is a display setting, not a property of the number. In SETUP
+(<kbd>SHIFT</kbd> <kbd>MODE</kbd>) you will find:</p>
+<ul>
+  <li><strong>Norm</strong> &mdash; normal. Switches to scientific notation only
+  when it has to.</li>
+  <li><strong>Sci</strong> &mdash; always scientific, to a number of significant
+  figures you choose.</li>
+  <li><strong>Fix</strong> &mdash; a fixed number of decimal places. Useful for
+  money.</li>
+</ul>
+<p>These change only how the answer is <em>displayed</em>. Full precision is kept
+internally, so a chain of calculations does not accumulate rounding error just
+because you set Fix 2.</p>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>The ENG key</h2>
+<p><kbd>ENG</kbd> is scientific notation with a restriction: the exponent is
+always a multiple of three. That matters because the units engineers use come in
+steps of a thousand &mdash; milli, micro, nano, kilo, mega, giga.</p>
+<p>So 0.000012 amps is more useful as
+<span class="mono">12&times;10&#x207B;&#x2076;</span>, because 10&#x207B;&#x2076;
+is &ldquo;micro&rdquo;, and you can read it straight off as 12 microamps.</p>
+<p>Press <kbd>ENG</kbd> after an answer to step the exponent in threes.
+<kbd>SHIFT</kbd> <kbd>ENG</kbd> steps it back the other way. The value never
+changes &mdash; only where the decimal point is drawn.</p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h2>Getting back to an ordinary number</h2>
+<p>If an answer shows as a power of ten and you wanted the digits, the answer is
+usually that there are too many digits to show. But two things help:</p>
+<ul>
+  <li><kbd>S&hArr;D</kbd> toggles between exact and decimal forms, which sometimes
+  gives you a fraction that is easier to read than either.</li>
+  <li>Scaling the problem yourself &mdash; working in millions, or in
+  milliseconds &mdash; keeps the numbers in a range you can read directly.</li>
+</ul>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h2>Arithmetic in scientific notation</h2>
+<p>You can type numbers in this form and calculate with them normally. Speed of
+light times a hundred seconds is
+<code>3</code> <span class="mono">&times;10&#9632;</span> <code>8</code>
+<code>&times;</code> <code>100</code>, giving
+<span class="mono">3&times;10&sup1;&#x2070;</span>.</p>
+<p>The useful habit from doing it by hand still applies: multiply the front parts,
+add the exponents. It is worth a rough mental check, because a mistyped exponent
+is off by a factor of ten and looks entirely reasonable on screen.</p>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>

@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>How to Do Percentages on a Scientific Calculator</title>
+<meta name="description" content="What the % key actually does, how to find a percentage of a number, add or subtract a percentage, work out percentage change, and reverse a percentage.">
+<link rel="canonical" href="https://naturalcalculators.github.io/percentages/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="How to Do Percentages on a Scientific Calculator">
+<meta property="og:description" content="What the % key actually does, how to find a percentage of a number, add or subtract a percentage, work out percentage change, and reverse a percentage.">
+<meta property="og:url" content="https://naturalcalculators.github.io/percentages/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,13 +270,13 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
   <a href="/fractions/">Fractions &amp; exact answers</a>
   <a href="/powers-roots/">Powers &amp; roots</a>
-  <a href="/percentages/">Percentages</a>
+  <a href="/percentages/" aria-current="page">Percentages</a>
   <a href="/logarithms/">Logarithms</a>
   <a href="/memory/">Memory &amp; Ans</a>
   <a href="/scientific-notation/">Scientific notation</a>
@@ -288,53 +288,97 @@ td .mono{white-space:nowrap}
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Percentages</h1>
+<p class="standfirst">The % key does one small thing. Once you know what it is, every percentage question becomes ordinary arithmetic.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>What the % key actually does</h2>
+<p>Press <kbd>SHIFT</kbd> then <kbd>(</kbd> for <span class="mono">%</span>. It
+divides the number in front of it by 100. That is the whole function.</p>
+<p>So <code>15%</code> becomes 0.15, and
+<code>200 &times; 15%</code> gives <strong>30</strong> &mdash; fifteen percent of
+two hundred, which is what you wanted.</p>
+<div class="callout"><b>But <code>50 + 10%</code> gives 50.1, not 55.</b> It read
+that as fifty plus one tenth, because that is literally what it says. Some
+calculators quietly rewrite <code>+ 10%</code> to mean &ldquo;add ten percent of
+the first number&rdquo;. This one does not guess &mdash; it does the arithmetic you
+typed. Once you know that, it is entirely predictable.</div>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>The five percentage questions</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>Question</th><th>Type</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>What is 15% of 200?</td><td class="mono">200 &times; 15%</td><td>30</td></tr>
+<tr><td>Add 10% to 50</td><td class="mono">50 &times; 1.1</td><td>55</td></tr>
+<tr><td>Take 20% off 80</td><td class="mono">80 &times; 0.8</td><td>64</td></tr>
+<tr><td>7 is what percent of 40?</td><td class="mono">7 &divide; 40 &times; 100</td><td>17.5</td></tr>
+<tr><td>Price after 20% VAT was 96 &mdash; what was it before?</td><td class="mono">96 &divide; 1.2</td><td>80</td></tr>
+</tbody></table></div>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h2>The multiplier: the one idea worth learning</h2>
+<p>Every percentage increase or decrease is a single multiplication, and the
+multiplier is easy to build in your head:</p>
+<ul>
+  <li>Up 10% &rarr; <strong>&times; 1.1</strong>. Up 7.5% &rarr; &times; 1.075.
+  Up 200% &rarr; &times; 3.</li>
+  <li>Down 20% &rarr; <strong>&times; 0.8</strong>. Down 5% &rarr; &times; 0.95.</li>
+</ul>
+<p>This is worth the small effort because multipliers <em>chain</em>. A price that
+goes up 10% and then down 10% is <code>&times; 1.1 &times; 0.9</code>, which is
+0.99 &mdash; you end up slightly below where you started, which surprises people
+every time. Three years of 4% inflation is <span class="mono">&times; 1.04&sup3;</span>,
+not &times; 1.12.</p>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>Percentage change</h2>
+<p>To find how much something changed in percent, the formula is the difference
+divided by the <em>original</em>, times 100:</p>
+<p><span class="mono">(new &minus; old) &divide; old &times; 100</span></p>
+<p>A price going from 40 to 46 is <code>(46 &minus; 40) &divide; 40 &times; 100</code>,
+which is a 15% rise. Dividing by the new value instead is the classic mistake and
+gives 13.04% &mdash; close enough to look plausible, which is what makes it
+dangerous.</p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h2>Reversing a percentage</h2>
+<p>If a total already includes a percentage and you want the amount before it,
+<strong>divide by the multiplier</strong> rather than subtracting the percentage.</p>
+<p>A bill of 96 including 20% tax was 80 before tax:
+<code>96 &divide; 1.2 = 80</code>. Taking 20% off 96 instead gives 76.8, which is
+wrong, because the 20% was calculated on the smaller number.</p>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h2>Keeping the running number</h2>
+<p>Percentage work often means using one answer several times. After pressing
+<kbd>=</kbd>, the <kbd>Ans</kbd> key holds that result, so you can carry straight
+on: <code>Ans &times; 1.05</code> applies another five percent. To park a number
+somewhere more permanent, <a href="/memory/">use the memory keys</a>.</p>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>

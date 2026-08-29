@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>Logarithms on a Scientific Calculator — log, ln and Any Base</title>
+<meta name="description" content="The difference between log and ln, how to take a logarithm to any base, the 10^x and e^x inverse keys, and the change-of-base formula.">
+<link rel="canonical" href="https://naturalcalculators.github.io/logarithms/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="Logarithms on a Scientific Calculator — log, ln and Any Base">
+<meta property="og:description" content="The difference between log and ln, how to take a logarithm to any base, the 10^x and e^x inverse keys, and the change-of-base formula.">
+<meta property="og:url" content="https://naturalcalculators.github.io/logarithms/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,14 +270,14 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
   <a href="/fractions/">Fractions &amp; exact answers</a>
   <a href="/powers-roots/">Powers &amp; roots</a>
   <a href="/percentages/">Percentages</a>
-  <a href="/logarithms/">Logarithms</a>
+  <a href="/logarithms/" aria-current="page">Logarithms</a>
   <a href="/memory/">Memory &amp; Ans</a>
   <a href="/scientific-notation/">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
@@ -288,53 +288,108 @@ td .mono{white-space:nowrap}
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Logarithms: log, ln and any base</h1>
+<p class="standfirst">Two keys, two bases, and a third key for everything else. Plus what to do on a calculator that only has the first two.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>log and ln are not the same key</h2>
+<ul>
+  <li><kbd>log</kbd> is the <strong>common logarithm</strong>, base 10. It answers
+  &ldquo;ten to what power gives this?&rdquo; So <code>log 1000</code> is 3.</li>
+  <li><kbd>ln</kbd> is the <strong>natural logarithm</strong>, base <em>e</em>
+  (about 2.71828). <code>ln e</code> is 1, and <code>ln 1</code> is 0.</li>
+</ul>
+<p>Both open a bracket for you, so <code>log(1000</code> is enough &mdash; the
+closing bracket is optional at the end of a line.</p>
+<p>Which one a question wants is almost always decided by the subject. Chemistry
+pH, decibels, the Richter scale and orders of magnitude use base 10. Anything
+involving growth, decay, half-lives or calculus uses ln, because it is the one
+whose derivative is tidy.</p>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>A logarithm to any base</h2>
+<p>The <span class="mono">log&#9633;&#9633;</span> key gives you two boxes: the
+small one is the base, the large one is the number. Type the base, press
+<kbd>&#9654;</kbd> to move across, type the number, then <kbd>=</kbd>.</p>
+<p>So log base 2 of 8 is <code>2</code>, <kbd>&#9654;</kbd>, <code>8</code>,
+<kbd>=</kbd> &mdash; which gives <strong>3</strong>, because 2&sup3; = 8.</p>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h3>If your calculator has no any-base key</h3>
+<p>Use the change-of-base formula, which works on any calculator ever made:</p>
+<p><span class="mono">log&#8342;(x) = log(x) &divide; log(b)</span></p>
+<p>It works with <kbd>ln</kbd> just as well as <kbd>log</kbd> &mdash; the two
+cancel out &mdash; so log base 2 of 8 is <code>ln 8 &divide; ln 2</code>, which is
+again 3.</p>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>The inverse keys</h2>
+<p>A logarithm asks &ldquo;what power?&rdquo;. The inverse takes a power and gives
+the number back.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Key</th><th>Gives</th><th>Undoes</th></tr></thead>
+<tbody>
+<tr><td><kbd>SHIFT</kbd> <kbd>log</kbd></td><td class="mono">10&#9632;</td><td><kbd>log</kbd></td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>ln</kbd></td><td class="mono">e&#9632;</td><td><kbd>ln</kbd></td></tr>
+</tbody></table></div>
+<p>These are how you finish most log problems. If you have solved down to
+<span class="mono">ln x = 2.5</span>, then x is <span class="mono">e</span> to the
+2.5, so press <kbd>SHIFT</kbd> <kbd>ln</kbd>, type 2.5, and read off 12.18.</p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h2>The three rules, on the keypad</h2>
+<p>Worth checking on the calculator once, because seeing them come out equal makes
+them stick:</p>
+<ul>
+  <li><span class="mono">log(ab) = log a + log b</span> &mdash; try
+  <code>log 6</code> against <code>log 2 + log 3</code>.</li>
+  <li><span class="mono">log(a&frasl;b) = log a &minus; log b</span>.</li>
+  <li><span class="mono">log(a&#9632;) = n log a</span> &mdash; try
+  <code>log 8</code> against <code>3 &times; log 2</code>.</li>
+</ul>
+<p>That last one is the useful one. It is what lets you pull an unknown down out
+of an exponent, which is the entire reason logarithms exist in a school
+syllabus.</p>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h2>When you get a Math ERROR</h2>
+<p>The logarithm of zero or of a negative number is undefined, so both return a
+<a href="/errors/">Math ERROR</a>. Not a bug &mdash; there is no power you can
+raise 10 to that gives &minus;2, or 0.</p>
+<p>If that happens mid-problem, it usually means a sign went missing earlier, or
+you took the log of a whole expression when you meant to take it of one term.</p>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<h2>A worked example: half-life</h2>
+<p>A substance decays to 30% of its original amount. How many half-lives is that?
+You need <span class="mono">0.5&#9632; = 0.3</span>, so
+<span class="mono">n = ln(0.3) &divide; ln(0.5)</span>.</p>
+<p>Type <code>ln(0.3) &divide; ln(0.5)</code> and you get about 1.737 half-lives.
+Any base works here as long as you use the same one twice &mdash;
+<code>log</code> gives the identical answer.</p>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>

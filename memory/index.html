@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>Calculator Memory Keys — M+, STO, RCL and Ans Explained</title>
+<meta name="description" content="How the memory keys on a scientific calculator work: storing values in A to F, X, Y and M, recalling them, running totals with M+ and M−, and using Ans.">
+<link rel="canonical" href="https://naturalcalculators.github.io/memory/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="Calculator Memory Keys — M+, STO, RCL and Ans Explained">
+<meta property="og:description" content="How the memory keys on a scientific calculator work: storing values in A to F, X, Y and M, recalling them, running totals with M+ and M−, and using Ans.">
+<meta property="og:url" content="https://naturalcalculators.github.io/memory/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,7 +270,7 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
@@ -278,7 +278,7 @@ td .mono{white-space:nowrap}
   <a href="/powers-roots/">Powers &amp; roots</a>
   <a href="/percentages/">Percentages</a>
   <a href="/logarithms/">Logarithms</a>
-  <a href="/memory/">Memory &amp; Ans</a>
+  <a href="/memory/" aria-current="page">Memory &amp; Ans</a>
   <a href="/scientific-notation/">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
   <a href="/complex-numbers/">Complex numbers</a>
@@ -288,53 +288,113 @@ td .mono{white-space:nowrap}
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Memory: M+, STO, RCL and Ans</h1>
+<p class="standfirst">Nine places to keep a number, a running total that survives everything else you do, and the answer you already have.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>Ans: the memory you are already using</h2>
+<p><kbd>Ans</kbd> holds the last result, always, whether you asked for it or not.
+Two things follow from that.</p>
+<p>First, starting a line with an operator continues from the answer. Type
+<code>5 =</code> then <code>+ 3 =</code> and you get 8, because
+<code>Ans</code> was inserted for you.</p>
+<p>Second, you can reuse a result mid-expression without writing it down.
+<code>&radic;(Ans)</code>, <code>Ans &times; 1.05</code>, <code>1 &divide; Ans</code>
+&mdash; all fine, and all carrying full internal precision rather than the ten
+digits shown on screen.</p>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>The nine variables</h2>
+<p>There are nine named places to put a number: <code>A</code>, <code>B</code>,
+<code>C</code>, <code>D</code>, <code>E</code>, <code>F</code>, <code>X</code>,
+<code>Y</code> and <code>M</code>. Their names are the red letters printed above
+the keys.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>To</th><th>Press</th></tr></thead>
+<tbody>
+<tr><td>Store the current value into A</td><td><kbd>SHIFT</kbd> <kbd>RCL</kbd> then <kbd>(&minus;)</kbd></td></tr>
+<tr><td>Recall A on its own</td><td><kbd>RCL</kbd> then <kbd>(&minus;)</kbd>, then <kbd>=</kbd></td></tr>
+<tr><td>Put A inside an expression</td><td><kbd>ALPHA</kbd> then <kbd>(&minus;)</kbd></td></tr>
+</tbody></table></div>
+<p><kbd>SHIFT</kbd> <kbd>RCL</kbd> is <strong>STO</strong> &mdash; the yellow label
+above the RCL key. After it, you press the key the letter sits above, not a letter
+key: <code>A</code> lives above <kbd>(&minus;)</kbd>, <code>X</code> above
+<kbd>)</kbd>, <code>M</code> above <kbd>M+</kbd>, and so on.</p>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h2>M+ and M&minus;: the running total</h2>
+<p><code>M</code> is different from the other eight. It has its own two keys for
+adding to it and subtracting from it, which makes it the right place for a total
+you are building up.</p>
+<ul>
+  <li><kbd>M+</kbd> adds whatever is currently displayed to M.</li>
+  <li><kbd>SHIFT</kbd> <kbd>M+</kbd> is <strong>M&minus;</strong>, which subtracts it.</li>
+  <li><kbd>RCL</kbd> then <kbd>M+</kbd> brings M back; press <kbd>=</kbd> to show
+  it.</li>
+</ul>
+<p>So a shopping list is <code>4 &times; 2.50</code> <kbd>M+</kbd>,
+<code>3 &times; 1.20</code> <kbd>M+</kbd>, <code>9.99</code> <kbd>M+</kbd>, then
+<kbd>RCL</kbd> <kbd>M+</kbd> <kbd>=</kbd> for the total &mdash; 23.59. You never
+write down a subtotal, and a mistake costs you one line rather than the whole
+list.</p>
+<p>Money totals come back in exact form, so 23.59 may appear as
+<span class="mono">2359&frasl;100</span>. Press <kbd>S&hArr;D</kbd> for the
+decimal.</p>
+<div class="callout"><b>M keeps its value until you clear it.</b> Pressing
+<kbd>AC</kbd>, turning off, or doing unrelated sums does not touch it. Zero it
+deliberately: type <code>0</code>, then <kbd>SHIFT</kbd> <kbd>RCL</kbd>,
+then <kbd>M+</kbd>. A leftover M from yesterday is a genuinely confusing bug to
+chase.</p></div>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>Where the letters earn their keep</h2>
+<p>The other variables are for when a number appears several times in one problem,
+or when you want to change one input and re-run everything.</p>
+<p>Store a radius in <code>A</code>, then type
+<code>&pi; &times; A&sup2;</code> for the area and
+<code>2&pi;A</code> for the circumference &mdash; no retyping, no rounding drift.
+Change <code>A</code> and both are one keypress away again.</p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h3>CALC: the same idea, automated</h3>
+<p>Type a formula with letters in it &mdash; say
+<code>A &times; B &divide; 2</code> &mdash; and press <kbd>CALC</kbd>. The
+calculator asks you for A, then for B, then gives the answer. Press
+<kbd>CALC</kbd> again for a new pair. It is a one-line spreadsheet, and it is the
+fastest way to run the same formula over twenty sets of numbers.</p>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h3>SOLVE: working backwards</h3>
+<p><kbd>SHIFT</kbd> <kbd>CALC</kbd> is <strong>SOLVE</strong>. Type an expression
+in terms of <code>X</code> and it finds the value of X that makes it zero. Enter
+<code>X&sup2; &minus; 4</code> and SOLVE returns 2.</p>
+<p>To solve an equation with something on both sides, move everything to one side
+first: <span class="mono">3X + 1 = 10</span> becomes
+<span class="mono">3X + 1 &minus; 10</span>, and SOLVE gives 3.</p>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>

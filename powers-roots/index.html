@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>Powers and Roots on a Scientific Calculator — Squares, Cubes and nth Roots</title>
+<meta name="description" content="How to type squares, cubes, any power and any root on a scientific calculator, including the nth root where the index goes first, and the cursor mistake that ruins the answer.">
+<link rel="canonical" href="https://naturalcalculators.github.io/powers-roots/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="Powers and Roots on a Scientific Calculator — Squares, Cubes and nth Roots">
+<meta property="og:description" content="How to type squares, cubes, any power and any root on a scientific calculator, including the nth root where the index goes first, and the cursor mistake that ruins the answer.">
+<meta property="og:url" content="https://naturalcalculators.github.io/powers-roots/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,12 +270,12 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
   <a href="/fractions/">Fractions &amp; exact answers</a>
-  <a href="/powers-roots/">Powers &amp; roots</a>
+  <a href="/powers-roots/" aria-current="page">Powers &amp; roots</a>
   <a href="/percentages/">Percentages</a>
   <a href="/logarithms/">Logarithms</a>
   <a href="/memory/">Memory &amp; Ans</a>
@@ -288,53 +288,109 @@ td .mono{white-space:nowrap}
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Powers, squares and roots</h1>
+<p class="standfirst">Six keys cover every power and every root. The hard part is not the keys &mdash; it is knowing when you are still inside the exponent.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>The six keys</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>You want</th><th>Press</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Squared</td><td class="mono">x&sup2;</td><td><code>7</code> then the key gives 49</td></tr>
+<tr><td>Cubed</td><td><kbd>SHIFT</kbd> <span class="mono">x&sup2;</span></td><td><code>4</code> gives 64</td></tr>
+<tr><td>Any power</td><td class="mono">x&#9632;</td><td><code>2</code>, key, <code>10</code> gives 1024</td></tr>
+<tr><td>Square root</td><td class="mono">&radic;&#9633;</td><td><span class="mono">&radic;50</span> gives 5&radic;2</td></tr>
+<tr><td>Cube root</td><td><kbd>SHIFT</kbd> <span class="mono">&radic;&#9633;</span></td><td><span class="mono">&#8731;27</span> gives 3</td></tr>
+<tr><td>Any root</td><td>index, then <kbd>SHIFT</kbd> <span class="mono">x&#9632;</span></td><td><code>4</code>, keys, <code>16</code> gives 2</td></tr>
+<tr><td>Reciprocal</td><td class="mono">x&#8315;&sup1;</td><td><code>4</code> gives <span class="mono">1&frasl;4</span></td></tr>
+</tbody></table></div>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>The nth root: the index goes first</h2>
+<p>This is the one people get wrong, because it is the only key on the whole
+keypad where part of the answer is typed <em>before</em> you press it.</p>
+<p>For the fourth root of 16, type <code>4</code> first, then <kbd>SHIFT</kbd>
+<span class="mono">x&#9632;</span>, then <code>16</code>, then <kbd>=</kbd>. You
+get 2. The 4 you already typed becomes the small index sitting in front of the
+root sign, exactly as it is written on paper.</p>
+<p>Type it the other way round &mdash; the key first, then 4, then 16 &mdash; and
+you have asked for something else entirely.</p>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h2>The mistake that quietly ruins the answer</h2>
+<p>When you press <span class="mono">x&#9632;</span>, the cursor jumps up into a
+small raised box, and it <strong>stays there</strong>. Everything you type next
+is part of the exponent until you press <kbd>&#9654;</kbd> to come back down to
+the baseline.</p>
+<div class="callout"><b>So <code>2</code> <span class="mono">x&#9632;</span>
+<code>3</code> <code>+</code> <code>1</code> is not 9.</b> Without pressing
+<kbd>&#9654;</kbd> first you have typed two to the power of four. The display
+shows it correctly &mdash; the <code>+1</code> is visibly up in the air &mdash;
+but it is easy to type without looking. If a power calculation comes out strangely
+large or small, this is almost always the cause.</div>
+<p>The same applies to <span class="mono">&radic;</span>. Everything goes under
+the bar until you press <kbd>&#9654;</kbd>, so <span class="mono">&radic;9+16</span>
+is the square root of 25 if you never left the root, and 3+16 if you did. Both are
+legitimate expressions, which is why the calculator cannot warn you.</p>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>Fractional and negative powers</h2>
+<p>They behave exactly as the algebra says, which makes them a useful shortcut:</p>
+<ul>
+  <li>A power of <span class="mono">1&frasl;2</span> is a square root, and
+  <span class="mono">1&frasl;3</span> is a cube root. Build the fraction inside
+  the exponent box with the fraction key.</li>
+  <li>A negative power is a reciprocal: <span class="mono">2&#8315;&sup3;</span>
+  is <span class="mono">1&frasl;8</span>.</li>
+  <li>A power of <span class="mono">2&frasl;3</span> is the cube root, squared.</li>
+</ul>
+<p>Answers stay exact wherever possible, so you get
+<span class="mono">1&frasl;8</span> rather than 0.125. Press <kbd>S&hArr;D</kbd>
+if you wanted the decimal.</p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h2>Roots of negative numbers</h2>
+<p>The square root of a negative number is a Math ERROR in normal COMP mode,
+because there is no real number that squares to give a negative. That is the
+calculator being correct, not broken. If you are working with complex numbers,
+<a href="/complex-numbers/">switch to CMPLX mode</a> and
+<span class="mono">&radic;&minus;4</span> becomes <span class="mono">2i</span>.</p>
+<p>The cube root of a negative number is a genuine real number
+&mdash; <span class="mono">&#8731;&minus;8</span> is &minus;2 &mdash; so use the
+cube-root key for it. Writing it as a fractional power instead returns an error,
+because raising a negative number to a fractional power is not defined in the
+reals.</p>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h2>Why &radic;8 does not give 2.828</h2>
+<p>It gives <span class="mono">2&radic;2</span>, which is the same number written
+exactly. The calculator pulls out every perfect-square factor it can find.
+<a href="/fractions/">There is a whole page on exact answers</a>, but the short
+version is: press <kbd>S&hArr;D</kbd> for the decimal.</p>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>

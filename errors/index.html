@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy — Scientific Calculator</title>
-<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<title>Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes</title>
+<meta name="description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
+<link rel="canonical" href="https://naturalcalculators.github.io/errors/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Scientific Calculator">
-<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
-<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta property="og:title" content="Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes">
+<meta property="og:description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
+<meta property="og:url" content="https://naturalcalculators.github.io/errors/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -270,7 +270,7 @@ td .mono{white-space:nowrap}
 <a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
 <nav class="site-nav">
 <a class="navhome" href="/">Calculator</a>
-<details class="navmenu">
+<details class="navmenu" data-on="1">
 <summary aria-haspopup="true">Guides<span class="chev" aria-hidden="true"></span></summary>
 <div class="navmenu-panel">
   <a href="/guide/">The complete key guide</a>
@@ -282,59 +282,124 @@ td .mono{white-space:nowrap}
   <a href="/scientific-notation/">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
   <a href="/complex-numbers/">Complex numbers</a>
-  <a href="/errors/">Errors &amp; fixes</a>
+  <a href="/errors/" aria-current="page">Errors &amp; fixes</a>
 </div>
 </details>
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
-<p class="kicker">Legal</p>
-<h1>Privacy policy</h1>
-<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
-collected, because there is nothing to collect it with.</p>
+<p class="kicker">Guide</p>
+<h1>Math ERROR and Syntax ERROR</h1>
+<p class="standfirst">Two messages cover nearly every error a scientific calculator can produce. Each has a short, boring list of causes.</p>
 
-<h2>What is collected</h2>
-<p>No personal information. There are no accounts, no advertising, and no
-tracking of individuals anywhere on this site or in the Android app.</p>
+<h2>First: you have not lost your work</h2>
+<p>When an error appears, press <kbd>&#9664;</kbd> or <kbd>&#9654;</kbd>. Your
+expression comes back with the cursor in it, ready to edit. You do not have to
+retype anything.</p>
+<p><kbd>AC</kbd> clears the line completely. Use it only when you actually want to
+start again.</p>
 
-<p>The website does count visits, using Cloudflare Web Analytics. That records
-which page was opened, roughly which country the request came from, the kind of
-device, and which site linked you here &mdash; all as anonymous totals. It sets
-no cookies, does no fingerprinting, builds no profile of you, and cannot follow
-you to other websites. Nobody, including the site's owner, can identify an
-individual visitor from it.</p>
+<h2>Syntax ERROR: the expression is not valid</h2>
+<p>The calculator could not read what you typed. It has not attempted any
+arithmetic. Almost always one of these:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Cause</th><th>Looks like</th></tr></thead>
+<tbody>
+<tr><td>Unbalanced brackets</td><td><code>(3+2))&times;4</code> &mdash; one too many closing brackets</td></tr>
+<tr><td>An operator with nothing to work on</td><td><code>5 &times; &divide; 2</code>, or a line ending in <code>+</code></td></tr>
+<tr><td>Two numbers with nothing between them</td><td>usually a stray digit left behind after editing</td></tr>
+<tr><td>A function with an empty bracket</td><td><code>sin( )</code></td></tr>
+<tr><td>Minus used as a negative sign</td><td><code>&minus;5</code> typed with the subtraction key where <kbd>(&minus;)</kbd> was needed</td></tr>
+</tbody></table></div>
+<p>Extra <em>closing</em> brackets are the most common by a distance, because
+functions like <kbd>sin</kbd> and <kbd>log</kbd> open a bracket for you
+automatically and it is easy to close it twice. You never need a closing bracket
+at the very end of a line &mdash; the calculator supplies them.</p>
 
-<p>The Android app collects nothing whatsoever and declares no permissions.</p>
+<h2>Math ERROR: the expression is valid but the answer is not a number</h2>
+<p>Here the calculator understood you perfectly and tried. There is simply no
+answer to give.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>You asked for</th><th>Why there is no answer</th></tr></thead>
+<tbody>
+<tr><td class="mono">1 &divide; 0</td><td>Division by zero is undefined. This includes dividing by a variable that happens to hold zero.</td></tr>
+<tr><td class="mono">&radic;&minus;4</td><td>No real number squares to a negative. Works in <a href="/complex-numbers/">CMPLX mode</a>, where it is 2i.</td></tr>
+<tr><td class="mono">log(&minus;2)</td><td>Logarithms of zero and negatives are undefined.</td></tr>
+<tr><td class="mono">tan(90&deg;)</td><td>The tangent is genuinely infinite there.</td></tr>
+<tr><td class="mono">sin&#8315;&sup1;(2)</td><td>Sine never exceeds 1, so nothing has a sine of 2.</td></tr>
+<tr><td class="mono">0.5!</td><td>Factorials are defined for whole numbers only.</td></tr>
+<tr><td class="mono">(&minus;8)^(1&frasl;3)</td><td>A negative to a fractional power is undefined in the reals &mdash; use the cube-root key, which gives &minus;2.</td></tr>
+<tr><td>Something enormous</td><td>Past roughly 10&sup3;&#x2070;&#x2070; there is nowhere to put the digits.</td></tr>
+</tbody></table></div>
 
-<h2>What stays on your device</h2>
-<p>So that your work is still there when you come back, the calculator saves the
-expression currently on screen, your stored variable values and your display
-settings in your own browser's local storage (or, in the Android app, in the
-app's private storage). This never leaves your device, is not readable by other
-sites, and is removed when you clear your browser data or uninstall the app.</p>
+<h2>The angle-mode trap</h2>
+<p>If <code>tan(90)</code> errors and you expected a number, check the
+<strong>D</strong> or <strong>R</strong> at the top of the display. In degrees,
+tan 90&deg; is undefined and the error is correct. In radians, 90 radians is
+about 14 full turns and gives a perfectly ordinary answer.</p>
+<p>The reverse bites harder: in the wrong mode you often get <em>no</em> error at
+all, just a wrong number. <a href="/degrees-radians/">That is worth a page of its
+own.</a></p>
 
-<h2>Permissions</h2>
-<p>The Android app declares no Android permissions at all. It has no access to
-your files, contacts, camera, microphone, location or network.</p>
+<h2>Errors that are really typing mistakes</h2>
+<p>Three specific ones account for most of the confusing cases:</p>
+<ul>
+  <li><strong>Still inside the exponent box.</strong> After
+  <span class="mono">x&#9632;</span> everything you type stays raised until you
+  press <kbd>&#9654;</kbd>. A whole expression trapped up there produces a number
+  large enough to overflow. <a href="/powers-roots/">More on that here.</a></li>
+  <li><strong>Still under the root bar.</strong> Same idea. Half your expression
+  ends up inside <span class="mono">&radic;</span>, and if it turns negative you
+  get a Math ERROR from a calculation that should have been fine.</li>
+  <li><strong>Subtraction sign used as a negative.</strong> <kbd>&minus;</kbd>
+  needs something on both sides; <kbd>(&minus;)</kbd> makes a number negative.
+  They look almost identical on screen.</li>
+</ul>
 
-<h2>Third parties</h2>
-<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
-typefaces, so your browser requests those font files from Google's servers.
-Cloudflare receives the anonymous visit counts described above. Nothing else on
-the page contacts anyone at all. The Android app bundles everything it needs and
-contacts nobody.</p>
+<h2>When there is no error and the answer is still wrong</h2>
+<p>The genuinely dangerous case, because nothing warns you. Run through:</p>
+<ul>
+  <li><strong>Angle mode</strong> &mdash; D, R or G in the display.</li>
+  <li><strong>A leftover variable</strong> &mdash; if the expression uses A or X,
+  is the value in it the one you meant? <a href="/memory/">Recall it and check.</a></li>
+  <li><strong>Implicit multiplication</strong> &mdash;
+  <code>6 &divide; 2(1+2)</code> is 1, not 9, because a number pressed straight
+  against a bracket binds more tightly than a written &divide;.</li>
+  <li><strong>A rounding setting</strong> &mdash; Fix or Sci left on from an
+  earlier problem. SETUP, then Norm, puts it back.</li>
+</ul>
+<div class="callout"><b>A rough estimate is the best check there is.</b> If you
+expected about 40 and the screen says 0.04, something structural is wrong, and no
+amount of retyping the same keys will find it.</div>
 
-<h2>Children</h2>
-<p>The calculator is safe for all ages and collects no information from anyone,
-including children under 13.</p>
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will appear at this same address
-with a new date at the top.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
-</article></main>
+<section class="band">
+  <h2 class="sec">Other guides</h2>
+  <p class="sub">Short, practical, one topic each.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch to a decimal.</p></a>
+    <a class="card" href="/powers-roots/"><h3>Powers, squares and roots</h3>
+      <p>The exponent box, the nth root, and the cursor mistake that quietly ruins the answer.</p></a>
+    <a class="card" href="/percentages/"><h3>Percentages</h3>
+      <p>What the % key really does, and how to do increases, decreases and &ldquo;what percent of&rdquo;.</p></a>
+    <a class="card" href="/logarithms/"><h3>Logarithms: log, ln and any base</h3>
+      <p>The difference between log and ln, log to base anything, and the inverse keys.</p></a>
+    <a class="card" href="/memory/"><h3>Memory: M+, STO, RCL and Ans</h3>
+      <p>Nine places to keep a number, a running total, and the answer you already have.</p></a>
+    <a class="card" href="/scientific-notation/"><h3>Scientific notation and the E</h3>
+      <p>What &times;10&#x02E3; does, why answers come back with an E in them, and what ENG is for.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+  </div>
+</section>
+</main>
 <footer class="site-foot"><div class="wrap foot-in">
 <span>&copy; 2026 Scientific Calculator</span>
 <nav>
