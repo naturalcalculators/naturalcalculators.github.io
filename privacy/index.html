@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy — Scientific Calculator</title>
+<meta name="description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
+<link rel="canonical" href="https://naturalcalculators.github.io/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Privacy Policy — Scientific Calculator">
+<meta property="og:description" content="Scientific Calculator collects no data. No accounts, no analytics, no ads, no tracking.">
+<meta property="og:url" content="https://naturalcalculators.github.io/privacy/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#e9e6df;
+  --panel:#f7f5f1;
+  --panel-2:#dfdbd2;
+  --fg:#1b1f26;
+  --fg-2:#4b525c;
+  --fg-3:#7b828c;
+  --line:#cdc8be;
+  --line-2:#dfdad1;
+  --brandmark:#2e3642;
+  --link:#3d6b47;
+  --link-hi:#2c5134;
+  --chip:#eef1e9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121418;
+    --panel:#1a1e24;
+    --panel-2:#222730;
+    --fg:#e7e5e0;
+    --fg-2:#a9aeb6;
+    --fg-3:#7d838c;
+    --line:#333942;
+    --line-2:#282d35;
+    --brandmark:#c6cfdb;
+    --link:#9ec48a;
+    --link-hi:#b7d6a6;
+    --chip:#212a1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121418;
+  --panel:#1a1e24;
+  --panel-2:#222730;
+  --fg:#e7e5e0;
+  --fg-2:#a9aeb6;
+  --fg-3:#7d838c;
+  --line:#333942;
+  --line-2:#282d35;
+  --brandmark:#c6cfdb;
+  --link:#9ec48a;
+  --link-hi:#b7d6a6;
+  --chip:#212a1e;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:17px/1.68 Barlow,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--link-hi)}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+
+/* header */
+.site-head{
+  position:sticky;top:0;z-index:20;background:var(--bg);
+  border-bottom:1px solid var(--line-2);
+}
+.head-in{
+  display:flex;align-items:center;gap:1.4rem;
+  max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;
+}
+.logo{
+  display:flex;align-items:center;gap:.55rem;
+  color:var(--fg);text-decoration:none;font-weight:600;
+  font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.02em;
+}
+.logo i{
+  font-style:normal;font-weight:700;font-size:.78rem;letter-spacing:.06em;
+  background:var(--brandmark);color:var(--bg);
+  width:1.7rem;height:1.28rem;border-radius:.25rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.site-nav{margin-left:auto;display:flex;gap:.15rem;flex-wrap:wrap}
+.site-nav a{
+  color:var(--fg-2);text-decoration:none;padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.site-nav a:hover{color:var(--fg);background:var(--panel)}
+.site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
+
+/* hero */
+.hero{
+  display:grid;grid-template-columns:1fr;gap:2.5rem;
+  padding:2.4rem 0 1rem;align-items:start;
+}
+@media (min-width:62rem){
+  .hero{grid-template-columns:auto 1fr;gap:3.5rem;padding:3.2rem 0 1.5rem}
+  .calcstage{position:sticky;top:4.5rem}
+}
+.calcstage{display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.herotext h1{
+  font:700 clamp(2.1rem,5.4vw,3.15rem)/1.05 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .8rem;text-wrap:balance;letter-spacing:-.004em;
+}
+.herotext .lede{font-size:1.1rem;color:var(--fg-2);margin:0 0 1.5rem;max-width:34rem}
+.points{
+  list-style:none;margin:0 0 1.8rem;padding:0;max-width:34rem;
+  display:grid;grid-template-columns:auto 1fr;gap:.85rem .9rem;align-items:start;
+}
+.points li{display:contents}
+.points b{
+  font:600 .66rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--fg);background:var(--chip);
+  border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
+}
+.points span{color:var(--fg-2);font-size:.98rem}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
+
+/* generic sections */
+.band{border-top:1px solid var(--line-2);margin-top:3rem;padding:2.6rem 0 0}
+h2.sec{
+  font:700 1.55rem/1.15 "Barlow Semi Condensed",sans-serif;margin:0 0 .5rem;text-wrap:balance;
+}
+.sub{color:var(--fg-2);margin:0 0 1.6rem;max-width:44rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:.7rem;
+  padding:1.1rem 1.2rem;text-decoration:none;color:inherit;display:block;
+  transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:var(--line);transform:translateY(-2px);color:inherit}
+.card h3{font:700 1.08rem/1.25 "Barlow Semi Condensed",sans-serif;margin:0 0 .35rem}
+.card p{margin:0;color:var(--fg-2);font-size:.94rem;line-height:1.55}
+
+/* article pages */
+.article{max-width:44rem;margin:0 auto;padding:2.6rem 0 1rem}
+.article .kicker{
+  font:600 .7rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--fg-3);margin:0 0 .8rem;
+}
+.article h1{
+  font:700 clamp(1.9rem,4.6vw,2.6rem)/1.1 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .7rem;text-wrap:balance;
+}
+.article .standfirst{font-size:1.08rem;color:var(--fg-2);margin:0 0 2rem}
+.article h2{
+  font:700 1.35rem/1.2 "Barlow Semi Condensed",sans-serif;margin:2.4rem 0 .6rem;text-wrap:balance;
+}
+.article h3{font:600 1.06rem/1.3 "Barlow Semi Condensed",sans-serif;margin:1.7rem 0 .4rem}
+.article p{margin:0 0 1rem}
+.article ul,.article ol{margin:0 0 1rem;padding-left:1.3rem}
+.article li{margin:0 0 .45rem}
+.article strong{font-weight:600}
+
+kbd{
+  font:500 .8rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.04em;
+  background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:.3rem;padding:.05rem .38rem;white-space:nowrap;color:var(--fg);
+}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em;
+  background:var(--panel-2);border-radius:.25rem;padding:.08em .34em;
+}
+.tablewrap{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--line-2);border-radius:.5rem}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:26rem}
+th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{
+  font:600 .68rem/1.4 "Barlow Semi Condensed",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg-3);background:var(--panel);
+}
+tr:last-child td{border-bottom:0}
+td .mono{white-space:nowrap}
+
+.callout{
+  background:var(--panel);border-left:3px solid var(--link);
+  border-radius:.15rem .5rem .5rem .15rem;padding:.85rem 1rem;margin:0 0 1.3rem;
+  font-size:.96rem;color:var(--fg-2);
+}
+.callout b{color:var(--fg)}
+.cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--brandmark);color:var(--bg);text-decoration:none;
+  font:600 .9rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.06em;
+  padding:.75rem 1.1rem;border-radius:.45rem;
+}
+.cta:hover{color:var(--bg);opacity:.9}
+
+/* footer */
+.site-foot{
+  border-top:1px solid var(--line-2);margin-top:4rem;padding:2rem 0 3rem;
+  color:var(--fg-3);font-size:.88rem;
+}
+.foot-in{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:baseline}
+.foot-in nav{display:flex;gap:1rem;flex-wrap:wrap;margin-left:auto}
+.foot-in a{color:var(--fg-2);text-decoration:none}
+.foot-in a:hover{color:var(--fg);text-decoration:underline}
+.disclaim{margin:1.2rem 0 0;max-width:52rem;line-height:1.6}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="head-in">
+<a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
+<nav class="site-nav"><a href="/">Calculator</a><a href="/guide/">Full guide</a><a href="/fractions/">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+</div></header>
+<main class="wrap"><article class="article">
+<p class="kicker">Legal</p>
+<h1>Privacy policy</h1>
+<p class="standfirst">Last updated 25 August 2026. The short version: nothing is
+collected, because there is nothing to collect it with.</p>
+
+<h2>What is collected</h2>
+<p>Nothing. This website and the Android app of the same name contain no
+analytics, no advertising, no tracking pixels and no accounts. No personal
+information is gathered, stored or shared with anyone.</p>
+
+<h2>What stays on your device</h2>
+<p>So that your work is still there when you come back, the calculator saves the
+expression currently on screen, your stored variable values and your display
+settings in your own browser's local storage (or, in the Android app, in the
+app's private storage). This never leaves your device, is not readable by other
+sites, and is removed when you clear your browser data or uninstall the app.</p>
+
+<h2>Permissions</h2>
+<p>The Android app declares no Android permissions at all. It has no access to
+your files, contacts, camera, microphone, location or network.</p>
+
+<h2>Third parties</h2>
+<p>The website loads its typefaces from Google Fonts, which means your browser
+requests those font files from Google's servers and Google receives the request
+in the normal course of serving them. Nothing else on the page contacts any
+third party. The Android app bundles everything it needs and contacts nobody.</p>
+
+<h2>Children</h2>
+<p>The calculator is safe for all ages and collects no information from anyone,
+including children under 13.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, the updated version will appear at this same address
+with a new date at the top.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy: <code>adhikaribinaya01996@gmail.com</code></p>
+</article></main>
+<footer class="site-foot"><div class="wrap foot-in">
+<span>&copy; 2026 Scientific Calculator</span>
+<nav>
+  <a href="/">Calculator</a>
+  <a href="/guide/">Guide</a>
+  <a href="/fractions/">Fractions</a>
+  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/complex-numbers/">Complex</a>
+  <a href="/privacy/">Privacy</a>
+</nav>
+<p class="disclaim">An independent scientific calculator. Not affiliated with,
+endorsed by, or connected to any calculator manufacturer. Runs entirely in your
+browser &mdash; nothing you type is sent anywhere.</p>
+</div></footer>
+</body>
+</html>

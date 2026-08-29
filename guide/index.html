@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Use a Scientific Calculator — Complete Key Guide</title>
+<meta name="description" content="Every key on a scientific calculator explained: SHIFT and ALPHA, fractions, powers and roots, trigonometry, logarithms, memory, and the SETUP menu.">
+<link rel="canonical" href="https://naturalcalculators.github.io/guide/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How to Use a Scientific Calculator — Complete Key Guide">
+<meta property="og:description" content="Every key on a scientific calculator explained: SHIFT and ALPHA, fractions, powers and roots, trigonometry, logarithms, memory, and the SETUP menu.">
+<meta property="og:url" content="https://naturalcalculators.github.io/guide/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#e9e6df;
+  --panel:#f7f5f1;
+  --panel-2:#dfdbd2;
+  --fg:#1b1f26;
+  --fg-2:#4b525c;
+  --fg-3:#7b828c;
+  --line:#cdc8be;
+  --line-2:#dfdad1;
+  --brandmark:#2e3642;
+  --link:#3d6b47;
+  --link-hi:#2c5134;
+  --chip:#eef1e9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121418;
+    --panel:#1a1e24;
+    --panel-2:#222730;
+    --fg:#e7e5e0;
+    --fg-2:#a9aeb6;
+    --fg-3:#7d838c;
+    --line:#333942;
+    --line-2:#282d35;
+    --brandmark:#c6cfdb;
+    --link:#9ec48a;
+    --link-hi:#b7d6a6;
+    --chip:#212a1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121418;
+  --panel:#1a1e24;
+  --panel-2:#222730;
+  --fg:#e7e5e0;
+  --fg-2:#a9aeb6;
+  --fg-3:#7d838c;
+  --line:#333942;
+  --line-2:#282d35;
+  --brandmark:#c6cfdb;
+  --link:#9ec48a;
+  --link-hi:#b7d6a6;
+  --chip:#212a1e;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:17px/1.68 Barlow,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--link-hi)}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+
+/* header */
+.site-head{
+  position:sticky;top:0;z-index:20;background:var(--bg);
+  border-bottom:1px solid var(--line-2);
+}
+.head-in{
+  display:flex;align-items:center;gap:1.4rem;
+  max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;
+}
+.logo{
+  display:flex;align-items:center;gap:.55rem;
+  color:var(--fg);text-decoration:none;font-weight:600;
+  font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.02em;
+}
+.logo i{
+  font-style:normal;font-weight:700;font-size:.78rem;letter-spacing:.06em;
+  background:var(--brandmark);color:var(--bg);
+  width:1.7rem;height:1.28rem;border-radius:.25rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.site-nav{margin-left:auto;display:flex;gap:.15rem;flex-wrap:wrap}
+.site-nav a{
+  color:var(--fg-2);text-decoration:none;padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.site-nav a:hover{color:var(--fg);background:var(--panel)}
+.site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
+
+/* hero */
+.hero{
+  display:grid;grid-template-columns:1fr;gap:2.5rem;
+  padding:2.4rem 0 1rem;align-items:start;
+}
+@media (min-width:62rem){
+  .hero{grid-template-columns:auto 1fr;gap:3.5rem;padding:3.2rem 0 1.5rem}
+  .calcstage{position:sticky;top:4.5rem}
+}
+.calcstage{display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.herotext h1{
+  font:700 clamp(2.1rem,5.4vw,3.15rem)/1.05 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .8rem;text-wrap:balance;letter-spacing:-.004em;
+}
+.herotext .lede{font-size:1.1rem;color:var(--fg-2);margin:0 0 1.5rem;max-width:34rem}
+.points{
+  list-style:none;margin:0 0 1.8rem;padding:0;max-width:34rem;
+  display:grid;grid-template-columns:auto 1fr;gap:.85rem .9rem;align-items:start;
+}
+.points li{display:contents}
+.points b{
+  font:600 .66rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--fg);background:var(--chip);
+  border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
+}
+.points span{color:var(--fg-2);font-size:.98rem}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
+
+/* generic sections */
+.band{border-top:1px solid var(--line-2);margin-top:3rem;padding:2.6rem 0 0}
+h2.sec{
+  font:700 1.55rem/1.15 "Barlow Semi Condensed",sans-serif;margin:0 0 .5rem;text-wrap:balance;
+}
+.sub{color:var(--fg-2);margin:0 0 1.6rem;max-width:44rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:.7rem;
+  padding:1.1rem 1.2rem;text-decoration:none;color:inherit;display:block;
+  transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:var(--line);transform:translateY(-2px);color:inherit}
+.card h3{font:700 1.08rem/1.25 "Barlow Semi Condensed",sans-serif;margin:0 0 .35rem}
+.card p{margin:0;color:var(--fg-2);font-size:.94rem;line-height:1.55}
+
+/* article pages */
+.article{max-width:44rem;margin:0 auto;padding:2.6rem 0 1rem}
+.article .kicker{
+  font:600 .7rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--fg-3);margin:0 0 .8rem;
+}
+.article h1{
+  font:700 clamp(1.9rem,4.6vw,2.6rem)/1.1 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .7rem;text-wrap:balance;
+}
+.article .standfirst{font-size:1.08rem;color:var(--fg-2);margin:0 0 2rem}
+.article h2{
+  font:700 1.35rem/1.2 "Barlow Semi Condensed",sans-serif;margin:2.4rem 0 .6rem;text-wrap:balance;
+}
+.article h3{font:600 1.06rem/1.3 "Barlow Semi Condensed",sans-serif;margin:1.7rem 0 .4rem}
+.article p{margin:0 0 1rem}
+.article ul,.article ol{margin:0 0 1rem;padding-left:1.3rem}
+.article li{margin:0 0 .45rem}
+.article strong{font-weight:600}
+
+kbd{
+  font:500 .8rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.04em;
+  background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:.3rem;padding:.05rem .38rem;white-space:nowrap;color:var(--fg);
+}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em;
+  background:var(--panel-2);border-radius:.25rem;padding:.08em .34em;
+}
+.tablewrap{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--line-2);border-radius:.5rem}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:26rem}
+th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{
+  font:600 .68rem/1.4 "Barlow Semi Condensed",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg-3);background:var(--panel);
+}
+tr:last-child td{border-bottom:0}
+td .mono{white-space:nowrap}
+
+.callout{
+  background:var(--panel);border-left:3px solid var(--link);
+  border-radius:.15rem .5rem .5rem .15rem;padding:.85rem 1rem;margin:0 0 1.3rem;
+  font-size:.96rem;color:var(--fg-2);
+}
+.callout b{color:var(--fg)}
+.cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--brandmark);color:var(--bg);text-decoration:none;
+  font:600 .9rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.06em;
+  padding:.75rem 1.1rem;border-radius:.45rem;
+}
+.cta:hover{color:var(--bg);opacity:.9}
+
+/* footer */
+.site-foot{
+  border-top:1px solid var(--line-2);margin-top:4rem;padding:2rem 0 3rem;
+  color:var(--fg-3);font-size:.88rem;
+}
+.foot-in{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:baseline}
+.foot-in nav{display:flex;gap:1rem;flex-wrap:wrap;margin-left:auto}
+.foot-in a{color:var(--fg-2);text-decoration:none}
+.foot-in a:hover{color:var(--fg);text-decoration:underline}
+.disclaim{margin:1.2rem 0 0;max-width:52rem;line-height:1.6}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="head-in">
+<a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
+<nav class="site-nav"><a href="/">Calculator</a><a href="/guide/" aria-current="page">Full guide</a><a href="/fractions/">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+</div></header>
+<main class="wrap"><article class="article">
+<p class="kicker">Guide</p>
+<h1>How to use a scientific calculator</h1>
+<p class="standfirst">Every key, in the order you are likely to need it. If you are staring at a keypad wondering what half of it does, start here.</p>
+
+<h2>The two keys that change everything else</h2>
+<p>Almost every key does three jobs. The label printed <em>on</em> the key is what
+you get by pressing it. The yellow label printed <em>above</em> it is what you get
+by pressing <kbd>SHIFT</kbd> first. The red label is what you get after
+<kbd>ALPHA</kbd>.</p>
+<p>So <kbd>SHIFT</kbd> then the square-root key gives you a cube root, because
+that is what is printed above it in yellow. And <kbd>ALPHA</kbd> then
+<kbd>sin</kbd> gives you the variable <code>D</code>, because that is the red
+label. Once that clicks, the keypad stops being mysterious &mdash; there are
+about sixty functions on roughly twenty keys.</p>
+<p>A small <strong>S</strong> or <strong>A</strong> appears at the top of the
+display to tell you which one is armed. Press the key again to disarm it.</p>
+
+<h2>Entering an expression</h2>
+<p>You type left to right, exactly as you would write it, and nothing is
+calculated until you press <kbd>=</kbd>. That means you can go back and fix a
+mistake before committing.</p>
+<ul>
+  <li><kbd>&#9664;</kbd> and <kbd>&#9654;</kbd> move the cursor through what you
+  typed, including <em>into</em> a fraction or a root.</li>
+  <li><kbd>&#9650;</kbd> and <kbd>&#9660;</kbd> jump between a fraction's
+  numerator and denominator. With nothing to jump between, they scroll back
+  through your previous calculations.</li>
+  <li><kbd>DEL</kbd> deletes the character before the cursor. <kbd>AC</kbd>
+  clears the whole line.</li>
+</ul>
+<p>After you press <kbd>=</kbd>, pressing an operator continues from the answer.
+Type <code>5 = + 3 =</code> and you get 8, because the calculator inserts
+<code>Ans</code> for you.</p>
+
+<h2>Fractions, roots and powers</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>To get</th><th>Press</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>A fraction</td><td class="mono">&#9633;/&#9633;</td><td>An empty template appears. Type the numerator, press <kbd>&#9660;</kbd>, type the denominator, then <kbd>&#9654;</kbd> to leave it.</td></tr>
+<tr><td>A mixed number</td><td><kbd>SHIFT</kbd> <span class="mono">&#9633;/&#9633;</span></td><td>Three boxes instead of two: whole part, numerator, denominator.</td></tr>
+<tr><td>Square root</td><td class="mono">&radic;&#9633;</td><td>Everything you type goes under the bar until you press <kbd>&#9654;</kbd>.</td></tr>
+<tr><td>Cube root</td><td><kbd>SHIFT</kbd> <span class="mono">&radic;&#9633;</span></td><td></td></tr>
+<tr><td>Any root</td><td>index, then <kbd>SHIFT</kbd> <span class="mono">x&#9632;</span></td><td>Type the 4 <em>first</em>, then the key, then 16, for the fourth root of 16.</td></tr>
+<tr><td>Squared</td><td class="mono">x&sup2;</td><td>Applies to whatever is immediately before it.</td></tr>
+<tr><td>Any power</td><td class="mono">x&#9632;</td><td>Opens a raised box. <kbd>&#9654;</kbd> gets you back down to the baseline.</td></tr>
+<tr><td>Reciprocal</td><td class="mono">x&#8315;&sup1;</td><td>Same as raising to the power &minus;1.</td></tr>
+</tbody></table></div>
+<div class="callout"><b>The one that catches everyone.</b> For <span class="mono">x&#9632;</span>
+and <span class="mono">&radic;</span>, the cursor stays inside the box until you
+press <kbd>&#9654;</kbd>. If your answer is wildly wrong, this is usually why:
+half of the expression ended up inside the exponent.</div>
+
+<h2>Trigonometry</h2>
+<p><kbd>sin</kbd>, <kbd>cos</kbd> and <kbd>tan</kbd> open a bracket for you, so
+<code>sin(30</code> is enough &mdash; the closing bracket is optional at the end
+of a line. <kbd>SHIFT</kbd> first gives the inverse functions
+(<span class="mono">sin&#8315;&sup1;</span> and friends), which return an angle.</p>
+<p><kbd>hyp</kbd> is a modifier, like SHIFT: press it, then <kbd>sin</kbd>, and
+you get <span class="mono">sinh</span>. Press <kbd>hyp</kbd>, then
+<kbd>SHIFT</kbd>, then <kbd>sin</kbd> for <span class="mono">sinh&#8315;&sup1;</span>.</p>
+<p>Your answer depends entirely on whether the calculator is in degrees or
+radians. <a href="/degrees-radians/">That deserves its own page.</a></p>
+
+<h2>Logarithms</h2>
+<ul>
+  <li><kbd>log</kbd> is base 10. <kbd>ln</kbd> is base <em>e</em>.</li>
+  <li><span class="mono">log&#9633;&#9633;</span> takes any base: type the base,
+  press <kbd>&#9654;</kbd>, type the number.</li>
+  <li><kbd>SHIFT</kbd> <kbd>log</kbd> gives <span class="mono">10&#9632;</span>,
+  and <kbd>SHIFT</kbd> <kbd>ln</kbd> gives <span class="mono">e&#9632;</span> &mdash;
+  the inverses.</li>
+</ul>
+
+<h2>Memory</h2>
+<p>There are nine places to put a number: <code>A</code> to <code>F</code>,
+<code>X</code>, <code>Y</code>, and an independent <code>M</code>.</p>
+<ul>
+  <li><strong>Store:</strong> calculate something, then <kbd>SHIFT</kbd>
+  <kbd>RCL</kbd> followed by the variable's key.</li>
+  <li><strong>Recall:</strong> <kbd>RCL</kbd> then the key, or <kbd>ALPHA</kbd>
+  then the key to drop the variable into an expression.</li>
+  <li><strong>M+</strong> adds the current answer to <code>M</code>;
+  <kbd>SHIFT</kbd> <kbd>M+</kbd> subtracts. Useful for running totals.</li>
+  <li><code>Ans</code> always holds the last result, whether you stored it or not.</li>
+</ul>
+
+<h2>The functions people never find</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>Key</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td class="mono">&int;dx</td><td>Definite integral. Enter the lower limit, <kbd>&#9654;</kbd>, the upper limit, <kbd>&#9654;</kbd>, then the expression in terms of <code>X</code>.</td></tr>
+<tr><td class="mono">d/dx</td><td>The derivative of an expression at a particular value of <code>X</code>.</td></tr>
+<tr><td class="mono">&Sigma;</td><td>Summation over a range &mdash; the calculator equivalent of sigma notation.</td></tr>
+<tr><td class="mono">x!</td><td>Factorial. <kbd>SHIFT</kbd> on the reciprocal key.</td></tr>
+<tr><td class="mono">nCr / nPr</td><td>Combinations and permutations. Type <code>5</code>, the key, <code>2</code>.</td></tr>
+<tr><td class="mono">&deg;&prime;&Prime;</td><td>Degrees, minutes and seconds. Enter <code>1&deg;30&deg;0&deg;</code> for one and a half degrees.</td></tr>
+<tr><td class="mono">ENG</td><td>Shifts the answer to the nearest power of ten that is a multiple of three &mdash; engineering notation.</td></tr>
+<tr><td class="mono">CALC</td><td>Type an expression with letters in it, press CALC, and it asks you for each value in turn.</td></tr>
+<tr><td class="mono">SOLVE</td><td><kbd>SHIFT</kbd> <kbd>CALC</kbd>. Finds the value of <code>X</code> that makes the expression zero.</td></tr>
+</tbody></table></div>
+
+<h2>Making the calculator bigger</h2>
+<p>The <span class="mono">&minus;</span> and <span class="mono">+</span> buttons
+under the keypad scale the whole calculator, from 70% up to 200%. Useful on a
+large monitor, on a phone, or if you are projecting it for a class. The size is
+remembered the next time you visit.</p>
+
+<h2>SETUP</h2>
+<p><kbd>SHIFT</kbd> <kbd>MODE</kbd> opens the settings:</p>
+<ul>
+  <li><strong>1 &mdash; Textbook display.</strong> Fractions stack and roots get
+  a bar. This is the default and almost always what you want.</li>
+  <li><strong>2 &mdash; Line display.</strong> Everything on one line, decimals
+  instead of exact forms. Occasionally clearer for long expressions.</li>
+  <li><strong>3, 4, 5 &mdash; Deg, Rad, Gra.</strong> The angle unit.</li>
+  <li><strong>6 &mdash; Fix.</strong> A fixed number of decimal places.</li>
+  <li><strong>7 &mdash; Sci.</strong> A fixed number of significant figures, in
+  scientific notation.</li>
+  <li><strong>8 &mdash; Norm.</strong> Back to normal rounding.</li>
+</ul>
+<p>Fix and Sci change only how the answer is <em>shown</em>. The calculator keeps
+full precision internally, so chained calculations do not accumulate rounding
+error.</p>
+
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article></main>
+<footer class="site-foot"><div class="wrap foot-in">
+<span>&copy; 2026 Scientific Calculator</span>
+<nav>
+  <a href="/">Calculator</a>
+  <a href="/guide/">Guide</a>
+  <a href="/fractions/">Fractions</a>
+  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/complex-numbers/">Complex</a>
+  <a href="/privacy/">Privacy</a>
+</nav>
+<p class="disclaim">An independent scientific calculator. Not affiliated with,
+endorsed by, or connected to any calculator manufacturer. Runs entirely in your
+browser &mdash; nothing you type is sent anywhere.</p>
+</div></footer>
+</body>
+</html>

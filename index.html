@@ -1,0 +1,1948 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scientific Calculator Online — Textbook Display, Exact Answers</title>
+<meta name="description" content="A free online scientific calculator with a natural textbook display. Fractions stack, roots get a bar, answers come back exact. Works offline, no ads, nothing to install.">
+<link rel="canonical" href="https://naturalcalculators.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Scientific Calculator Online — Textbook Display, Exact Answers">
+<meta property="og:description" content="A free online scientific calculator with a natural textbook display. Fractions stack, roots get a bar, answers come back exact. Works offline, no ads, nothing to install.">
+<meta property="og:url" content="https://naturalcalculators.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#e9e6df;
+  --panel:#f7f5f1;
+  --panel-2:#dfdbd2;
+  --fg:#1b1f26;
+  --fg-2:#4b525c;
+  --fg-3:#7b828c;
+  --line:#cdc8be;
+  --line-2:#dfdad1;
+  --brandmark:#2e3642;
+  --link:#3d6b47;
+  --link-hi:#2c5134;
+  --chip:#eef1e9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121418;
+    --panel:#1a1e24;
+    --panel-2:#222730;
+    --fg:#e7e5e0;
+    --fg-2:#a9aeb6;
+    --fg-3:#7d838c;
+    --line:#333942;
+    --line-2:#282d35;
+    --brandmark:#c6cfdb;
+    --link:#9ec48a;
+    --link-hi:#b7d6a6;
+    --chip:#212a1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121418;
+  --panel:#1a1e24;
+  --panel-2:#222730;
+  --fg:#e7e5e0;
+  --fg-2:#a9aeb6;
+  --fg-3:#7d838c;
+  --line:#333942;
+  --line-2:#282d35;
+  --brandmark:#c6cfdb;
+  --link:#9ec48a;
+  --link-hi:#b7d6a6;
+  --chip:#212a1e;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:17px/1.68 Barlow,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--link-hi)}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+
+/* header */
+.site-head{
+  position:sticky;top:0;z-index:20;background:var(--bg);
+  border-bottom:1px solid var(--line-2);
+}
+.head-in{
+  display:flex;align-items:center;gap:1.4rem;
+  max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;
+}
+.logo{
+  display:flex;align-items:center;gap:.55rem;
+  color:var(--fg);text-decoration:none;font-weight:600;
+  font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.02em;
+}
+.logo i{
+  font-style:normal;font-weight:700;font-size:.78rem;letter-spacing:.06em;
+  background:var(--brandmark);color:var(--bg);
+  width:1.7rem;height:1.28rem;border-radius:.25rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.site-nav{margin-left:auto;display:flex;gap:.15rem;flex-wrap:wrap}
+.site-nav a{
+  color:var(--fg-2);text-decoration:none;padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.site-nav a:hover{color:var(--fg);background:var(--panel)}
+.site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
+
+/* hero */
+.hero{
+  display:grid;grid-template-columns:1fr;gap:2.5rem;
+  padding:2.4rem 0 1rem;align-items:start;
+}
+@media (min-width:62rem){
+  .hero{grid-template-columns:auto 1fr;gap:3.5rem;padding:3.2rem 0 1.5rem}
+  .calcstage{position:sticky;top:4.5rem}
+}
+.calcstage{display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.herotext h1{
+  font:700 clamp(2.1rem,5.4vw,3.15rem)/1.05 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .8rem;text-wrap:balance;letter-spacing:-.004em;
+}
+.herotext .lede{font-size:1.1rem;color:var(--fg-2);margin:0 0 1.5rem;max-width:34rem}
+.points{
+  list-style:none;margin:0 0 1.8rem;padding:0;max-width:34rem;
+  display:grid;grid-template-columns:auto 1fr;gap:.85rem .9rem;align-items:start;
+}
+.points li{display:contents}
+.points b{
+  font:600 .66rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--fg);background:var(--chip);
+  border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
+}
+.points span{color:var(--fg-2);font-size:.98rem}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
+
+/* generic sections */
+.band{border-top:1px solid var(--line-2);margin-top:3rem;padding:2.6rem 0 0}
+h2.sec{
+  font:700 1.55rem/1.15 "Barlow Semi Condensed",sans-serif;margin:0 0 .5rem;text-wrap:balance;
+}
+.sub{color:var(--fg-2);margin:0 0 1.6rem;max-width:44rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:.7rem;
+  padding:1.1rem 1.2rem;text-decoration:none;color:inherit;display:block;
+  transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:var(--line);transform:translateY(-2px);color:inherit}
+.card h3{font:700 1.08rem/1.25 "Barlow Semi Condensed",sans-serif;margin:0 0 .35rem}
+.card p{margin:0;color:var(--fg-2);font-size:.94rem;line-height:1.55}
+
+/* article pages */
+.article{max-width:44rem;margin:0 auto;padding:2.6rem 0 1rem}
+.article .kicker{
+  font:600 .7rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--fg-3);margin:0 0 .8rem;
+}
+.article h1{
+  font:700 clamp(1.9rem,4.6vw,2.6rem)/1.1 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .7rem;text-wrap:balance;
+}
+.article .standfirst{font-size:1.08rem;color:var(--fg-2);margin:0 0 2rem}
+.article h2{
+  font:700 1.35rem/1.2 "Barlow Semi Condensed",sans-serif;margin:2.4rem 0 .6rem;text-wrap:balance;
+}
+.article h3{font:600 1.06rem/1.3 "Barlow Semi Condensed",sans-serif;margin:1.7rem 0 .4rem}
+.article p{margin:0 0 1rem}
+.article ul,.article ol{margin:0 0 1rem;padding-left:1.3rem}
+.article li{margin:0 0 .45rem}
+.article strong{font-weight:600}
+
+kbd{
+  font:500 .8rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.04em;
+  background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:.3rem;padding:.05rem .38rem;white-space:nowrap;color:var(--fg);
+}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em;
+  background:var(--panel-2);border-radius:.25rem;padding:.08em .34em;
+}
+.tablewrap{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--line-2);border-radius:.5rem}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:26rem}
+th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{
+  font:600 .68rem/1.4 "Barlow Semi Condensed",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg-3);background:var(--panel);
+}
+tr:last-child td{border-bottom:0}
+td .mono{white-space:nowrap}
+
+.callout{
+  background:var(--panel);border-left:3px solid var(--link);
+  border-radius:.15rem .5rem .5rem .15rem;padding:.85rem 1rem;margin:0 0 1.3rem;
+  font-size:.96rem;color:var(--fg-2);
+}
+.callout b{color:var(--fg)}
+.cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--brandmark);color:var(--bg);text-decoration:none;
+  font:600 .9rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.06em;
+  padding:.75rem 1.1rem;border-radius:.45rem;
+}
+.cta:hover{color:var(--bg);opacity:.9}
+
+/* footer */
+.site-foot{
+  border-top:1px solid var(--line-2);margin-top:4rem;padding:2rem 0 3rem;
+  color:var(--fg-3);font-size:.88rem;
+}
+.foot-in{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:baseline}
+.foot-in nav{display:flex;gap:1rem;flex-wrap:wrap;margin-left:auto}
+.foot-in a{color:var(--fg-2);text-decoration:none}
+.foot-in a:hover{color:var(--fg);text-decoration:underline}
+.disclaim{margin:1.2rem 0 0;max-width:52rem;line-height:1.6}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication",
+"name":"Scientific Calculator",
+"applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any",
+"description":"A free online scientific calculator with a natural textbook display: stacked fractions, roots under a bar, raised exponents and exact answers.",
+"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+</head>
+<body>
+<header class="site-head"><div class="head-in">
+<a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
+<nav class="site-nav"><a href="/" aria-current="page">Calculator</a><a href="/guide/">Full guide</a><a href="/fractions/">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+</div></header>
+<main class="wrap">
+<div class="hero">
+  <div class="calcstage">
+<style>
+:root{
+  --desk:#e4e0d8;
+  --desk-2:#d3cec4;
+  --page-ink:#3a3833;
+  --page-dim:#7d786e;
+  --page-rule:#c3bdb1;
+  --focus:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#141517;
+    --desk-2:#0d0e10;
+    --page-ink:#d8d5cf;
+    --page-dim:#8a877f;
+    --page-rule:#2e3033;
+    --focus:#7aa8f0;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#141517;
+  --desk-2:#0d0e10;
+  --page-ink:#d8d5cf;
+  --page-dim:#8a877f;
+  --page-rule:#2e3033;
+  --focus:#7aa8f0;
+}
+
+/* The calculator is a physical object: its own colours are fixed in both themes. */
+.calc{
+  --case:#333b47;
+  --case-hi:#434d5c;
+  --case-lo:#212730;
+  --bezel:#9aa1aa;
+  --bezel-lo:#6d747d;
+  --lcd:#a6b49b;
+  --lcd-lo:#93a289;
+  --ink:#141c0e;
+  --ink-dim:#4a5741;
+  --key:#2c3138;
+  --key-hi:#3b414a;
+  --key-fn:#474e58;
+  --key-fn-hi:#565e69;
+  --key-ac:#6c737d;
+  --key-txt:#f0f2f4;
+  --shift:#f3c11f;
+  --alpha:#e4594c;
+  --hair:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box}
+/* body styling belongs to the host page */
+
+.stage{display:flex;flex-direction:column;align-items:center;gap:1.1rem;width:100%}
+
+/* ---------------- calculator body ---------------- */
+.calc{
+  font-size:calc(var(--zoom,1) * min(calc((100vw - 2.6rem) / 30.5), 12.6px));
+  width:30.5em;
+  padding:.9em .9em 1.2em;
+  border-radius:1.1em .35em 1.1em 1.1em;
+  background:
+    linear-gradient(178deg,var(--case-hi) 0%,var(--case) 18%,var(--case) 82%,var(--case-lo) 100%);
+  box-shadow:
+    0 .1em .2em rgba(255,255,255,.10) inset,
+    0 -.25em .5em rgba(0,0,0,.35) inset,
+    0 1.4em 2.6em rgba(0,0,0,.34),
+    0 .3em .8em rgba(0,0,0,.28);
+  font-family:"Barlow Semi Condensed","Barlow",Arial,sans-serif;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ---------------- head plate ---------------- */
+.plate{
+  background:linear-gradient(180deg,#a7adb5,#7d848d 52%,#949aa2);
+  border-radius:.55em .2em .55em .55em;
+  padding:.55em .7em .7em;
+  box-shadow:0 .12em .3em rgba(0,0,0,.4),0 .06em 0 rgba(255,255,255,.34) inset;
+}
+.brandrow{display:flex;align-items:baseline;justify-content:space-between;gap:.6em;margin-bottom:.45em}
+.mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.85em;height:1.35em;border-radius:.24em;
+  background:#1d222a;color:#c8d4b8;
+  font-weight:700;font-size:.92em;letter-spacing:.06em;
+}
+.model{
+  font-weight:600;font-size:1.06em;letter-spacing:.055em;color:#11151b;
+  text-transform:uppercase;
+}
+.vpam{
+  font-size:.7em;letter-spacing:.1em;font-weight:600;color:#171b21;
+  border:.09em solid #4a5058;border-radius:.25em;padding:.08em .34em;white-space:nowrap;
+}
+
+.lcdwrap{display:flex;gap:.5em;align-items:stretch}
+.solar{
+  flex:0 0 4.6em;border-radius:.2em;
+  background:linear-gradient(100deg,#1b2b3a,#26404f 40%,#16232f);
+  box-shadow:0 0 0 .1em #6f757b inset,0 .05em .18em rgba(0,0,0,.5) inset;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.12em;padding:.16em;
+}
+.solar i{background:linear-gradient(160deg,#2f4a5c,#14202b);border-radius:.05em}
+
+/* ---------------- LCD ---------------- */
+.lcd{
+  flex:1;
+  background:linear-gradient(180deg,var(--lcd),var(--lcd-lo));
+  border-radius:.15em;
+  box-shadow:0 0 0 .12em #5f666d inset,0 .12em .35em rgba(0,0,0,.4) inset;
+  padding:.3em .45em .35em;
+  color:var(--ink);
+  display:flex;flex-direction:column;
+  min-height:8.5em;
+  overflow:hidden;
+}
+.ind{
+  display:flex;gap:.42em;align-items:center;
+  font-family:"Barlow Semi Condensed",sans-serif;
+  font-size:.78em;font-weight:600;letter-spacing:.02em;
+  height:1.15em;color:var(--ink);
+}
+.ind b{opacity:.16;font-weight:600;transition:opacity .1s}
+.ind b.on{opacity:1}
+.ind .sp{flex:1}
+
+.entry{
+  flex:1;
+  font-family:"Share Tech Mono","Courier New",monospace;
+  font-size:1.5em;line-height:2.05;
+  overflow-x:auto;overflow-y:hidden;white-space:nowrap;
+  padding-top:.12em;
+  scrollbar-width:none;
+}
+.entry::-webkit-scrollbar{display:none}
+.result{
+  font-family:"Share Tech Mono","Courier New",monospace;
+  font-size:1.75em;line-height:1.3;text-align:right;
+  white-space:nowrap;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;min-height:1.3em;
+}
+.result::-webkit-scrollbar{display:none}
+.menu{
+  flex:1;font-family:"Share Tech Mono",monospace;font-size:1.32em;line-height:1.42;
+  white-space:pre-wrap;padding-top:.15em;
+}
+.menu .dimmed{opacity:.42}
+
+/* natural-display primitives */
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 .12em}
+.frac>span{padding:0 .18em;line-height:1.06;display:block}
+button .frac{font-size:.66em}
+.kface{display:inline-block;line-height:1.05;white-space:nowrap}
+.kface sup{font-size:.62em;vertical-align:.5em;line-height:0}
+.kface sub{font-size:.62em;vertical-align:-.2em;line-height:0}
+button .sup,button .sub{font-size:.62em}
+.frac .num{border-bottom:.075em solid currentColor}
+.rad{display:inline-flex;align-items:stretch;vertical-align:-.06em}
+.rad .sym{font-size:1.02em;line-height:1.1;align-self:flex-end;margin-right:-.05em}
+.rad .bod{border-top:.075em solid currentColor;padding:0 .16em 0 .1em;line-height:1.15}
+.nrt{display:inline-flex;align-items:flex-start}
+.nrt .idx{font-size:.6em;line-height:1;transform:translate(.28em,.05em);min-width:.5em;text-align:center}
+.sup{font-size:.66em;vertical-align:.62em;line-height:1;padding:0 .04em}
+.sub{font-size:.62em;vertical-align:-.28em;line-height:1;padding:0 .04em}
+.bar{border-left:.075em solid currentColor;border-right:.075em solid currentColor;padding:0 .18em;display:inline-block}
+.box{display:inline-block;width:.62em;height:.86em;border:.075em solid currentColor;opacity:.55;vertical-align:-.08em}
+.cur{
+  display:inline-block;width:.09em;height:1.05em;background:currentColor;
+  vertical-align:-.16em;margin:0 -.045em;
+  animation:blink 1.05s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+.lim{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.62em;line-height:1.1;margin:0 .1em}
+
+/* ---------------- keys ---------------- */
+.keys{margin-top:1.15em;display:flex;flex-direction:column;gap:.62em}
+.grid6{display:grid;grid-template-columns:repeat(6,1fr);gap:.42em .5em;align-items:stretch}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:.42em .5em}
+.navblock{grid-column:3 / span 2;grid-row:1 / span 2;display:flex;align-items:center;justify-content:center}
+
+.kw{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;gap:.13em}
+.lbl{display:flex;justify-content:space-between;align-items:baseline;gap:.3em;height:1.02em;padding:0 .1em}
+.lbl s{font-size:.76em;color:var(--shift);text-decoration:none;font-weight:600;letter-spacing:.01em;white-space:nowrap}
+.lbl u{font-size:.76em;color:var(--alpha);text-decoration:none;font-weight:600;white-space:nowrap}
+
+button.k{
+  font:inherit;color:var(--key-txt);
+  display:flex;align-items:center;justify-content:center;
+  min-height:2.55em;
+  border:0;border-radius:.28em;
+  background:linear-gradient(180deg,var(--key-hi),var(--key));
+  box-shadow:0 .16em 0 rgba(0,0,0,.45),0 .06em 0 rgba(255,255,255,.14) inset;
+  padding:.44em .1em;
+  font-size:1.06em;font-weight:500;line-height:1.05;
+  cursor:pointer;
+  transition:transform .04s ease,box-shadow .04s ease,filter .1s;
+}
+button.k:hover{filter:brightness(1.14)}
+button.k:active,button.k.press{transform:translateY(.14em);box-shadow:0 .02em 0 rgba(0,0,0,.45),0 .06em .14em rgba(0,0,0,.5) inset}
+button.k:focus-visible{outline:.14em solid var(--shift);outline-offset:.12em}
+button.k.fn{background:linear-gradient(180deg,var(--key-fn-hi),var(--key-fn))}
+button.k.ac{background:linear-gradient(180deg,#7c838d,var(--key-ac));color:#12161a;font-weight:700}
+button.k.num{font-size:1.24em;font-weight:600;min-height:2.15em}
+button.k.eq{font-size:1.24em;font-weight:700;min-height:2.15em}
+button.k.on{background:linear-gradient(180deg,#4b515a,#33383f)}
+button.k.shiftk{color:var(--shift);font-weight:700}
+button.k.alphak{color:var(--alpha);font-weight:700}
+button.k.armed{box-shadow:0 0 0 .13em var(--shift),0 .16em 0 rgba(0,0,0,.45);filter:brightness(1.2)}
+button.k.armed.alphak{box-shadow:0 0 0 .13em var(--alpha),0 .16em 0 rgba(0,0,0,.45)}
+.sm{font-size:.86em}
+.xs{font-size:.74em}
+
+/* replay pad */
+.pad{
+  position:relative;width:7.4em;height:7.4em;border-radius:50%;
+  background:radial-gradient(circle at 50% 38%,#565d67,#31363d 62%,#22262c);
+  box-shadow:0 .18em .3em rgba(0,0,0,.45),0 .06em 0 rgba(255,255,255,.12) inset;
+}
+.pad .hub{
+  position:absolute;left:50%;top:50%;width:2.5em;height:2.5em;margin:-1.25em 0 0 -1.25em;
+  border-radius:50%;background:radial-gradient(circle at 50% 35%,#2b3037,#1b1e23);
+  box-shadow:0 0 0 .1em rgba(0,0,0,.35) inset;
+}
+.pad button{
+  position:absolute;background:none;border:0;color:#e7eaee;cursor:pointer;
+  font-size:1.15em;line-height:1;padding:.3em .45em;border-radius:.3em;
+}
+.pad button:hover{color:#fff;background:rgba(255,255,255,.09)}
+.pad button:focus-visible{outline:.14em solid var(--shift);outline-offset:.05em}
+.pad .up{left:50%;top:.35em;transform:translateX(-50%)}
+.pad .dn{left:50%;bottom:.35em;transform:translateX(-50%)}
+.pad .lf{top:50%;left:.35em;transform:translateY(-50%)}
+.pad .rt{top:50%;right:.35em;transform:translateY(-50%)}
+.pad .rp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-family:"Barlow Semi Condensed",sans-serif;font-size:.62em;color:#aeb4bb;letter-spacing:.04em;pointer-events:none}
+
+/* ---------------- zoom ---------------- */
+.zoombar{
+  display:flex;align-items:center;gap:.35rem;
+  font-family:"Barlow Semi Condensed","Barlow",Arial,sans-serif;
+}
+.zoombar button{
+  width:1.9rem;height:1.9rem;border-radius:.4rem;
+  border:1px solid var(--page-rule);background:transparent;color:var(--page-ink);
+  font:500 1.05rem/1 "Barlow Semi Condensed",sans-serif;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.zoombar button:hover:not(:disabled){border-color:var(--page-ink)}
+.zoombar button:disabled{opacity:.35;cursor:default}
+.zoombar button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.zoombar #zoomval{
+  min-width:3.1rem;text-align:center;
+  font:600 .78rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  color:var(--page-dim);font-variant-numeric:tabular-nums;
+}
+.zoombar #zoomreset{
+  width:auto;padding:0 .5rem;font-size:.68rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--page-dim);
+}
+
+/* ---------------- notes ---------------- */
+.notes{
+  width:min(42rem,100%);
+  font-size:.9rem;line-height:1.6;color:var(--page-dim);
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.notes h2{
+  font-family:"Barlow Semi Condensed",sans-serif;
+  font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--page-ink);margin:0;font-weight:600;
+}
+.notes p{margin:0}
+.notes dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;align-items:baseline}
+.notes dt{
+  font-family:"Share Tech Mono",monospace;font-size:.82rem;color:var(--page-ink);
+  border:1px solid var(--page-rule);border-radius:.25rem;padding:.02rem .35rem;justify-self:start;
+}
+.notes dd{margin:0}
+.rule{height:1px;background:var(--page-rule);width:100%}
+</style>
+
+<div class="calc" id="calc">
+
+  <div class="plate">
+    <div class="brandrow">
+      <div class="mark">SC</div>
+      <div class="model">Scientific Calculator</div>
+      <div class="vpam">TEXTBOOK DISPLAY</div>
+    </div>
+    <div class="lcdwrap">
+      <div class="solar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="lcd" id="lcd">
+        <div class="ind" id="ind"></div>
+        <div class="entry" id="entry"></div>
+        <div class="result" id="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="keys">
+    <div class="grid6" id="row-top"></div>
+    <div class="grid6" id="row-fn"></div>
+    <div class="grid5" id="row-num"></div>
+  </div>
+
+</div>
+
+<div class="zoombar" role="group" aria-label="Calculator size">
+  <button type="button" id="zoomout" aria-label="Make the calculator smaller">&minus;</button>
+  <span id="zoomval">100%</span>
+  <button type="button" id="zoomin" aria-label="Make the calculator larger">+</button>
+  <button type="button" id="zoomreset" aria-label="Reset the calculator size">Reset</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. STATE
+   ============================================================ */
+var S = {
+  root: [], cur: null,
+  shift:false, alpha:false, hyp:false, sto:false, rcl:false,
+  io:'Math', angle:'D', fmt:{t:'Norm', n:1},
+  mode:'COMP', polar:false, hadDot:false, zoom:1,
+  vars:{A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0},
+  ans:0,
+  exact:null, dec:null, dms:false, showDec:false, eng:0,
+  done:false, err:null,
+  menu:null, prompt:null,
+  hist:[], histIdx:-1
+};
+S.cur = {row:S.root, i:0};
+
+/* ============================================================
+   2. INPUT TREE
+   ============================================================ */
+var PARTS = {
+  frac:['n','d'], mfrac:['w','n','d'], sqrt:['r'], nrt:['i','r'],
+  pow:['e'], abs:['r'], logb:['b','a'],
+  intg:['a','b','f'], ddx:['f','a'], sum:['a','b','f']
+};
+function parts(it){ return PARTS[it.t] || []; }
+function mk(t){ var it={t:t}; parts(it).forEach(function(k){ it[k]=[]; }); return it; }
+
+function positions(){
+  var out=[];
+  (function w(row){
+    for(var i=0;i<row.length;i++){
+      out.push({row:row,i:i});
+      var it=row[i]; parts(it).forEach(function(k){ w(it[k]); });
+    }
+    out.push({row:row,i:row.length});
+  })(S.root);
+  return out;
+}
+function posIndex(list){
+  for(var i=0;i<list.length;i++) if(list[i].row===S.cur.row && list[i].i===S.cur.i) return i;
+  return -1;
+}
+function findPath(target){
+  var res=null;
+  (function w(row, chain){
+    if(row===target){ res=chain; return true; }
+    for(var i=0;i<row.length;i++){
+      var it=row[i], ks=parts(it);
+      for(var j=0;j<ks.length;j++){
+        if(w(it[ks[j]], chain.concat([{item:it,key:ks[j]}]))) return true;
+      }
+    }
+    return false;
+  })(S.root, []);
+  return res;
+}
+function insert(it){
+  S.cur.row.splice(S.cur.i, 0, it);
+  S.cur.i++;
+  var ks = parts(it);
+  if(ks.length) S.cur = {row: it[ks[0]], i:0};
+}
+function insCh(v, d){ insert(d ? {t:'ch', v:v, d:d} : {t:'ch', v:v}); }
+function insTxt(s){ for(var i=0;i<s.length;i++) insCh(s[i]); }
+function del(){
+  if(S.cur.i > 0){
+    S.cur.row.splice(S.cur.i-1, 1);
+    S.cur.i--;
+    return;
+  }
+  var path = findPath(S.cur.row);
+  if(!path || !path.length) return;
+  var last = path[path.length-1], it = last.item;
+  var empty = parts(it).every(function(k){ return it[k].length===0; });
+  var parentRow = path.length>1 ? path[path.length-2].item[path[path.length-2].key] : S.root;
+  var idx = parentRow.indexOf(it);
+  if(idx < 0) return;
+  if(empty){ parentRow.splice(idx,1); S.cur = {row:parentRow, i:idx}; }
+  else { S.cur = {row:parentRow, i:idx}; }
+}
+
+/* ============================================================
+   3. RENDER
+   ============================================================ */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function rRow(row){
+  var h='', hasCur = (S.cur.row===row);
+  if(row.length===0){
+    if(hasCur) return '<i class="cur" data-cur="1"></i>';
+    return '<span class="box"></span>';
+  }
+  for(var i=0;i<=row.length;i++){
+    if(hasCur && S.cur.i===i) h+='<i class="cur" data-cur="1"></i>';
+    if(i<row.length) h+=rItem(row[i]);
+  }
+  return h;
+}
+function rItem(it){
+  switch(it.t){
+    case 'ch':   return esc(it.d !== undefined ? it.d : it.v);
+    case 'frac': return '<span class="frac"><span class="num">'+rRow(it.n)+'</span><span class="den">'+rRow(it.d)+'</span></span>';
+    case 'mfrac':return rRow(it.w)+'<span class="frac"><span class="num">'+rRow(it.n)+'</span><span class="den">'+rRow(it.d)+'</span></span>';
+    case 'sqrt': return '<span class="rad"><span class="sym">&radic;</span><span class="bod">'+rRow(it.r)+'</span></span>';
+    case 'nrt':  return '<span class="nrt"><span class="idx">'+rRow(it.i)+'</span><span class="rad"><span class="sym">&radic;</span><span class="bod">'+rRow(it.r)+'</span></span></span>';
+    case 'pow':  return '<span class="sup">'+rRow(it.e)+'</span>';
+    case 'sup':  return '<span class="sup">'+esc(it.v)+'</span>';
+    case 'abs':  return '<span class="bar">'+rRow(it.r)+'</span>';
+    case 'logb': return 'log<span class="sub">'+rRow(it.b)+'</span>('+rRow(it.a)+')';
+    case 'intg': return '<span class="lim"><span>'+rRow(it.b)+'</span><span>'+rRow(it.a)+'</span></span>&int;'+rRow(it.f)+'dx';
+    case 'ddx':  return '<span class="frac"><span class="num">d</span><span class="den">dx</span></span>('+rRow(it.f)+')<span class="sub">x='+rRow(it.a)+'</span>';
+    case 'sum':  return '<span class="lim"><span>'+rRow(it.b)+'</span><span>'+rRow(it.a)+'</span></span>&Sigma;('+rRow(it.f)+')';
+  }
+  return '';
+}
+
+/* ============================================================
+   4. EXPRESSION STRING
+   ============================================================ */
+function eRow(row){ var s=''; for(var i=0;i<row.length;i++) s+=eItem(row[i]); return s; }
+function eItem(it){
+  var E = eRow;
+  switch(it.t){
+    case 'ch':   return it.v;
+    case 'frac': return '(('+E(it.n)+')/('+E(it.d)+'))';
+    case 'mfrac':return '(('+E(it.w)+')+('+E(it.n)+')/('+E(it.d)+'))';
+    case 'sqrt': return 'sqrt('+E(it.r)+')';
+    case 'nrt':  return 'nrt('+E(it.i)+','+E(it.r)+')';
+    case 'pow':  return '^('+E(it.e)+')';
+    case 'sup':  return '^('+(it.v==='⁻¹' ? '-1' : it.v)+')';
+    case 'abs':  return 'abs('+E(it.r)+')';
+    case 'logb': return 'logb('+E(it.b)+','+E(it.a)+')';
+    case 'intg': return 'intg('+E(it.f)+','+E(it.a)+','+E(it.b)+')';
+    case 'ddx':  return 'ddx('+E(it.f)+','+E(it.a)+')';
+    case 'sum':  return 'sum('+E(it.f)+','+E(it.a)+','+E(it.b)+')';
+  }
+  return '';
+}
+
+/* ============================================================
+   5. LEXER + PARSER
+   ============================================================ */
+/* ============================================================
+   COMPLEX NUMBERS
+   A value is either a plain JS number or {c:1, re, im}. Real arithmetic is
+   untouched; the complex path only engages when one operand carries an
+   imaginary part.
+   ============================================================ */
+function C(a, b){ return {c:1, re:a, im:b}; }
+function isC(v){ return !!v && v.c === 1; }
+function re(v){ return isC(v) ? v.re : v; }
+function im(v){ return isC(v) ? v.im : 0; }
+function norm(v){
+  if(isC(v) && Math.abs(v.im) < 1e-13 * Math.max(1, Math.abs(v.re))) return v.re;
+  return v;
+}
+
+function CalcError(m){ this.msg = m; }
+function err(m){ throw new CalcError(m); }
+
+var NAMES = ['asinh','acosh','atanh','sinh','cosh','tanh','asin','acos','atan',
+             'sin','cos','tan','logb','log','ln','sqrt','nrt','abs',
+             'intg','ddx','sum','Ans','Ran#','nCr','nPr','arg','conj'];
+var CONSTS = {'π':Math.PI, 'e':Math.E};
+var VARNAMES = 'ABCDEFXYM';
+
+function lex(s){
+  var t=[], i=0;
+  while(i < s.length){
+    var c = s[i];
+    if(c===' '){ i++; continue; }
+    if(c>='0' && c<='9' || c==='.'){
+      var j=i;
+      while(j<s.length && (s[j]>='0'&&s[j]<='9' || s[j]==='.')) j++;
+      var num = s.slice(i,j);
+      if((num.match(/\./g)||[]).length > 1) err('Syntax ERROR');
+      t.push({k:'num', v:parseFloat(num)});
+      i=j; continue;
+    }
+    var matched=null;
+    for(var n=0;n<NAMES.length;n++){
+      if(s.startsWith(NAMES[n], i)){ matched=NAMES[n]; break; }
+    }
+    if(matched){ t.push({k:'name', v:matched}); i+=matched.length; continue; }
+    if(c === 'i'){ t.push({k:'name', v:'i'}); i++; continue; }
+    if(CONSTS[c] !== undefined){ t.push({k:'name', v:c}); i++; continue; }
+    if(VARNAMES.indexOf(c) >= 0){ t.push({k:'var', v:c}); i++; continue; }
+    if('+-*/^(),!%°'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
+    err('Syntax ERROR');
+  }
+  return t;
+}
+
+function parse(str){
+  var t = lex(str), p = 0;
+  function peek(){ return t[p]; }
+  function isOp(v){ var x=t[p]; return x && x.k==='op' && x.v===v; }
+  function eat(v){ if(isOp(v)){ p++; return true; } return false; }
+  function need(v){ if(!eat(v)) err('Syntax ERROR'); }
+
+  function startsPrimary(){
+    var x = t[p];
+    if(!x) return false;
+    if(x.k==='num' || x.k==='var') return true;
+    if(x.k==='name') return x.v!=='nCr' && x.v!=='nPr';
+    if(x.k==='op' && x.v==='(') return true;
+    return false;
+  }
+
+  function primary(){
+    var x = t[p];
+    if(!x) err('Syntax ERROR');
+    if(x.k==='num'){ p++; return {t:'n', v:x.v}; }
+    if(x.k==='var'){ p++; return {t:'v', n:x.v}; }
+    if(x.k==='op' && x.v==='('){
+      p++;
+      var e = expr();
+      eat(')');
+      return e;
+    }
+    if(x.k==='op' && x.v==='-'){ p++; return {t:'u', o:'-', a:unary()}; }
+    if(x.k==='name'){
+      p++;
+      if(x.v==='i') return {t:'imag'};
+      if(x.v==='Ans') return {t:'v', n:'Ans'};
+      if(x.v==='Ran#') return {t:'v', n:'Ran#'};
+      if(CONSTS[x.v] !== undefined) return {t:'n', v:CONSTS[x.v]};
+      var args=[];
+      if(eat('(')){
+        if(!isOp(')')){
+          args.push(expr());
+          while(eat(',')) args.push(expr());
+        }
+        eat(')');
+      } else {
+        args.push(unary());
+      }
+      return {t:'f', n:x.v, a:args};
+    }
+    err('Syntax ERROR');
+  }
+
+  function postfix(){
+    var a = primary();
+    for(;;){
+      if(isOp('!')){ p++; a={t:'post', o:'!', a:a}; continue; }
+      if(isOp('%')){ p++; a={t:'post', o:'%', a:a}; continue; }
+      if(isOp('°')){
+        p++;
+        var div = 60, node = a;
+        while(t[p] && t[p].k==='num'){
+          var n = {t:'n', v:t[p].v / div}; p++;
+          if(!eat('°')) err('Syntax ERROR');
+          node = {t:'b', o:'+', l:node, r:n};
+          div *= 60;
+        }
+        a = node; continue;
+      }
+      break;
+    }
+    return a;
+  }
+  function power(){
+    var b = postfix();
+    if(isOp('^')){ p++; return {t:'b', o:'^', l:b, r:unary()}; }
+    return b;
+  }
+  function unary(){
+    if(isOp('-')){ p++; return {t:'u', o:'-', a:unary()}; }
+    if(isOp('+')){ p++; return unary(); }
+    return power();
+  }
+  function implicit(){
+    var a = unary();
+    while(startsPrimary()) a = {t:'b', o:'*', l:a, r:unary()};
+    return a;
+  }
+  function permcomb(){
+    var a = implicit();
+    while(t[p] && t[p].k==='name' && (t[p].v==='nCr' || t[p].v==='nPr')){
+      var o = t[p].v; p++;
+      a = {t:'b', o:o, l:a, r:implicit()};
+    }
+    return a;
+  }
+  function muldiv(){
+    var a = permcomb();
+    while(isOp('*') || isOp('/')){
+      var o = t[p].v; p++;
+      a = {t:'b', o:o, l:a, r:permcomb()};
+    }
+    return a;
+  }
+  function expr(){
+    var a = muldiv();
+    while(isOp('+') || isOp('-')){
+      var o = t[p].v; p++;
+      a = {t:'b', o:o, l:a, r:muldiv()};
+    }
+    return a;
+  }
+
+  if(t.length===0) err('Syntax ERROR');
+  var out = expr();
+  if(p < t.length) err('Syntax ERROR');
+  return out;
+}
+
+/* ============================================================
+   6. EVALUATOR
+   ============================================================ */
+function toRad(x){ return S.angle==='D' ? x*Math.PI/180 : S.angle==='G' ? x*Math.PI/200 : x; }
+function fromRad(x){ return S.angle==='D' ? x*180/Math.PI : S.angle==='G' ? x*200/Math.PI : x; }
+function chk(x){
+  if(isC(x)){
+    if(!isFinite(x.re) || !isFinite(x.im)) err('Math ERROR');
+    return x;
+  }
+  if(typeof x!=='number' || !isFinite(x)) err('Math ERROR');
+  return x;
+}
+function cBin(o, l, r){
+  var a = re(l), b = im(l), c = re(r), d = im(r);
+  switch(o){
+    case '+': return norm(C(a+c, b+d));
+    case '-': return norm(C(a-c, b-d));
+    case '*': return norm(C(a*c - b*d, a*d + b*c));
+    case '/':{
+      var q = c*c + d*d;
+      if(q === 0) err('Math ERROR');
+      return norm(C((a*c + b*d)/q, (b*c - a*d)/q));
+    }
+    case '^': return cPow(l, r);
+  }
+  err('Math ERROR');
+}
+function cPow(l, r){
+  if(!isC(r) && Math.abs(r - Math.round(r)) < 1e-12 && Math.abs(r) <= 256){
+    var n = Math.round(r), neg = n < 0, acc = C(1, 0), base = isC(l) ? l : C(l, 0);
+    n = Math.abs(n);
+    for(var k=0; k<n; k++) acc = cBin('*', acc, base);
+    if(neg) acc = cBin('/', C(1, 0), acc);
+    return norm(acc);
+  }
+  var a = re(l), b = im(l);
+  var mod = Math.sqrt(a*a + b*b);
+  if(mod === 0) err('Math ERROR');
+  var th = Math.atan2(b, a), lr = Math.log(mod);
+  var c = re(r), d = im(r);
+  var xr = c*lr - d*th, xi = c*th + d*lr, e = Math.exp(xr);
+  return chk(norm(C(e*Math.cos(xi), e*Math.sin(xi))));
+}
+function cSqrt(v){
+  var x = re(v), y = im(v);
+  var m = Math.sqrt(Math.sqrt(x*x + y*y)), th = Math.atan2(y, x)/2;
+  return norm(C(m*Math.cos(th), m*Math.sin(th)));
+}
+function fact(n){
+  if(n<0 || Math.abs(n-Math.round(n))>1e-9 || n>69) err('Math ERROR');
+  var r=1; for(var i=2;i<=Math.round(n);i++) r*=i; return r;
+}
+function nPr(n,r){
+  n=Math.round(n); r=Math.round(r);
+  if(n<0||r<0||r>n||n>1e5) err('Math ERROR');
+  var v=1; for(var i=0;i<r;i++) v*=(n-i); return v;
+}
+function nCr(n,r){
+  n=Math.round(n); r=Math.round(r);
+  if(n<0||r<0||r>n) err('Math ERROR');
+  r = Math.min(r, n-r);
+  var v=1; for(var i=1;i<=r;i++) v = v*(n-r+i)/i;
+  return Math.round(v*1e6)/1e6 === Math.round(v) ? Math.round(v) : v;
+}
+function ev(nd, env){
+  switch(nd.t){
+    case 'n': return nd.v;
+    case 'v':
+      if(nd.n==='Ans') return S.ans;
+      if(nd.n==='Ran#') return Math.round(Math.random()*1000)/1000;
+      if(env && env[nd.n] !== undefined) return env[nd.n];
+      return S.vars[nd.n] || 0;
+    case 'imag': return C(0, 1);
+    case 'u':{
+      var u = ev(nd.a, env);
+      return isC(u) ? C(-u.re, -u.im) : -u;
+    }
+    case 'post':{
+      var v = ev(nd.a, env);
+      if(nd.o==='!'){ if(isC(v)) err('Math ERROR'); return fact(v); }
+      return isC(v) ? C(v.re/100, v.im/100) : v/100;
+    }
+    case 'b':{
+      var l = ev(nd.l, env), r = ev(nd.r, env);
+      if(isC(l) || isC(r)) return cBin(nd.o, l, r);
+      switch(nd.o){
+        case '+': return chk(l+r);
+        case '-': return chk(l-r);
+        case '*': return chk(l*r);
+        case '/': if(r===0) err('Math ERROR'); return chk(l/r);
+        case '^':
+          if(l<0 && Math.abs(r-Math.round(r))>1e-12) err('Math ERROR');
+          if(l===0 && r<0) err('Math ERROR');
+          return chk(l<0 ? Math.pow(-l,r)*(Math.round(r)%2?-1:1) : Math.pow(l,r));
+        case 'nCr': return nCr(l,r);
+        case 'nPr': return nPr(l,r);
+      }
+      err('Syntax ERROR');
+      break;
+    }
+    case 'f': return fn(nd, env);
+  }
+  err('Syntax ERROR');
+}
+function fn(nd, env){
+  var n = nd.n, A = nd.a;
+  /* a() is for the real-only functions: a complex argument is an error,
+     exactly as it is on the hardware. ac() is for the ones that accept one. */
+  function a(i){
+    if(A[i]===undefined) err('Syntax ERROR');
+    var v = ev(A[i], env);
+    if(isC(v)) err('Math ERROR');
+    return v;
+  }
+  function ac(i){ if(A[i]===undefined) err('Syntax ERROR'); return ev(A[i], env); }
+  switch(n){
+    case 'sin': return clean(Math.sin(toRad(a(0))));
+    case 'cos': return clean(Math.cos(toRad(a(0))));
+    case 'tan':{
+      var r = toRad(a(0));
+      var c = Math.cos(r);
+      if(Math.abs(c) < 1e-14) err('Math ERROR');
+      return clean(Math.tan(r));
+    }
+    case 'asin':{ var v=a(0); if(v<-1||v>1) err('Math ERROR'); return fromRad(Math.asin(v)); }
+    case 'acos':{ var v2=a(0); if(v2<-1||v2>1) err('Math ERROR'); return fromRad(Math.acos(v2)); }
+    case 'atan': return fromRad(Math.atan(a(0)));
+    case 'sinh': return chk(Math.sinh(a(0)));
+    case 'cosh': return chk(Math.cosh(a(0)));
+    case 'tanh': return Math.tanh(a(0));
+    case 'asinh': return Math.asinh(a(0));
+    case 'acosh':{ var v3=a(0); if(v3<1) err('Math ERROR'); return Math.acosh(v3); }
+    case 'atanh':{ var v4=a(0); if(v4<=-1||v4>=1) err('Math ERROR'); return Math.atanh(v4); }
+    case 'log':{ var v5=a(0); if(v5<=0) err('Math ERROR'); return clean(Math.log10(v5)); }
+    case 'ln':{ var v6=a(0); if(v6<=0) err('Math ERROR'); return Math.log(v6); }
+    case 'logb':{
+      var b=a(0), x=a(1);
+      if(b<=0||b===1||x<=0) err('Math ERROR');
+      return clean(Math.log(x)/Math.log(b));
+    }
+    case 'sqrt':{
+      var v7 = ac(0);
+      if(isC(v7) || (v7 < 0 && S.mode === 'CMPLX')) return cSqrt(v7);
+      if(v7 < 0) err('Math ERROR');
+      return Math.sqrt(v7);
+    }
+    case 'nrt':{
+      var k=a(0), x2=a(1);
+      if(Math.abs(k)<1e-12) err('Math ERROR');
+      if(x2<0){
+        if(Math.abs(k-Math.round(k))>1e-12 || Math.round(k)%2===0) err('Math ERROR');
+        return -Math.pow(-x2, 1/k);
+      }
+      return Math.pow(x2, 1/k);
+    }
+    case 'abs':{
+      var v8 = ac(0);
+      return isC(v8) ? Math.sqrt(v8.re*v8.re + v8.im*v8.im) : Math.abs(v8);
+    }
+    case 'arg':{
+      var v9 = ac(0);
+      if(re(v9) === 0 && im(v9) === 0) err('Math ERROR');
+      return clean(fromRad(Math.atan2(im(v9), re(v9))));
+    }
+    case 'conj':{
+      var v10 = ac(0);
+      return isC(v10) ? C(v10.re, -v10.im) : v10;
+    }
+    case 'intg':{
+      var lo=a(1), hi=a(2), f=A[0];
+      if(f===undefined) err('Syntax ERROR');
+      var N=400, h=(hi-lo)/N, s=0;
+      for(var i=0;i<=N;i++){
+        var w = (i===0||i===N) ? 1 : (i%2 ? 4 : 2);
+        s += w * chk(ev(f, xenv(env, lo+i*h)));
+      }
+      return chk(s*h/3);
+    }
+    case 'ddx':{
+      var at=a(1), f2=A[0];
+      if(f2===undefined) err('Syntax ERROR');
+      var hh = 1e-5*(1+Math.abs(at));
+      var d = (ev(f2, xenv(env, at+hh)) - ev(f2, xenv(env, at-hh)))/(2*hh);
+      return clean(chk(d));
+    }
+    case 'sum':{
+      var s1=Math.round(a(1)), s2=Math.round(a(2)), f3=A[0];
+      if(f3===undefined) err('Syntax ERROR');
+      if(s2-s1 > 20000) err('Math ERROR');
+      var tot=0;
+      for(var j=s1;j<=s2;j++) tot += chk(ev(f3, xenv(env, j)));
+      return chk(tot);
+    }
+  }
+  err('Syntax ERROR');
+}
+function xenv(env, x){
+  var o = {}; if(env) for(var k in env) o[k]=env[k];
+  o.X = x; return o;
+}
+function clean(x){
+  if(isC(x)) return norm(C(clean(x.re), clean(x.im)));
+  var r = Math.round(x);
+  if(Math.abs(x-r) < 1e-13 * Math.max(1, Math.abs(x))) return r;
+  var h = Math.round(x*2)/2;
+  if(Math.abs(x-h) < 1e-14) return h;
+  return x;
+}
+
+/* ============================================================
+   7. RESULT FORMATTING
+   ============================================================ */
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=a%b; a=b; b=t; } return a; }
+function toFrac(x, maxDen, tol){
+  if(!isFinite(x)) return null;
+  var sign = x<0 ? -1 : 1;
+  x = Math.abs(x);
+  if(x > 1e12) return null;
+  var h0=0,h1=1,k0=1,k1=0,b=x,guard=0;
+  do{
+    if(++guard > 40) return null;
+    var a = Math.floor(b);
+    var h2 = a*h1+h0; h0=h1; h1=h2;
+    var k2 = a*k1+k0; k0=k1; k1=k2;
+    if(k1 > maxDen || h1 > 1e12) return null;
+    var diff = b - a;
+    if(diff === 0) break;
+    b = 1/diff;
+  } while(Math.abs(x - h1/k1) > tol*Math.max(1,x));
+  if(k1===0 || Math.abs(x - h1/k1) > tol*Math.max(1,x)) return null;
+  return {n: sign*h1, d: k1};
+}
+function sqSplit(m){           /* sqrt(m) = a*sqrt(b) */
+  var a=1, b=m;
+  for(var f=2; f*f<=b; f++){
+    while(b % (f*f) === 0){ a*=f; b/=(f*f); }
+  }
+  return {a:a, b:b};
+}
+function fracHTML(n, d, suffix){
+  var s = n<0 ? '-' : '';
+  n = Math.abs(n);
+  var num = (n===1 && suffix) ? suffix : (suffix ? n+suffix : String(n));
+  return s+'<span class="frac"><span class="num">'+num+'</span><span class="den">'+d+'</span></span>';
+}
+function exactHTML(x, hadDot){
+  if(!isFinite(x)) return null;
+  if(S.io !== 'Math') return null;
+  var r = Math.round(x);
+  if(Math.abs(x-r) < 1e-11*Math.max(1,Math.abs(x)) && Math.abs(r) < 1e10) return null;
+  if(hadDot) return null;
+
+  var pf = toFrac(x/Math.PI, 400, 1e-12);
+  if(pf && Math.abs(pf.n) <= 400 && pf.d <= 400 && pf.n !== 0){
+    var pi = 'π';
+    if(pf.d === 1) return (pf.n===1?'':pf.n===-1?'-':pf.n)+pi;
+    return fracHTML(pf.n, pf.d, pi);
+  }
+  var f = toFrac(x, 100000, 1e-12);
+  if(f && f.d > 1 && String(Math.abs(f.n)).length + String(f.d).length <= 11) return fracHTML(f.n, f.d, '');
+
+  var sq = toFrac(x*x, 2000, 1e-12);
+  if(sq && sq.n > 0 && sq.d > 0){
+    var sp = sqSplit(sq.n * sq.d);
+    if(sp.b > 1 && sp.b < 100000){
+      var a = sp.a, d2 = sq.d, g = gcd(a, d2) || 1;
+      a /= g; d2 /= g;
+      var sgn = x<0 ? '-' : '';
+      var rad = '<span class="rad"><span class="sym">&radic;</span><span class="bod">'+sp.b+'</span></span>';
+      var top = (a===1 ? '' : a) + rad;
+      if(d2 === 1) return sgn + top;
+      return sgn + '<span class="frac"><span class="num">'+top+'</span><span class="den">'+d2+'</span></span>';
+    }
+  }
+  return null;
+}
+function sciParts(x, digits){
+  if(x === 0) return {m:'0', e:0};
+  var e = Math.floor(Math.log10(Math.abs(x)));
+  var m = x / Math.pow(10, e);
+  m = Number(m.toFixed(digits));
+  if(Math.abs(m) >= 10){ m /= 10; e++; m = Number(m.toFixed(digits)); }
+  return {m: m.toFixed(digits), e: e};
+}
+function expHTML(m, e){ return m+'×10<span class="sup">'+(e<0?'-':'')+Math.abs(e)+'</span>'; }
+function plainNum(x){
+  var s = x.toPrecision(10);
+  if(s.indexOf('e') >= 0) s = String(Number(s));
+  if(s.indexOf('.') >= 0) s = s.replace(/0+$/,'').replace(/\.$/,'');
+  if(s === '-0') s = '0';
+  return s;
+}
+function decHTML(x){
+  if(!isFinite(x)) return 'Math ERROR';
+  var f = S.fmt;
+  if(f.t === 'Fix'){
+    if(Math.abs(x) >= 1e10) { var q=sciParts(x, f.n); return expHTML(q.m, q.e); }
+    return x.toFixed(f.n);
+  }
+  if(f.t === 'Sci'){ var q2 = sciParts(x, Math.max(0, f.n-1)); return expHTML(q2.m, q2.e); }
+  var ax = Math.abs(x);
+  var lowCut = f.n === 1 ? 1e-2 : 1e-9;
+  if(x !== 0 && (ax >= 1e10 || ax < lowCut)){
+    var q3 = sciParts(x, 9);
+    var mm = q3.m.replace(/0+$/,'').replace(/\.$/,'');
+    return expHTML(mm, q3.e);
+  }
+  if(S.eng !== 0 && ax > 0){
+    var e3 = Math.floor(Math.log10(ax)/3)*3 + S.eng*3;
+    var m3 = x/Math.pow(10,e3);
+    return expHTML(plainNum(m3), e3);
+  }
+  return plainNum(x);
+}
+function partHTML(x){
+  if(!S.showDec){
+    var ex = exactHTML(x, S.hadDot);
+    if(ex) return ex;
+  }
+  return decHTML(x);
+}
+function complexHTML(z){
+  if(S.polar){
+    var r = clean(Math.sqrt(z.re*z.re + z.im*z.im));
+    var th = clean(fromRad(Math.atan2(z.im, z.re)));
+    return partHTML(r) + '&ang;' + partHTML(th);
+  }
+  var a = z.re, b = z.im, out = '';
+  if(a !== 0 || b === 0) out += partHTML(a);
+  if(b !== 0){
+    var mb = Math.abs(b);
+    out += (b < 0 ? '&minus;' : (out ? '+' : '')) +
+           (mb === 1 ? '' : partHTML(mb)) + '<i>i</i>';
+  }
+  return out;
+}
+function dmsHTML(x){
+  var s = x<0 ? '-' : ''; x = Math.abs(x);
+  var d = Math.floor(x);
+  var mF = (x-d)*60, m = Math.floor(mF);
+  var sec = Math.round((mF-m)*60*100)/100;
+  if(sec >= 60){ sec -= 60; m++; }
+  if(m >= 60){ m -= 60; d++; }
+  return s+d+'°'+m+'°'+sec+'°';
+}
+
+/* ============================================================
+   8. EVALUATE
+   ============================================================ */
+function evaluate(){
+  var src = eRow(S.root);
+  if(src.trim() === '') { S.err = null; return; }
+  try{
+    var v = ev(parse(src), null);
+    v = clean(v);
+    S.hadDot = src.indexOf('.') >= 0;
+    if(isC(v)){
+      if(S.mode !== 'CMPLX') err('Math ERROR');
+      chk(v);
+      S.exact = null;
+      S.showDec = false;
+    } else {
+      if(!isFinite(v)) err('Math ERROR');
+      if(Math.abs(v) >= 1e100) err('Math ERROR');
+      S.exact = exactHTML(v, S.hadDot);
+      S.showDec = !S.exact;
+    }
+    S.ans = v;
+    S.dec = v;
+    S.err = null;
+    S.hist.unshift(cloneRow(S.root));
+    if(S.hist.length > 30) S.hist.pop();
+    S.histIdx = -1;
+  }catch(e){
+    if(e instanceof CalcError){ S.err = e.msg; S.exact = null; S.dec = null; }
+    else { S.err = 'Syntax ERROR'; S.exact = null; S.dec = null; }
+  }
+  S.done = true;
+}
+function cloneRow(row){
+  return row.map(function(it){
+    var c = {t:it.t};
+    if(it.t==='ch'){ c.v=it.v; if(it.d!==undefined) c.d=it.d; }
+    else if(it.t==='sup'){ c.v=it.v; }
+    else parts(it).forEach(function(k){ c[k]=cloneRow(it[k]); });
+    return c;
+  });
+}
+function resultHTML(){
+  if(S.err) return S.err;
+  if(S.dec === null || S.dec === undefined) return '';
+  if(isC(S.dec)) return complexHTML(S.dec);
+  if(S.dms) return dmsHTML(S.dec);
+  if(!S.showDec && S.exact) return S.exact;
+  return decHTML(S.dec);
+}
+
+/* ============================================================
+   9. KEY DEFINITIONS
+   ============================================================ */
+var K = {};   /* id -> handler */
+function clearAll(){
+  S.root.length = 0;
+  S.cur = {row:S.root, i:0};
+  S.exact = S.dec = null; S.err = null; S.done = false;
+  S.showDec = false; S.dms = false; S.eng = 0;
+  S.menu = null; S.prompt = null; S.histIdx = -1;
+}
+function freshIfDone(startWithAns){
+  if(!S.done) return;
+  S.done = false;
+  S.root.length = 0;
+  S.cur = {row:S.root, i:0};
+  S.exact = S.dec = null; S.err = null; S.dms = false; S.eng = 0;
+  if(startWithAns) insCh('Ans','Ans');
+}
+function editIfDone(){
+  if(S.done){ S.done = false; S.err = null; }
+}
+
+var VARKEY = {'neg':'A','dms':'B','hyp':'C','sin':'D','cos':'E','tan':'F','rp':'X','sd':'Y','mplus':'M'};
+
+function varAction(id){
+  var name = VARKEY[id];
+  if(!name) return false;
+  if(S.sto){
+    S.sto = false;
+    if(!S.done) evaluate();
+    if(S.err) return true;
+    S.vars[name] = S.ans;
+    return true;
+  }
+  if(S.rcl){
+    S.rcl = false;
+    freshIfDone(false);
+    insCh(name);
+    return true;
+  }
+  if(S.alpha){
+    S.alpha = false;
+    freshIfDone(false);
+    if(id === 'rp'){ insCh('X'); return true; }
+    insCh(name);
+    return true;
+  }
+  return false;
+}
+
+/* ============================================================
+   10. MENUS
+   ============================================================ */
+function openSetup(){
+  S.menu = {
+    lines:['1:MthIO   2:LineIO','3:Deg  4:Rad  5:Gra','6:Fix  7:Sci  8:Norm'],
+    pick: function(d){
+      if(d==='1'){ S.io='Math'; S.menu=null; }
+      else if(d==='2'){ S.io='Line'; S.menu=null; }
+      else if(d==='3'){ S.angle='D'; S.menu=null; }
+      else if(d==='4'){ S.angle='R'; S.menu=null; }
+      else if(d==='5'){ S.angle='G'; S.menu=null; }
+      else if(d==='6'){ S.menu={lines:['Fix  0~9?'], pick:function(n){ S.fmt={t:'Fix',n:+n}; S.menu=null; }}; }
+      else if(d==='7'){ S.menu={lines:['Sci  0~9?'], pick:function(n){ S.fmt={t:'Sci',n:(+n===0?10:+n)}; S.menu=null; }}; }
+      else if(d==='8'){ S.menu={lines:['Norm  1~2?'], pick:function(n){ if(n==='1'||n==='2') { S.fmt={t:'Norm',n:+n}; S.menu=null; } }}; }
+    }
+  };
+}
+function openMode(){
+  S.menu = {
+    lines:['1:COMP','2:CMPLX','3:STAT  (not in this build)'],
+    dim:[2],
+    pick: function(d){
+      if(d === '1'){ S.mode = 'COMP'; clearAll(); }
+      else if(d === '2'){ S.mode = 'CMPLX'; clearAll(); }
+    }
+  };
+}
+/* SHIFT 2 in complex mode, exactly where the hardware puts it. */
+function openCmplx(){
+  S.menu = {
+    lines:['1:arg    2:Conjg', '3:r\u2220\u03b8    4:a+bi'],
+    pick: function(d){
+      if(d === '1'){ S.menu = null; freshIfDone(false); insCh('arg(', 'arg('); }
+      else if(d === '2'){ S.menu = null; freshIfDone(false); insCh('conj(', 'Conjg('); }
+      else if(d === '3'){ S.polar = true; S.menu = null; }
+      else if(d === '4'){ S.polar = false; S.menu = null; }
+    }
+  };
+}
+
+/* ============================================================
+   11. PROMPTS (CALC / SOLVE)
+   ============================================================ */
+function usedVars(src, skipX){
+  var out = [];
+  for(var i=0;i<VARNAMES.length;i++){
+    var c = VARNAMES[i];
+    if(skipX && c === 'X') continue;
+    if(src.indexOf(c) >= 0) out.push(c);
+  }
+  return out;
+}
+function startPrompt(mode){
+  var saved = cloneRow(S.root);
+  var src = eRow(S.root);
+  if(src.trim() === '') return;
+  var list = usedVars(src, mode === 'solve');
+  S.prompt = {mode:mode, list:list, i:0, saved:saved};
+  S.root.length = 0; S.cur = {row:S.root, i:0};
+  S.done = false; S.exact = S.dec = null; S.err = null;
+  if(list.length === 0) finishPrompt();
+}
+function promptCommit(){
+  var P = S.prompt;
+  var src = eRow(S.root);
+  if(src.trim() !== ''){
+    try{ S.vars[P.list[P.i]] = clean(ev(parse(src), null)); }
+    catch(e){ S.err = 'Syntax ERROR'; return; }
+  }
+  P.i++;
+  S.root.length = 0; S.cur = {row:S.root, i:0};
+  if(P.i >= P.list.length) finishPrompt();
+}
+function finishPrompt(){
+  var P = S.prompt;
+  S.prompt = null;
+  S.root.length = 0;
+  cloneRow(P.saved).forEach(function(it){ S.root.push(it); });
+  S.cur = {row:S.root, i:S.root.length};
+  if(P.mode === 'calc'){ evaluate(); return; }
+  /* SOLVE for X such that expression = 0 */
+  try{
+    var node = parse(eRow(S.root));
+    var f = function(x){ return ev(node, {X:x}); };
+    var x0 = S.vars.X || 1, found = null;
+    var starts = [x0, 0, 1, -1, 2, -2, 5, -5, 10, -10, 0.5, -0.5];
+    for(var s=0; s<starts.length && found===null; s++){
+      var x = starts[s], ok = true;
+      for(var it2=0; it2<80; it2++){
+        var h = 1e-7*(1+Math.abs(x));
+        var fx, d;
+        try{ fx = f(x); d = (f(x+h)-f(x-h))/(2*h); }catch(e2){ ok=false; break; }
+        if(!isFinite(fx) || !isFinite(d) || Math.abs(d) < 1e-14){ ok=false; break; }
+        var nx = x - fx/d;
+        if(!isFinite(nx)){ ok=false; break; }
+        if(Math.abs(nx-x) < 1e-12*(1+Math.abs(nx))){ x = nx; break; }
+        x = nx;
+      }
+      if(ok && isFinite(x) && Math.abs(f(x)) < 1e-7) found = x;
+    }
+    if(found === null) err('Can’t Solve');
+    S.vars.X = clean(found);
+    S.ans = S.vars.X;
+    S.dec = S.vars.X;
+    S.exact = null; S.showDec = true; S.err = null;
+    S.done = true;
+  }catch(e){
+    S.err = (e instanceof CalcError) ? e.msg : 'Can’t Solve';
+    S.dec = null; S.exact = null; S.done = true;
+  }
+}
+
+/* ============================================================
+   12. KEY HANDLERS
+   ============================================================ */
+function simple(fnBody){ return fnBody; }
+
+function ins(v, d){ return function(){ freshIfDone(false); insCh(v, d); }; }
+function insOp(v, d){ return function(){ freshIfDone(true); editIfDone(); insCh(v, d); }; }
+function insStruct(t, pre){
+  return function(){
+    freshIfDone(false);
+    var it = mk(t);
+    if(pre) pre(it);
+    insert(it);
+  };
+}
+
+var HANDLERS = {
+  shift: function(){ S.shift = !S.shift; S.alpha = false; },
+  alpha: function(){ S.alpha = !S.alpha; S.shift = false; },
+  mode:  function(){ if(S.shift){ S.shift=false; openSetup(); } else openMode(); },
+  on:    function(){ clearAll(); S.shift=S.alpha=S.hyp=S.sto=S.rcl=false; },
+
+  intg:  function(){ if(S.shift){ S.shift=false; insStruct('ddx')(); } else insStruct('intg')(); },
+  inv:   function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('!'); }
+                     else { freshIfDone(true); insert({t:'sup', v:'⁻¹'}); } },
+  calc:  function(){ if(!S.done) { /* keep expression */ } startPrompt(S.shift ? 'solve' : 'calc'); S.shift=false; },
+  logb:  function(){ if(S.shift){ S.shift=false; insStruct('sum')(); } else insStruct('logb')(); },
+
+  frac:  function(){ if(S.shift){ S.shift=false; insStruct('mfrac')(); } else insStruct('frac')(); },
+  sqrt:  function(){
+           if(S.shift){
+             S.shift = false; freshIfDone(false);
+             var it = mk('nrt');
+             it.i.push({t:'ch', v:'3'});
+             insert(it);
+             S.cur = {row: it.r, i:0};
+           } else insStruct('sqrt')();
+         },
+  sq:    function(){ if(S.shift){ S.shift=false; freshIfDone(true); insert({t:'sup', v:'3'}); }
+                     else { freshIfDone(true); insert({t:'sup', v:'2'}); } },
+  pow:   function(){
+           if(S.shift){
+             S.shift = false; freshIfDone(false);
+             var grabbed = grabPrev();
+             var it = mk('nrt');
+             if(grabbed) it.i = grabbed;
+             insert(it);
+             S.cur = grabbed ? {row: it.r, i:0} : {row: it.i, i:0};
+           } else { freshIfDone(true); insert(mk('pow')); }
+         },
+  log:   function(){ if(S.shift){ S.shift=false; freshIfDone(false); insCh('1'); insCh('0'); insert(mk('pow')); }
+                     else { freshIfDone(false); insCh('log(','log('); } },
+  ln:    function(){ if(S.shift){ S.shift=false; freshIfDone(false); insCh('e'); insert(mk('pow')); }
+                     else { freshIfDone(false); insCh('ln(','ln('); } },
+
+  neg:   function(){ if(varAction('neg')) return; freshIfDone(false); insCh('-','−'); },
+  dms:   function(){
+           if(varAction('dms')) return;
+           if(S.shift){ S.shift=false; if(S.done && S.dec!==null && !isC(S.dec)) S.dms = !S.dms; return; }
+           freshIfDone(false); insCh('°');
+         },
+  hyp:   function(){ if(varAction('hyp')) return; S.hyp = !S.hyp; },
+  sin:   function(){ if(varAction('sin')) return; trig('sin'); },
+  cos:   function(){ if(varAction('cos')) return; trig('cos'); },
+  tan:   function(){ if(varAction('tan')) return; trig('tan'); },
+
+  rcl:   function(){ if(S.shift){ S.shift=false; S.sto=true; S.rcl=false; } else { S.rcl=true; S.sto=false; } },
+  eng:   function(){
+           if(S.alpha){
+             S.alpha = false;
+             if(S.mode === 'CMPLX'){ freshIfDone(false); insCh('i'); }
+             return;
+           }
+           if(S.dec === null || isC(S.dec)) return;
+           S.eng += S.shift ? -1 : 1; S.shift = false; S.showDec = true;
+         },
+  lp:    function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('%'); return; } freshIfDone(false); insCh('('); },
+  rp:    function(){
+           if(varAction('rp')) return;
+           if(S.shift){ S.shift=false; freshIfDone(false); insCh(','); return; }
+           freshIfDone(false); insCh(')');
+         },
+  sd:    function(){
+           if(varAction('sd')) return;
+           if(S.dec === null) return;
+           if(isC(S.dec) || S.exact) S.showDec = !S.showDec;
+           S.dms = false;
+         },
+  mplus: function(){
+           if(S.alpha){ S.alpha=false; freshIfDone(false); insCh('M'); return; }
+           if(S.rcl){ S.rcl=false; freshIfDone(false); insCh('M'); return; }
+           if(S.sto){ S.sto=false; if(!S.done) evaluate(); if(!S.err) S.vars.M = S.ans; return; }
+           if(!S.done) evaluate();
+           if(S.err) return;
+           S.vars.M += (S.shift ? -S.ans : S.ans);
+           S.shift = false;
+         },
+
+  del: function(){
+        if(S.shift){ S.shift=false; return; }
+        if(S.done){ S.done=false; S.err=null; S.exact=S.dec=null; }
+        del();
+       },
+  ac:  function(){ if(S.shift){ S.shift=false; clearAll(); return; } clearAll(); },
+
+  mul: function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('nPr','P'); return; } insOp('*','×')(); },
+  div: function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('nCr','C'); return; } insOp('/','÷')(); },
+  add: insOp('+','+'),
+  sub: insOp('-','−'),
+
+  exp: function(){
+        if(S.alpha){ S.alpha=false; freshIfDone(false); insCh('e'); return; }
+        if(S.shift){ S.shift=false; freshIfDone(false); insCh('π'); return; }
+        freshIfDone(false);
+        if(S.cur.i > 0) insCh('*','×');
+        insCh('10'); insert(mk('pow'));
+       },
+  dot: function(){
+        if(S.shift){ S.shift=false; freshIfDone(false); insCh('Ran#','Ran#'); return; }
+        freshIfDone(false); insCh('.');
+       },
+  ans: function(){ freshIfDone(false); insCh('Ans','Ans'); },
+  eq:  function(){
+        if(S.prompt){ promptCommit(); return; }
+        if(S.shift) S.shift = false;
+        evaluate();
+       },
+
+  up:   function(){ vmove(-1); },
+  down: function(){ vmove(1); },
+  left: function(){ hmove(-1); },
+  right:function(){ hmove(1); }
+};
+/* The root index is entered before the ˣ√ key, so the key adopts it. */
+function grabPrev(){
+  var row = S.cur.row, i = S.cur.i, start = i;
+  while(start > 0){
+    var it = row[start-1];
+    if(it.t === 'ch' && /^[0-9.]$/.test(it.v)) start--;
+    else break;
+  }
+  if(start === i) return null;
+  var taken = row.splice(start, i - start);
+  S.cur.i = start;
+  return taken;
+}
+
+function trig(base){
+  freshIfDone(false);
+  var name = base;
+  if(S.hyp){ name = base+'h'; S.hyp = false; }
+  if(S.shift){ name = 'a'+name; S.shift = false; }
+  var disp = {sin:'sin(',cos:'cos(',tan:'tan(',sinh:'sinh(',cosh:'cosh(',tanh:'tanh(',
+    asin:'sin⁻¹(',acos:'cos⁻¹(',atan:'tan⁻¹(',
+    asinh:'sinh⁻¹(',acosh:'cosh⁻¹(',atanh:'tanh⁻¹('}[name];
+  insCh(name+'(', disp);
+}
+'0123456789'.split('').forEach(function(d){
+  HANDLERS['d'+d] = function(){
+    if(S.menu){ S.menu.pick(d); return; }
+    if(S.shift && d === '2' && S.mode === 'CMPLX'){ S.shift = false; openCmplx(); return; }
+    if(S.sto || S.rcl){ S.sto=S.rcl=false; }
+    freshIfDone(false);
+    insCh(d);
+  };
+});
+
+function hmove(dir){
+  if(S.done){ S.done=false; S.err=null; S.cur = {row:S.root, i: dir<0 ? S.root.length : 0}; return; }
+  var list = positions(), idx = posIndex(list);
+  if(idx < 0) return;
+  var t = idx + dir;
+  if(t < 0 || t >= list.length) return;
+  S.cur = {row:list[t].row, i:list[t].i};
+}
+function vmove(dir){
+  var path = findPath(S.cur.row);
+  if(path){
+    for(var i=path.length-1; i>=0; i--){
+      var ks = parts(path[i].item), j = ks.indexOf(path[i].key), t = j + dir;
+      if(t >= 0 && t < ks.length){
+        var row = path[i].item[ks[t]];
+        S.cur = {row:row, i:row.length};
+        return;
+      }
+    }
+  }
+  /* history browse */
+  if(!S.hist.length) return;
+  var n = S.histIdx + (dir<0 ? 1 : -1);
+  if(n < 0 || n >= S.hist.length) return;
+  S.histIdx = n;
+  S.root.length = 0;
+  cloneRow(S.hist[n]).forEach(function(it){ S.root.push(it); });
+  S.cur = {row:S.root, i:S.root.length};
+  S.done = false; S.err = null; S.exact = S.dec = null;
+}
+
+/* ============================================================
+   13. KEYPAD BUILD
+   ============================================================ */
+var TOP = [
+  {id:'shift', main:'SHIFT', cls:'k shiftk'},
+  {id:'alpha', main:'ALPHA', cls:'k alphak'},
+  {nav:true},
+  {id:'mode', main:'MODE', s:'SETUP', cls:'k fn sm'},
+  {id:'on',   main:'ON', cls:'k on'},
+  {id:'intg', main:'&int;dx', s:'d/dx', cls:'k fn sm'},
+  {id:'inv',  main:'x<span class="sup">⁻¹</span>', s:'x!', cls:'k fn sm'},
+  {id:'calc', main:'CALC', s:'SOLVE', cls:'k fn sm'},
+  {id:'logb', main:'log<span class="sub">□</span>□', s:'Σ', cls:'k fn sm'}
+];
+var FN = [
+  {id:'frac', main:'<span class="frac"><span class="num">□</span><span class="den">□</span></span>', s:'a<sup>b</sup>/<sub>c</sub>', cls:'k fn'},
+  {id:'sqrt', main:'&radic;□', s:'&#8731;□', cls:'k fn'},
+  {id:'sq',   main:'x<span class="sup">2</span>', s:'x<sup>3</sup>', cls:'k fn'},
+  {id:'pow',  main:'x<span class="sup">■</span>', s:'<sup>x</sup>&radic;□', cls:'k fn'},
+  {id:'log',  main:'log', s:'10<sup>x</sup>', cls:'k fn'},
+  {id:'ln',   main:'ln', s:'e<sup>x</sup>', cls:'k fn'},
+
+  {id:'neg',  main:'(&minus;)', a:'A', cls:'k fn sm'},
+  {id:'dms',  main:'°′″', s:'←°′″', a:'B', cls:'k fn sm'},
+  {id:'hyp',  main:'hyp', a:'C', cls:'k fn sm'},
+  {id:'sin',  main:'sin', s:'sin<sup>-1</sup>', a:'D', cls:'k fn sm'},
+  {id:'cos',  main:'cos', s:'cos<sup>-1</sup>', a:'E', cls:'k fn sm'},
+  {id:'tan',  main:'tan', s:'tan<sup>-1</sup>', a:'F', cls:'k fn sm'},
+
+  {id:'rcl',  main:'RCL', s:'STO', cls:'k fn sm'},
+  {id:'eng',  main:'ENG', s:'&larr;', a:'<i>i</i>', cls:'k fn sm'},
+  {id:'lp',   main:'(', s:'%', cls:'k fn'},
+  {id:'rp',   main:')', s:',', a:'X', cls:'k fn'},
+  {id:'sd',   main:'S&hArr;D', a:'Y', cls:'k fn sm'},
+  {id:'mplus',main:'M+', s:'M&minus;', a:'M', cls:'k fn sm'}
+];
+var NUM = [
+  {id:'d7', main:'7', cls:'k num'}, {id:'d8', main:'8', cls:'k num'}, {id:'d9', main:'9', cls:'k num'},
+  {id:'del', main:'DEL', s:'INS', cls:'k ac sm'}, {id:'ac', main:'AC', s:'OFF', cls:'k ac sm'},
+
+  {id:'d4', main:'4', cls:'k num'}, {id:'d5', main:'5', cls:'k num'}, {id:'d6', main:'6', cls:'k num'},
+  {id:'mul', main:'&times;', s:'nPr', cls:'k'}, {id:'div', main:'&divide;', s:'nCr', cls:'k'},
+
+  {id:'d1', main:'1', cls:'k num'}, {id:'d2', main:'2', cls:'k num'}, {id:'d3', main:'3', cls:'k num'},
+  {id:'add', main:'+', cls:'k'}, {id:'sub', main:'&minus;', cls:'k'},
+
+  {id:'d0', main:'0', cls:'k num'}, {id:'dot', main:'.', s:'Ran#', cls:'k num'},
+  {id:'exp', main:'&times;10<sup>x</sup>', s:'&pi;', a:'e', cls:'k xs'},
+  {id:'ans', main:'Ans', cls:'k sm'}, {id:'eq', main:'=', cls:'k eq'}
+];
+
+function buildKey(k){
+  var wrap = document.createElement('div');
+  wrap.className = 'kw';
+  var lbl = document.createElement('div');
+  lbl.className = 'lbl';
+  lbl.innerHTML = '<s>'+(k.s||'')+'</s><u>'+(k.a||'')+'</u>';
+  var b = document.createElement('button');
+  b.className = k.cls;
+  b.type = 'button';
+  b.innerHTML = '<span class="kface">'+k.main+'</span>';
+  b.dataset.id = k.id;
+  b.setAttribute('aria-label', k.id);
+  b.addEventListener('click', function(){ press(k.id); });
+  wrap.appendChild(lbl);
+  wrap.appendChild(b);
+  return wrap;
+}
+function buildNav(){
+  var d = document.createElement('div');
+  d.className = 'navblock';
+  d.innerHTML =
+    '<div class="pad">'+
+      '<div class="hub"></div><div class="rp">REPLAY</div>'+
+      '<button type="button" class="up" data-id="up" aria-label="up">&#9650;</button>'+
+      '<button type="button" class="dn" data-id="down" aria-label="down">&#9660;</button>'+
+      '<button type="button" class="lf" data-id="left" aria-label="left">&#9664;</button>'+
+      '<button type="button" class="rt" data-id="right" aria-label="right">&#9654;</button>'+
+    '</div>';
+  d.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ press(b.dataset.id); });
+  });
+  return d;
+}
+function mount(){
+  var top = document.getElementById('row-top');
+  TOP.forEach(function(k){ top.appendChild(k.nav ? buildNav() : buildKey(k)); });
+  var fn = document.getElementById('row-fn');
+  FN.forEach(function(k){ fn.appendChild(buildKey(k)); });
+  var nm = document.getElementById('row-num');
+  NUM.forEach(function(k){ nm.appendChild(buildKey(k)); });
+}
+
+/* ============================================================
+   14. PRESS + DRAW
+   ============================================================ */
+function press(id){
+  if(S.menu){
+    if(id === 'ac' || id === 'on'){ S.menu = null; draw(); return; }
+    if(/^d[0-9]$/.test(id)){ S.menu.pick(id.slice(1)); draw(); return; }
+    draw();
+    return;
+  }
+  var h = HANDLERS[id];
+  if(!h){ draw(); return; }
+  var wasShift = S.shift, wasAlpha = S.alpha;
+  h();
+  if(id !== 'shift' && wasShift && S.shift) S.shift = false;
+  if(id !== 'alpha' && wasAlpha && S.alpha) S.alpha = false;
+  draw();
+}
+
+var elInd, elEntry, elResult, elLcd;
+function draw(){
+  /* indicators */
+  var f = S.fmt;
+  var ind =
+    '<b class="'+(S.shift?'on':'')+'">S</b>'+
+    '<b class="'+(S.alpha?'on':'')+'">A</b>'+
+    '<b class="'+(S.vars.M?'on':'')+'">M</b>'+
+    '<b class="'+(S.sto?'on':'')+'">STO</b>'+
+    '<b class="'+(S.rcl?'on':'')+'">RCL</b>'+
+    '<b class="'+(S.hyp?'on':'')+'">hyp</b>'+
+    (S.mode === 'CMPLX' ? '<b class="on">CMPLX</b>' : '')+
+    '<span class="sp"></span>'+
+    '<b class="on">'+(S.angle==='D'?'D':S.angle==='R'?'R':'G')+'</b>'+
+    '<b class="'+(f.t!=='Norm'?'on':'')+'">'+(f.t==='Fix'?'FIX':f.t==='Sci'?'SCI':'FIX')+'</b>'+
+    '<b class="'+(S.io==='Math'?'on':'')+'">Math</b>';
+  elInd.innerHTML = ind;
+
+  var sb = document.querySelector('[data-id="shift"]'), ab = document.querySelector('[data-id="alpha"]');
+  if(sb) sb.classList.toggle('armed', S.shift);
+  if(ab) ab.classList.toggle('armed', S.alpha);
+  var rb = document.querySelector('[data-id="rcl"]');
+  if(rb) rb.classList.toggle('armed', S.sto || S.rcl);
+
+  if(S.menu){
+    elEntry.innerHTML = '<span style="font-size:.8em">'+
+      S.menu.lines.map(function(l,i){
+        return '<span class="'+((S.menu.dim||[]).indexOf(i)>=0?'dimmed':'')+'">'+l+'</span>';
+      }).join('<br>')+'</span>';
+    elResult.innerHTML = '';
+    return;
+  }
+
+  var pre = '';
+  if(S.prompt && S.prompt.list.length){
+    pre = S.prompt.list[S.prompt.i] + '?&nbsp;';
+  }
+  elEntry.innerHTML = pre + rRow(S.root);
+  elResult.innerHTML = resultHTML();
+
+  var c = elEntry.querySelector('[data-cur]');
+  if(c && c.scrollIntoView) {
+    var er = elEntry.getBoundingClientRect(), cr = c.getBoundingClientRect();
+    if(cr.right > er.right - 4) elEntry.scrollLeft += (cr.right - er.right + 16);
+    else if(cr.left < er.left + 4) elEntry.scrollLeft -= (er.left - cr.left + 16);
+  }
+  elResult.scrollLeft = elResult.scrollWidth;
+}
+
+/* ============================================================
+   15. KEYBOARD
+   ============================================================ */
+var KB = {
+  '0':'d0','1':'d1','2':'d2','3':'d3','4':'d4','5':'d5','6':'d6','7':'d7','8':'d8','9':'d9',
+  '.':'dot', '+':'add', '-':'sub', '*':'mul', 'x':'mul', '/':'div', '(':'lp', ')':'rp',
+  '=':'eq', 'Enter':'eq', 'Backspace':'del', 'Escape':'ac', 'Delete':'ac',
+  'ArrowLeft':'left', 'ArrowRight':'right', 'ArrowUp':'up', 'ArrowDown':'down',
+  '^':'pow', 'r':'sqrt', 'f':'frac', 's':'sin', 'c':'cos', 't':'tan',
+  'l':'log', 'n':'ln', 'p':'exp', '!':'inv', 'a':'ans', 'h':'hyp',
+  'q':'shift', 'z':'alpha', 'm':'mode', 'd':'sd', 'E':'exp'
+};
+function flash(id){
+  var b = document.querySelector('[data-id="'+id+'"]');
+  if(!b) return;
+  b.classList.add('press');
+  setTimeout(function(){ b.classList.remove('press'); }, 90);
+}
+function onKey(ev2){
+  if(ev2.metaKey || ev2.ctrlKey || ev2.altKey) return;
+  var k = ev2.key;
+  var id = KB[k];
+  if(!id) return;
+  ev2.preventDefault();
+  if(k === 'p'){ S.shift = true; press('exp'); flash('exp'); return; }
+  if(k === '!'){ S.shift = true; press('inv'); flash('inv'); return; }
+  press(id);
+  flash(id);
+}
+
+/* ============================================================
+   ZOOM
+   The whole calculator is sized from one font-size, so scaling it is a single
+   multiplier the CSS already multiplies through.
+   ============================================================ */
+var ZSTEPS = [0.7, 0.8, 0.9, 1, 1.15, 1.3, 1.5, 1.75, 2];
+var ZKEY = 'sc.zoom.v1';
+
+function applyZoom(){
+  document.documentElement.style.setProperty('--zoom', String(S.zoom));
+  var out = document.getElementById('zoomval');
+  if(out) out.textContent = Math.round(S.zoom * 100) + '%';
+  var minus = document.getElementById('zoomout'), plus = document.getElementById('zoomin');
+  if(minus) minus.disabled = S.zoom <= ZSTEPS[0];
+  if(plus) plus.disabled = S.zoom >= ZSTEPS[ZSTEPS.length - 1];
+  try{ localStorage.setItem(ZKEY, String(S.zoom)); }catch(e){}
+}
+function stepZoom(dir){
+  var i = ZSTEPS.indexOf(S.zoom);
+  if(i < 0){
+    i = 0;
+    for(var k=0; k<ZSTEPS.length; k++) if(Math.abs(ZSTEPS[k] - S.zoom) < Math.abs(ZSTEPS[i] - S.zoom)) i = k;
+  }
+  i = Math.max(0, Math.min(ZSTEPS.length - 1, i + dir));
+  S.zoom = ZSTEPS[i];
+  applyZoom();
+}
+function initZoom(){
+  try{
+    var v = parseFloat(localStorage.getItem(ZKEY));
+    if(v && ZSTEPS.indexOf(v) >= 0) S.zoom = v;
+  }catch(e){}
+  var minus = document.getElementById('zoomout'),
+      plus = document.getElementById('zoomin'),
+      reset = document.getElementById('zoomreset');
+  if(minus) minus.addEventListener('click', function(){ stepZoom(-1); });
+  if(plus) plus.addEventListener('click', function(){ stepZoom(1); });
+  if(reset) reset.addEventListener('click', function(){ S.zoom = 1; applyZoom(); });
+  applyZoom();
+}
+
+/* ============================================================
+   16. BOOT
+   ============================================================ */
+function boot(){
+  elInd = document.getElementById('ind');
+  elEntry = document.getElementById('entry');
+  elResult = document.getElementById('result');
+  elLcd = document.getElementById('lcd');
+  mount();
+  initZoom();
+  document.addEventListener('keydown', onKey);
+  draw();
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+/* test hooks */
+window.__fx = {
+  S:S, press:press, draw:draw,
+  calc:function(src){
+    try{ return clean(ev(parse(src), null)); }
+    catch(e){ return (e instanceof CalcError) ? 'E:'+e.msg : 'E:Syntax ERROR'; }
+  },
+  seq:function(ids){ ids.forEach(function(i){ press(i); }); return {entry:document.getElementById('entry').innerHTML, result:document.getElementById('result').innerHTML}; },
+  exact:function(x, hadDot){ return exactHTML(x, !!hadDot); },
+  dec:decHTML,
+  zoom:function(d){ stepZoom(d); return S.zoom; },
+  reset:function(){ clearAll(); S.mode='COMP'; S.polar=false; S.angle='D'; S.io='Math'; S.fmt={t:'Norm',n:1}; S.vars={A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0}; S.ans=0; S.hist=[]; draw(); }
+};
+})();
+</script>
+
+  </div>
+  <div class="herotext">
+    <h1>A calculator that writes maths the way you do</h1>
+    <p class="lede">Type a fraction and it stacks. Type a root and it gets a bar
+    over it. Ask for <span class="mono">1&divide;3</span> and you get a third
+    back &mdash; not 0.3333333333.</p>
+    <ul class="points">
+      <li><b>Textbook display</b><span>Fractions, roots, exponents and absolute
+      value render as written, and you can move the cursor back into any part of
+      an expression to edit it in place.</span></li>
+      <li><b>Exact answers</b><span><span class="mono">&radic;8</span> gives
+      2&radic;2. <span class="mono">sin 60</span> gives &radic;3&frasl;2.
+      Press <kbd>S&hArr;D</kbd> when you want the decimal instead.</span></li>
+      <li><b>Everything on the keypad works</b><span>Trigonometry and inverses in
+      degrees, radians or gradians. Logs to any base. Powers, roots, factorials,
+      permutations. Integrals, derivatives and summations. Nine memories.</span></li>
+      <li><b>Complex numbers</b><span>Press <kbd>MODE</kbd> <kbd>2</kbd> for
+      CMPLX and work in <span class="mono">a+bi</span> &mdash; arithmetic, powers,
+      roots of negatives, modulus, argument and conjugate, with an
+      <span class="mono">r&ang;&theta;</span> polar view.</span></li>
+      <li><b>Nothing is sent anywhere</b><span>The whole calculator is one file
+      running in your browser. No account, no tracking, no ads. Works with the
+      network off.</span></li>
+    </ul>
+    <a class="cta" href="/guide/">Read the full guide &rarr;</a>
+  </div>
+</div>
+
+<section class="band">
+  <h2 class="sec">Learn it properly</h2>
+  <p class="sub">Most people use maybe a fifth of what a scientific calculator can
+  do, because the manual is a folded sheet of tiny print. These are the parts worth
+  knowing.</p>
+  <div class="cards">
+    <a class="card" href="/guide/"><h3>The complete key guide</h3>
+      <p>Every key, what SHIFT and ALPHA do to it, and the ones people never
+      discover.</p></a>
+    <a class="card" href="/fractions/"><h3>Fractions and exact answers</h3>
+      <p>Why a third stays a third, how surds are simplified, and when to switch
+      to a decimal.</p></a>
+    <a class="card" href="/degrees-radians/"><h3>Degrees, radians, gradians</h3>
+      <p>How to switch, which to use when, and the single most common wrong
+      answer in trigonometry.</p></a>
+    <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
+      <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus
+      and argument, and polar form.</p></a>
+  </div>
+</section>
+</main>
+<footer class="site-foot"><div class="wrap foot-in">
+<span>&copy; 2026 Scientific Calculator</span>
+<nav>
+  <a href="/">Calculator</a>
+  <a href="/guide/">Guide</a>
+  <a href="/fractions/">Fractions</a>
+  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/complex-numbers/">Complex</a>
+  <a href="/privacy/">Privacy</a>
+</nav>
+<p class="disclaim">An independent scientific calculator. Not affiliated with,
+endorsed by, or connected to any calculator manufacturer. Runs entirely in your
+browser &mdash; nothing you type is sent anywhere.</p>
+</div></footer>
+</body>
+</html>

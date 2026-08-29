@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fractions and Exact Answers on a Scientific Calculator</title>
+<meta name="description" content="How to enter fractions and mixed numbers, why a calculator returns a third instead of 0.333, how surds like 2√2 are simplified, and how to switch to decimals.">
+<link rel="canonical" href="https://naturalcalculators.github.io/fractions/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fractions and Exact Answers on a Scientific Calculator">
+<meta property="og:description" content="How to enter fractions and mixed numbers, why a calculator returns a third instead of 0.333, how surds like 2√2 are simplified, and how to switch to decimals.">
+<meta property="og:url" content="https://naturalcalculators.github.io/fractions/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#e9e6df;
+  --panel:#f7f5f1;
+  --panel-2:#dfdbd2;
+  --fg:#1b1f26;
+  --fg-2:#4b525c;
+  --fg-3:#7b828c;
+  --line:#cdc8be;
+  --line-2:#dfdad1;
+  --brandmark:#2e3642;
+  --link:#3d6b47;
+  --link-hi:#2c5134;
+  --chip:#eef1e9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121418;
+    --panel:#1a1e24;
+    --panel-2:#222730;
+    --fg:#e7e5e0;
+    --fg-2:#a9aeb6;
+    --fg-3:#7d838c;
+    --line:#333942;
+    --line-2:#282d35;
+    --brandmark:#c6cfdb;
+    --link:#9ec48a;
+    --link-hi:#b7d6a6;
+    --chip:#212a1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121418;
+  --panel:#1a1e24;
+  --panel-2:#222730;
+  --fg:#e7e5e0;
+  --fg-2:#a9aeb6;
+  --fg-3:#7d838c;
+  --line:#333942;
+  --line-2:#282d35;
+  --brandmark:#c6cfdb;
+  --link:#9ec48a;
+  --link-hi:#b7d6a6;
+  --chip:#212a1e;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:17px/1.68 Barlow,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--link-hi)}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+
+/* header */
+.site-head{
+  position:sticky;top:0;z-index:20;background:var(--bg);
+  border-bottom:1px solid var(--line-2);
+}
+.head-in{
+  display:flex;align-items:center;gap:1.4rem;
+  max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;
+}
+.logo{
+  display:flex;align-items:center;gap:.55rem;
+  color:var(--fg);text-decoration:none;font-weight:600;
+  font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.02em;
+}
+.logo i{
+  font-style:normal;font-weight:700;font-size:.78rem;letter-spacing:.06em;
+  background:var(--brandmark);color:var(--bg);
+  width:1.7rem;height:1.28rem;border-radius:.25rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.site-nav{margin-left:auto;display:flex;gap:.15rem;flex-wrap:wrap}
+.site-nav a{
+  color:var(--fg-2);text-decoration:none;padding:.35rem .6rem;border-radius:.35rem;
+  font:600 .8rem/1.3 "Barlow Semi Condensed",sans-serif;letter-spacing:.05em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.site-nav a:hover{color:var(--fg);background:var(--panel)}
+.site-nav a[aria-current="page"]{color:var(--fg);background:var(--panel)}
+
+/* hero */
+.hero{
+  display:grid;grid-template-columns:1fr;gap:2.5rem;
+  padding:2.4rem 0 1rem;align-items:start;
+}
+@media (min-width:62rem){
+  .hero{grid-template-columns:auto 1fr;gap:3.5rem;padding:3.2rem 0 1.5rem}
+  .calcstage{position:sticky;top:4.5rem}
+}
+.calcstage{display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.herotext h1{
+  font:700 clamp(2.1rem,5.4vw,3.15rem)/1.05 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .8rem;text-wrap:balance;letter-spacing:-.004em;
+}
+.herotext .lede{font-size:1.1rem;color:var(--fg-2);margin:0 0 1.5rem;max-width:34rem}
+.points{
+  list-style:none;margin:0 0 1.8rem;padding:0;max-width:34rem;
+  display:grid;grid-template-columns:auto 1fr;gap:.85rem .9rem;align-items:start;
+}
+.points li{display:contents}
+.points b{
+  font:600 .66rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--fg);background:var(--chip);
+  border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
+}
+.points span{color:var(--fg-2);font-size:.98rem}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
+
+/* generic sections */
+.band{border-top:1px solid var(--line-2);margin-top:3rem;padding:2.6rem 0 0}
+h2.sec{
+  font:700 1.55rem/1.15 "Barlow Semi Condensed",sans-serif;margin:0 0 .5rem;text-wrap:balance;
+}
+.sub{color:var(--fg-2);margin:0 0 1.6rem;max-width:44rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:.7rem;
+  padding:1.1rem 1.2rem;text-decoration:none;color:inherit;display:block;
+  transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:var(--line);transform:translateY(-2px);color:inherit}
+.card h3{font:700 1.08rem/1.25 "Barlow Semi Condensed",sans-serif;margin:0 0 .35rem}
+.card p{margin:0;color:var(--fg-2);font-size:.94rem;line-height:1.55}
+
+/* article pages */
+.article{max-width:44rem;margin:0 auto;padding:2.6rem 0 1rem}
+.article .kicker{
+  font:600 .7rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--fg-3);margin:0 0 .8rem;
+}
+.article h1{
+  font:700 clamp(1.9rem,4.6vw,2.6rem)/1.1 "Barlow Semi Condensed",sans-serif;
+  margin:0 0 .7rem;text-wrap:balance;
+}
+.article .standfirst{font-size:1.08rem;color:var(--fg-2);margin:0 0 2rem}
+.article h2{
+  font:700 1.35rem/1.2 "Barlow Semi Condensed",sans-serif;margin:2.4rem 0 .6rem;text-wrap:balance;
+}
+.article h3{font:600 1.06rem/1.3 "Barlow Semi Condensed",sans-serif;margin:1.7rem 0 .4rem}
+.article p{margin:0 0 1rem}
+.article ul,.article ol{margin:0 0 1rem;padding-left:1.3rem}
+.article li{margin:0 0 .45rem}
+.article strong{font-weight:600}
+
+kbd{
+  font:500 .8rem/1.5 "Barlow Semi Condensed",sans-serif;letter-spacing:.04em;
+  background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:.3rem;padding:.05rem .38rem;white-space:nowrap;color:var(--fg);
+}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em;
+  background:var(--panel-2);border-radius:.25rem;padding:.08em .34em;
+}
+.tablewrap{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--line-2);border-radius:.5rem}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:26rem}
+th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{
+  font:600 .68rem/1.4 "Barlow Semi Condensed",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg-3);background:var(--panel);
+}
+tr:last-child td{border-bottom:0}
+td .mono{white-space:nowrap}
+
+.callout{
+  background:var(--panel);border-left:3px solid var(--link);
+  border-radius:.15rem .5rem .5rem .15rem;padding:.85rem 1rem;margin:0 0 1.3rem;
+  font-size:.96rem;color:var(--fg-2);
+}
+.callout b{color:var(--fg)}
+.cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--brandmark);color:var(--bg);text-decoration:none;
+  font:600 .9rem/1 "Barlow Semi Condensed",sans-serif;letter-spacing:.06em;
+  padding:.75rem 1.1rem;border-radius:.45rem;
+}
+.cta:hover{color:var(--bg);opacity:.9}
+
+/* footer */
+.site-foot{
+  border-top:1px solid var(--line-2);margin-top:4rem;padding:2rem 0 3rem;
+  color:var(--fg-3);font-size:.88rem;
+}
+.foot-in{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:baseline}
+.foot-in nav{display:flex;gap:1rem;flex-wrap:wrap;margin-left:auto}
+.foot-in a{color:var(--fg-2);text-decoration:none}
+.foot-in a:hover{color:var(--fg);text-decoration:underline}
+.disclaim{margin:1.2rem 0 0;max-width:52rem;line-height:1.6}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="head-in">
+<a class="logo" href="/"><i>SC</i> Scientific Calculator</a>
+<nav class="site-nav"><a href="/">Calculator</a><a href="/guide/">Full guide</a><a href="/fractions/" aria-current="page">Fractions &amp; surds</a><a href="/degrees-radians/">Angle modes</a><a href="/complex-numbers/">Complex</a></nav>
+</div></header>
+<main class="wrap"><article class="article">
+<p class="kicker">Guide</p>
+<h1>Fractions and exact answers</h1>
+<p class="standfirst">Why the answer comes back as a fraction, what to do when you wanted a decimal, and how simplified surds work.</p>
+
+<h2>Entering a fraction</h2>
+<p>Press the <span class="mono">&#9633;/&#9633;</span> key and an empty stacked
+fraction appears with the cursor in the numerator. Type the top, press
+<kbd>&#9660;</kbd> to drop to the bottom, type it, then <kbd>&#9654;</kbd> to step
+out of the fraction entirely.</p>
+<p>That last step matters. If you type <code>1</code>, <kbd>&#9660;</kbd>,
+<code>2</code>, and then <code>+3</code> without pressing <kbd>&#9654;</kbd>, you
+have entered one over five, not a half plus three.</p>
+<p>For a mixed number like two and three quarters, press <kbd>SHIFT</kbd> then
+<span class="mono">&#9633;/&#9633;</span> for a three-box template.</p>
+
+<h2>Why you get a third instead of 0.3333333333</h2>
+<p>In textbook display mode the calculator gives the <em>exact</em> answer
+whenever it can express one. A third is exact. 0.3333333333 is a rounded-off
+approximation that happens to be ten digits long.</p>
+<p>This is a feature, not the calculator being awkward. Exact values chain
+without accumulating error, and in most maths courses an exact answer is the one
+that earns the mark.</p>
+<div class="callout"><b>To get the decimal,</b> press <kbd>S&hArr;D</kbd>. It
+toggles the answer between exact form and decimal form, as many times as you
+like, without recalculating anything.</div>
+<p>If you would rather always see decimals, <kbd>SHIFT</kbd> <kbd>MODE</kbd> then
+<strong>2</strong> switches to line display, where answers come back as decimals
+by default.</p>
+
+<h2>Surds: why &radic;8 becomes 2&radic;2</h2>
+<p>The same principle applies to roots. &radic;8 is exactly
+2&radic;2, because 8 = 4 &times; 2 and the square root of 4 comes out cleanly.
+The calculator pulls out every perfect-square factor it can find.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>You type</th><th>You get</th><th>Because</th></tr></thead>
+<tbody>
+<tr><td class="mono">&radic;8</td><td class="mono">2&radic;2</td><td>8 = 2&sup2; &times; 2</td></tr>
+<tr><td class="mono">&radic;50</td><td class="mono">5&radic;2</td><td>50 = 5&sup2; &times; 2</td></tr>
+<tr><td class="mono">&radic;12 + &radic;27</td><td class="mono">5&radic;3</td><td>2&radic;3 + 3&radic;3</td></tr>
+<tr><td class="mono">sin 60</td><td class="mono">&radic;3&frasl;2</td><td>an exact trigonometric value</td></tr>
+<tr><td class="mono">&radic;7</td><td class="mono">&radic;7</td><td>7 has no square factor, so it stays as it is</td></tr>
+</tbody></table></div>
+<p>Answers that are simple multiples of &pi; are kept that way too, so an angle
+of &pi;&frasl;6 shows as &pi;&frasl;6 rather than 0.5235987756.</p>
+
+<h2>When you get a decimal anyway</h2>
+<p>If your <em>input</em> contains a decimal point, the answer comes back as a
+decimal &mdash; type <code>1.5 &times; 2</code> and you get 3, not a fraction.
+The calculator takes the decimal point as a signal about the form you are
+working in.</p>
+<p>You will also get a decimal when no exact form exists. <code>ln 2</code> is
+0.6931471806 and there is no tidier way to write it.</p>
+
+<h2>Fraction arithmetic worth trying</h2>
+<ul>
+  <li>Add unlike denominators &mdash; <span class="mono">1&frasl;3 + 1&frasl;7</span>
+  gives <span class="mono">10&frasl;21</span>, already in lowest terms.</li>
+  <li>Fractions inside roots &mdash; <span class="mono">&radic;(9&frasl;4)</span>
+  gives <span class="mono">3&frasl;2</span>.</li>
+  <li>Negative powers &mdash; <span class="mono">4&#8315;&sup1;</span> gives
+  <span class="mono">1&frasl;4</span>.</li>
+  <li>Factorials over factorials &mdash; <span class="mono">5! &divide; 2&#185;&#8304;</span>
+  gives <span class="mono">15&frasl;128</span>.</li>
+</ul>
+
+<p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
+</article></main>
+<footer class="site-foot"><div class="wrap foot-in">
+<span>&copy; 2026 Scientific Calculator</span>
+<nav>
+  <a href="/">Calculator</a>
+  <a href="/guide/">Guide</a>
+  <a href="/fractions/">Fractions</a>
+  <a href="/degrees-radians/">Angle modes</a>
+  <a href="/complex-numbers/">Complex</a>
+  <a href="/privacy/">Privacy</a>
+</nav>
+<p class="disclaim">An independent scientific calculator. Not affiliated with,
+endorsed by, or connected to any calculator manufacturer. Runs entirely in your
+browser &mdash; nothing you type is sent anywhere.</p>
+</div></footer>
+</body>
+</html>
