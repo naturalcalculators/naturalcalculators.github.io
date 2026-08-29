@@ -130,6 +130,11 @@ a:hover{color:var(--link-hi)}
   border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
 }
 .points span{color:var(--fg-2);font-size:.98rem}
+@media (max-width:32rem){
+  .points{grid-template-columns:1fr;gap:.3rem .9rem}
+  .points b{justify-self:start;white-space:normal}
+  .points span{margin-bottom:.5rem}
+}
 .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
 
 /* generic sections */
@@ -225,9 +230,17 @@ td .mono{white-space:nowrap}
 collected, because there is nothing to collect it with.</p>
 
 <h2>What is collected</h2>
-<p>Nothing. This website and the Android app of the same name contain no
-analytics, no advertising, no tracking pixels and no accounts. No personal
-information is gathered, stored or shared with anyone.</p>
+<p>No personal information. There are no accounts, no advertising, and no
+tracking of individuals anywhere on this site or in the Android app.</p>
+
+<p>The website does count visits, using Cloudflare Web Analytics. That records
+which page was opened, roughly which country the request came from, the kind of
+device, and which site linked you here &mdash; all as anonymous totals. It sets
+no cookies, does no fingerprinting, builds no profile of you, and cannot follow
+you to other websites. Nobody, including the site's owner, can identify an
+individual visitor from it.</p>
+
+<p>The Android app collects nothing whatsoever and declares no permissions.</p>
 
 <h2>What stays on your device</h2>
 <p>So that your work is still there when you come back, the calculator saves the
@@ -241,10 +254,11 @@ sites, and is removed when you clear your browser data or uninstall the app.</p>
 your files, contacts, camera, microphone, location or network.</p>
 
 <h2>Third parties</h2>
-<p>The website loads its typefaces from Google Fonts, which means your browser
-requests those font files from Google's servers and Google receives the request
-in the normal course of serving them. Nothing else on the page contacts any
-third party. The Android app bundles everything it needs and contacts nobody.</p>
+<p>Two, and only as a side effect of serving the page. Google Fonts supplies the
+typefaces, so your browser requests those font files from Google's servers.
+Cloudflare receives the anonymous visit counts described above. Nothing else on
+the page contacts anyone at all. The Android app bundles everything it needs and
+contacts nobody.</p>
 
 <h2>Children</h2>
 <p>The calculator is safe for all ages and collects no information from anyone,
@@ -271,5 +285,6 @@ with a new date at the top.</p>
 endorsed by, or connected to any calculator manufacturer. Runs entirely in your
 browser &mdash; nothing you type is sent anywhere.</p>
 </div></footer>
+<!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e8796ea8cbc54493aedd303b128ecee6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

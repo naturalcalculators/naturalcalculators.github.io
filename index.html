@@ -130,6 +130,11 @@ a:hover{color:var(--link-hi)}
   border-radius:.3rem;padding:.1rem .45rem;white-space:nowrap;
 }
 .points span{color:var(--fg-2);font-size:.98rem}
+@media (max-width:32rem){
+  .points{grid-template-columns:1fr;gap:.3rem .9rem}
+  .points b{justify-self:start;white-space:normal}
+  .points span{margin-bottom:.5rem}
+}
 .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92em}
 
 /* generic sections */
@@ -1901,9 +1906,9 @@ window.__fx = {
       CMPLX and work in <span class="mono">a+bi</span> &mdash; arithmetic, powers,
       roots of negatives, modulus, argument and conjugate, with an
       <span class="mono">r&ang;&theta;</span> polar view.</span></li>
-      <li><b>Nothing is sent anywhere</b><span>The whole calculator is one file
-      running in your browser. No account, no tracking, no ads. Works with the
-      network off.</span></li>
+      <li><b>Nothing leaves your device</b><span>The calculator is one
+      file running in your browser. No account, no ads, and not one of your
+      calculations is sent anywhere. Visits are counted with a cookieless beacon that stores nothing about you personally.</span></li>
     </ul>
     <a class="cta" href="/guide/">Read the full guide &rarr;</a>
   </div>
@@ -1944,5 +1949,6 @@ window.__fx = {
 endorsed by, or connected to any calculator manufacturer. Runs entirely in your
 browser &mdash; nothing you type is sent anywhere.</p>
 </div></footer>
+<!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e8796ea8cbc54493aedd303b128ecee6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
