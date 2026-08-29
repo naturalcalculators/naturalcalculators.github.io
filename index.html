@@ -434,12 +434,20 @@ td .mono{white-space:nowrap}
   scrollbar-width:none;
 }
 .entry::-webkit-scrollbar{display:none}
+.resultline{display:flex;align-items:flex-end;gap:.15em;min-height:1.3em}
 .result{
   font-family:"Share Tech Mono","Courier New",monospace;
   font-size:1.75em;line-height:1.3;text-align:right;
   white-space:nowrap;overflow-x:auto;overflow-y:hidden;
-  scrollbar-width:none;min-height:1.3em;
+  scrollbar-width:none;min-height:1.3em;flex:1;min-width:0;
 }
+/* shown only when the answer is still wider than the display after shrinking,
+   so a clipped number never looks like a complete one */
+.more{
+  font-family:"Share Tech Mono",monospace;font-size:1.05em;line-height:1.3;
+  opacity:0;transition:opacity .12s;flex:0 0 auto;
+}
+.more.on{opacity:.75}
 .result::-webkit-scrollbar{display:none}
 /* Pol( and Rec( put two values on the display at once */
 .pairv{display:inline-block;margin-left:1.1em}
@@ -597,7 +605,7 @@ button.k.armed.alphak{box-shadow:0 0 0 .13em var(--alpha),0 .16em 0 rgba(0,0,0,.
       <div class="lcd" id="lcd">
         <div class="ind" id="ind"></div>
         <div class="entry" id="entry"></div>
-        <div class="result" id="result"></div>
+        <div class="resultline"><div class="result" id="result"></div><span class="more" id="more" aria-hidden="true">&#9654;</span></div>
       </div>
     </div>
   </div>
@@ -1921,6 +1929,35 @@ function press(id){
 }
 
 var elInd, elEntry, elResult, elLcd;
+/* A long answer used to be scrolled to its right-hand end, which silently hid
+   the leading digits — 155.69+32.96i looked like 5.69+32.96i. Instead: shrink
+   the type until it fits, and if it still does not fit at the smallest size,
+   show the START of the number and flag that there is more with a ▶. */
+var RESULT_EM = 1.75, RESULT_MIN_EM = 0.85;
+function fitResult(){
+  if(!elResult) return;
+  var more = document.getElementById('more');
+  elResult.style.fontSize = '';
+  elResult.scrollLeft = 0;
+  if(more) more.classList.remove('on');
+  var avail = elResult.clientWidth;
+  if(!avail || elResult.scrollWidth <= avail + 1) return;
+
+  var em = RESULT_EM * (avail / elResult.scrollWidth);
+  em = Math.max(RESULT_MIN_EM, Math.min(RESULT_EM, em));
+  elResult.style.fontSize = em.toFixed(3) + 'em';
+
+  /* one correction pass: text metrics are not perfectly linear in font size */
+  if(elResult.scrollWidth > avail + 1 && em > RESULT_MIN_EM){
+    em = Math.max(RESULT_MIN_EM, em * (avail / elResult.scrollWidth));
+    elResult.style.fontSize = em.toFixed(3) + 'em';
+  }
+  if(elResult.scrollWidth > avail + 1){
+    elResult.scrollLeft = 0;              /* keep the leading digits visible */
+    if(more) more.classList.add('on');
+  }
+}
+
 function draw(){
   /* indicators */
   var f = S.fmt;
@@ -1966,7 +2003,7 @@ function draw(){
     if(cr.right > er.right - 4) elEntry.scrollLeft += (cr.right - er.right + 16);
     else if(cr.left < er.left + 4) elEntry.scrollLeft -= (er.left - cr.left + 16);
   }
-  elResult.scrollLeft = elResult.scrollWidth;
+  fitResult();
 }
 
 /* ============================================================
