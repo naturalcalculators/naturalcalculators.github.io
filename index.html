@@ -333,6 +333,7 @@ td .mono{white-space:nowrap}
   --case-lo:#212730;
   --bezel:#9aa1aa;
   --bezel-lo:#6d747d;
+  --basen:#4fc98c;   /* BASE-N legends, green as on the hardware */
   --lcd:#a6b49b;
   --lcd-lo:#93a289;
   --ink:#141c0e;
@@ -456,7 +457,16 @@ td .mono{white-space:nowrap}
   flex:1;font-family:"Share Tech Mono",monospace;font-size:1.32em;line-height:1.42;
   white-space:pre-wrap;padding-top:.15em;
 }
-.menu .dimmed{opacity:.42}
+.menu .dimmed,.entry .dimmed{opacity:.42}
+
+/* STAT data editor: a small table on the LCD, selected cell in inverse video */
+.stable{font-size:.62em;line-height:1.28;white-space:nowrap;padding-top:.1em}
+.srow{display:flex}
+.srow .sn{flex:0 0 1.9em;text-align:right;padding-right:.35em;opacity:.55}
+.srow .sc{flex:1 1 0;text-align:right;padding:0 .3em;min-width:0;overflow:hidden}
+.shead .sc{text-align:center;border-bottom:.08em solid currentColor}
+.srow .sc.on{background:var(--ink);color:var(--lcd)}
+.mtable .srow .sn{flex-basis:2.6em}
 
 /* natural-display primitives */
 .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 .12em}
@@ -495,6 +505,7 @@ button .sup,button .sub{font-size:.62em}
 .lbl{display:flex;justify-content:space-between;align-items:baseline;gap:.3em;height:1.02em;padding:0 .1em}
 .lbl s{font-size:.76em;color:var(--shift);text-decoration:none;font-weight:600;letter-spacing:.01em;white-space:nowrap}
 .lbl u{font-size:.76em;color:var(--alpha);text-decoration:none;font-weight:600;white-space:nowrap}
+.lbl em{font-size:.7em;color:var(--basen);font-style:normal;font-weight:600;letter-spacing:.02em;white-space:nowrap}
 
 button.k{
   font:inherit;color:var(--key-txt);
@@ -637,6 +648,14 @@ var S = {
   shift:false, alpha:false, hyp:false, sto:false, rcl:false,
   io:'Math', angle:'D', fmt:{t:'Norm', n:1},
   mode:'COMP', polar:false, hadDot:false, zoom:1, pair:null,
+  base:'DEC',   /* BASE-N only: DEC, HEX, BIN or OCT */
+  stat:null,    /* STAT only: {type, rows:[{x,y}], row, col, top} */
+  statEdit:false,
+  vct:null,     /* VECTOR only: {A, B, C, Ans}, each null or {vec:1, e:[…]} */
+  vctEdit:null, /* VECTOR editor: {name:'A'|'B'|'C', i} while open */
+  mat:null,     /* MATRIX only: {A, B, C, Ans}, each null or {mat:1, m, n, e:[[…]]} */
+  matEdit:null, /* MATRIX editor: {name, r, c} while open */
+  matView:null, /* the selected cell {r, c} of a matrix answer on screen */
   vars:{A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0},
   ans:0,
   exact:null, dec:null, dms:false, showDec:false, eng:0,
@@ -786,13 +805,179 @@ function norm(v){
   return v;
 }
 
+/* VECTORS: {vec:1, e:[x, y] or [x, y, z]}. Mixing a vector with a number
+   where that has no meaning is a Syntax ERROR; mismatched sizes (or a vector
+   that was never given a size) are a Dimension ERROR, as on the hardware. */
+function V(e){ return {vec:1, e:e}; }
+function isV(v){ return !!v && v.vec === 1; }
+function vClean(v){ return V(v.e.map(function(x){ var c = clean(x); return c === 0 ? 0 : c; })); }
+function vBin(o, l, r){
+  var lv = isV(l), rv = isV(r);
+  if(isC(l) || isC(r)) err('Syntax ERROR');
+  var same = function(){ if(l.e.length !== r.e.length) err('Dimension ERROR'); };
+  var each = function(a, f){ return V(a.e.map(function(x, i){ return chk(f(x, i)); })); };
+  switch(o){
+    case '+': case '-':
+      if(!lv || !rv) err('Syntax ERROR');
+      same();
+      return each(l, function(x, i){ return o === '+' ? x + r.e[i] : x - r.e[i]; });
+    case '*':
+      if(lv && rv){                       /* cross product, 3-D only */
+        if(l.e.length !== 3 || r.e.length !== 3) err('Dimension ERROR');
+        var a = l.e, b = r.e;
+        return V([chk(a[1]*b[2] - a[2]*b[1]), chk(a[2]*b[0] - a[0]*b[2]), chk(a[0]*b[1] - a[1]*b[0])]);
+      }
+      return lv ? each(l, function(x){ return x * r; }) : each(r, function(x){ return l * x; });
+    case '/':
+      if(!lv || rv) err('Syntax ERROR');  /* only vector ÷ number */
+      if(r === 0) err('Math ERROR');
+      return each(l, function(x){ return x / r; });
+    case '⋅':
+      if(!lv || !rv) err('Syntax ERROR');
+      same();
+      var s = 0;
+      for(var k=0;k<l.e.length;k++) s += l.e[k] * r.e[k];
+      return chk(s);
+  }
+  err('Syntax ERROR');
+}
+function vctValue(tok){
+  if(S.mode !== 'VECTOR' || !S.vct) err('Syntax ERROR');
+  var v = S.vct[tok.slice(1)];
+  if(!v) err('Dimension ERROR');          /* never given a size */
+  return V(v.e.slice());
+}
+
+/* MATRICES: {mat:1, m, n, e:[[…row 1…], …]}, up to 3×3. The same rules as
+   vectors: nonsense with a number is a Syntax ERROR, sizes that don't fit
+   are a Dimension ERROR, and a singular matrix has no inverse (Math ERROR). */
+function M(rows){ return {mat:1, m:rows.length, n:rows[0].length, e:rows}; }
+function isM(v){ return !!v && v.mat === 1; }
+function mMap(m, f){ return M(m.e.map(function(row, i){ return row.map(function(x, j){ return chk(f(x, i, j)); }); })); }
+function mClean(m){ return mMap(m, function(x){ var c = clean(x); return c === 0 ? 0 : c; }); }
+function mSquare(m){ if(m.m !== m.n) err('Dimension ERROR'); }
+function mMul(a, b){
+  if(a.n !== b.m) err('Dimension ERROR');
+  var out = [];
+  for(var i = 0; i < a.m; i++){
+    out.push([]);
+    for(var j = 0; j < b.n; j++){
+      var s = 0;
+      for(var k = 0; k < a.n; k++) s += a.e[i][k] * b.e[k][j];
+      out[i].push(chk(s));
+    }
+  }
+  return M(out);
+}
+/* Cofactor expansion: exact for whole-number entries, which a pivoting
+   method would not be. */
+function mDetRaw(m){
+  var e = m.e;
+  if(m.m === 1) return e[0][0];
+  if(m.m === 2) return e[0][0]*e[1][1] - e[0][1]*e[1][0];
+  return e[0][0]*(e[1][1]*e[2][2] - e[1][2]*e[2][1])
+       - e[0][1]*(e[1][0]*e[2][2] - e[1][2]*e[2][0])
+       + e[0][2]*(e[1][0]*e[2][1] - e[1][1]*e[2][0]);
+}
+/* A determinant that is only rounding noise against the size of the rows
+   (Hadamard's bound) is zero: [[.1,.2,.3],[.4,.5,.6],[.7,.8,.9]] is singular. */
+function mDet(m){
+  mSquare(m);
+  var d = mDetRaw(m), bound = 1;
+  m.e.forEach(function(row){ bound *= Math.hypot.apply(null, row); });
+  if(Math.abs(d) <= 1e-12 * bound) return 0;
+  return chk(d);
+}
+function mTrn(m){
+  var out = [];
+  for(var j = 0; j < m.n; j++){ out.push([]); for(var i = 0; i < m.m; i++) out[j].push(m.e[i][j]); }
+  return M(out);
+}
+function mInv(m){
+  var d = mDet(m), e = m.e;
+  if(d === 0) err('Math ERROR');
+  if(m.m === 1) return M([[chk(1 / e[0][0])]]);
+  if(m.m === 2) return mMap(M([[e[1][1], -e[0][1]], [-e[1][0], e[0][0]]]), function(x){ return x / d; });
+  /* adjugate: cofactor(j, i) / det */
+  var cof = function(i, j){
+    var r = [0, 1, 2].filter(function(k){ return k !== i; }), c = [0, 1, 2].filter(function(k){ return k !== j; });
+    var v = e[r[0]][c[0]]*e[r[1]][c[1]] - e[r[0]][c[1]]*e[r[1]][c[0]];
+    return (i + j) % 2 ? -v : v;
+  };
+  var out = [];
+  for(var i = 0; i < 3; i++){ out.push([]); for(var j = 0; j < 3; j++) out[i].push(chk(cof(j, i) / d)); }
+  return M(out);
+}
+function mIdentity(n){
+  var out = [];
+  for(var i = 0; i < n; i++){ out.push([]); for(var j = 0; j < n; j++) out[i].push(i === j ? 1 : 0); }
+  return M(out);
+}
+function mPow(m, n){
+  if(isM(n) || isV(n) || isC(n)) err('Syntax ERROR');
+  mSquare(m);
+  if(Math.abs(n - Math.round(n)) > 1e-12 || Math.abs(n) > 99) err('Math ERROR');
+  n = Math.round(n);
+  var base = n < 0 ? mInv(m) : m, acc = mIdentity(m.m);
+  for(var k = 0; k < Math.abs(n); k++) acc = mMul(acc, base);
+  return acc;
+}
+function mBin(o, l, r){
+  var lm = isM(l), rm = isM(r);
+  if(isC(l) || isC(r) || isV(l) || isV(r)) err('Syntax ERROR');
+  switch(o){
+    case '+': case '-':
+      if(!lm || !rm) err('Syntax ERROR');
+      if(l.m !== r.m || l.n !== r.n) err('Dimension ERROR');
+      return mMap(l, function(x, i, j){ return o === '+' ? x + r.e[i][j] : x - r.e[i][j]; });
+    case '*':
+      if(lm && rm) return mMul(l, r);
+      return lm ? mMap(l, function(x){ return x * r; }) : mMap(r, function(x){ return l * x; });
+    case '/':
+      if(!lm || rm) err('Syntax ERROR');   /* only matrix ÷ number */
+      if(r === 0) err('Math ERROR');
+      return mMap(l, function(x){ return x / r; });
+    case '^':
+      if(!lm) err('Syntax ERROR');
+      return mPow(l, r);
+  }
+  err('Syntax ERROR');
+}
+function matValue(tok){
+  if(S.mode !== 'MATRIX' || !S.mat) err('Syntax ERROR');
+  var m = S.mat[tok.slice(1)];
+  if(!m) err('Dimension ERROR');          /* never given a size */
+  return M(m.e.map(function(row){ return row.slice(); }));
+}
+
 function CalcError(m){ this.msg = m; }
 function err(m){ throw new CalcError(m); }
 
-var NAMES = ['asinh','acosh','atanh','sinh','cosh','tanh','asin','acos','atan',
-             'sin','cos','tan','logb','log','ln','sqrt','nrt','abs',
+/* STAT tokens, as inserted by the SHIFT 1 menus. The '§' keeps them apart from
+   every other name and from the memories (the regression A is not memory A). */
+var STAT_VAL = {
+  '§n':'n', '§xbar':'x̄', '§xsn1':'xσn−1', '§xsn':'xσn',
+  '§ybar':'ȳ', '§ysn1':'yσn−1', '§ysn':'yσn',
+  '§Sx2y':'Σx²y', '§Sx2':'Σx²', '§Sx3':'Σx³', '§Sx4':'Σx⁴', '§Sxy':'Σxy', '§Sx':'Σx',
+  '§Sy2':'Σy²', '§Sy':'Σy',
+  '§minX':'minX', '§maxX':'maxX', '§minY':'minY', '§maxY':'maxY',
+  '§A':'A', '§B':'B', '§C':'C', '§r':'r'
+};
+/* x̂ and ŷ follow the value they estimate from: 6ŷ is "ŷ at x = 6". */
+var STAT_POST = {'§xh1':'x̂₁', '§xh2':'x̂₂', '§xh':'x̂', '§yh':'ŷ'};
+var STAT_NAMES = Object.keys(STAT_VAL).concat(Object.keys(STAT_POST))
+  .sort(function(a, b){ return b.length - a.length; });   /* §xsn1 before §xsn */
+/* VECTOR tokens; 'ʋAns' must be tried before 'ʋA'. */
+var VCT_TOK = {'ʋAns':'VctAns', 'ʋA':'VctA', 'ʋB':'VctB', 'ʋC':'VctC'};
+var VCT_NAMES = Object.keys(VCT_TOK).sort(function(a, b){ return b.length - a.length; });
+/* MATRIX tokens, likewise longest first */
+var MAT_TOK = {'ɱAns':'MatAns', 'ɱA':'MatA', 'ɱB':'MatB', 'ɱC':'MatC'};
+var MAT_NAMES = Object.keys(MAT_TOK).sort(function(a, b){ return b.length - a.length; });
+
+var NAMES = VCT_NAMES.concat(MAT_NAMES).concat(STAT_NAMES).concat(['asinh','acosh','atanh','sinh','cosh','tanh','asin','acos','atan',
+             'sin','cos','tan','logb','log','ln','sqrt','nrt','abs','det','Trn',
              'intg','ddx','sum','Ans','RanInt#','Ran#','Rnd','nCr','nPr','arg','conj',
-             'Pol','Rec'];
+             'Pol','Rec']);
 var CONSTS = {'π':Math.PI, 'e':Math.E};
 var VARNAMES = 'ABCDEFXYM';
 
@@ -817,7 +1002,7 @@ function lex(s){
     if(c === 'i'){ t.push({k:'name', v:'i'}); i++; continue; }
     if(CONSTS[c] !== undefined){ t.push({k:'name', v:c}); i++; continue; }
     if(VARNAMES.indexOf(c) >= 0){ t.push({k:'var', v:c}); i++; continue; }
-    if('+-*/^(),!%°∠ᴰᴿᴳ'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
+    if('+-*/^(),!%°∠ᴰᴿᴳ⋅'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
     err('Syntax ERROR');
   }
   return t;
@@ -834,7 +1019,7 @@ function parse(str){
     var x = t[p];
     if(!x) return false;
     if(x.k==='num' || x.k==='var') return true;
-    if(x.k==='name') return x.v!=='nCr' && x.v!=='nPr';
+    if(x.k==='name') return x.v!=='nCr' && x.v!=='nPr' && !STAT_POST[x.v];
     if(x.k==='op' && x.v==='(') return true;
     return false;
   }
@@ -857,6 +1042,10 @@ function parse(str){
       if(x.v==='Ans') return {t:'v', n:'Ans'};
       if(x.v==='Ran#') return {t:'v', n:'Ran#'};
       if(CONSTS[x.v] !== undefined) return {t:'n', v:CONSTS[x.v]};
+      if(STAT_VAL[x.v]) return {t:'stat', n:x.v};    /* a value: takes no argument */
+      if(VCT_TOK[x.v]) return {t:'vct', n:x.v};
+      if(MAT_TOK[x.v]) return {t:'mat', n:x.v};
+      if(STAT_POST[x.v]) err('Syntax ERROR');         /* x̂ / ŷ need a value before them */
       var args=[];
       if(eat('(')){
         if(!isOp(')')){
@@ -876,6 +1065,7 @@ function parse(str){
     var a = primary();
     for(;;){
       if(isOp('!')){ p++; a={t:'post', o:'!', a:a}; continue; }
+      if(t[p] && t[p].k==='name' && STAT_POST[t[p].v]){ var sn = t[p].v; p++; a = {t:'est', n:sn, a:a}; continue; }
       if(isOp('%')){ p++; a={t:'post', o:'%', a:a}; continue; }
       if(isOp('ᴰ') || isOp('ᴿ') || isOp('ᴳ')){
         var u = t[p].v; p++;
@@ -930,7 +1120,7 @@ function parse(str){
   }
   function muldiv(){
     var a = permcomb();
-    while(isOp('*') || isOp('/')){
+    while(isOp('*') || isOp('/') || isOp('⋅')){   /* ⋅ is the vector dot product */
       var o = t[p].v; p++;
       a = {t:'b', o:o, l:a, r:permcomb()};
     }
@@ -1027,10 +1217,15 @@ function ev(nd, env){
     case 'imag': return C(0, 1);
     case 'u':{
       var u = ev(nd.a, env);
+      if(isV(u)) return V(u.e.map(function(x){ return -x; }));
+      if(isM(u)) return mMap(u, function(x){ return -x; });
       return isC(u) ? C(-u.re, -u.im) : -u;
     }
+    case 'vct': return vctValue(nd.n);
+    case 'mat': return matValue(nd.n);
     case 'post':{
       var v = ev(nd.a, env);
+      if(isV(v) || isM(v)) err('Syntax ERROR');
       if(nd.o==='!'){ if(isC(v)) err('Math ERROR'); return fact(v); }
       if(nd.o==='drg'){
         if(isC(v)) err('Math ERROR');
@@ -1041,6 +1236,9 @@ function ev(nd, env){
     }
     case 'b':{
       var l = ev(nd.l, env), r = ev(nd.r, env);
+      if(isM(l) || isM(r)) return mBin(nd.o, l, r);
+      if(isV(l) || isV(r)) return vBin(nd.o, l, r);
+      if(nd.o === '⋅') err('Syntax ERROR');   /* a dot product needs two vectors */
       if(isC(l) || isC(r)) return cBin(nd.o, l, r);
       switch(nd.o){
         case '+': return chk(l+r);
@@ -1060,11 +1258,19 @@ function ev(nd, env){
     case 'ang':{
       if(S.mode !== 'CMPLX') err('Syntax ERROR');
       var rr = ev(nd.r, env), tt = ev(nd.th, env);
+      if(isV(rr) || isV(tt) || isM(rr) || isM(tt)) err('Syntax ERROR');
       if(isC(rr) || isC(tt)) err('Math ERROR');
       var th = toRad(tt);
       return norm(C(clean(rr*Math.cos(th)), clean(rr*Math.sin(th))));
     }
     case 'f': return fn(nd, env);
+    case 'stat': return statValue(nd.n);
+    case 'est':{
+      var ex = ev(nd.a, env);
+      if(isV(ex) || isM(ex)) err('Syntax ERROR');
+      if(isC(ex)) err('Math ERROR');
+      return statEstimate(nd.n, ex);
+    }
   }
   err('Syntax ERROR');
 }
@@ -1075,10 +1281,23 @@ function fn(nd, env){
   function a(i){
     if(A[i]===undefined) err('Syntax ERROR');
     var v = ev(A[i], env);
+    if(isV(v) || isM(v)) err('Syntax ERROR');   /* sin(VctA) and the like */
     if(isC(v)) err('Math ERROR');
     return v;
   }
-  function ac(i){ if(A[i]===undefined) err('Syntax ERROR'); return ev(A[i], env); }
+  /* ac() also accepts a complex value; only Abs(, det( and Trn( accept a
+     vector or matrix */
+  function ac(i, vecOk){
+    if(A[i]===undefined) err('Syntax ERROR');
+    var v = ev(A[i], env);
+    if((isV(v) || isM(v)) && !vecOk) err('Syntax ERROR');
+    return v;
+  }
+  function am(i){
+    var m = ac(i, true);
+    if(!isM(m)) err('Syntax ERROR');
+    return m;
+  }
   switch(n){
     case 'sin': return clean(Math.sin(toRad(a(0))));
     case 'cos': return clean(Math.cos(toRad(a(0))));
@@ -1120,9 +1339,13 @@ function fn(nd, env){
       return Math.pow(x2, 1/k);
     }
     case 'abs':{
-      var v8 = ac(0);
+      var v8 = ac(0, true);
+      if(isV(v8)) return chk(Math.hypot.apply(null, v8.e));   /* a vector's length */
+      if(isM(v8)) return mMap(v8, Math.abs);                   /* element by element */
       return isC(v8) ? Math.sqrt(v8.re*v8.re + v8.im*v8.im) : Math.abs(v8);
     }
+    case 'det': return mDet(am(0));
+    case 'Trn': return mTrn(am(0));
     case 'Rnd': return roundToFormat(a(0));
     case 'RanInt#':{
       var lo = Math.round(a(0)), hi = Math.round(a(1));
@@ -1181,6 +1404,221 @@ function fn(nd, env){
   }
   err('Syntax ERROR');
 }
+/* ============================================================
+   6b. STATISTICS
+   Everything is computed from the data table at the moment it's asked for.
+   Spreads and regressions use deviations from the mean (two-pass), not the
+   textbook Σx² − n·x̄² shortcut, which loses digits badly when the data sit
+   far from zero (years, readings in the thousands…).
+   ============================================================ */
+var STAT_TYPES = {
+  '1':{id:'1VAR', label:'1-VAR'}, '2':{id:'LIN', label:'A+BX'}, '3':{id:'QUAD', label:'_+CX²'},
+  '4':{id:'LOG', label:'ln X'}, '5':{id:'EEXP', label:'e^X'}, '6':{id:'ABEXP', label:'A·B^X'},
+  '7':{id:'POW', label:'A·X^B'}, '8':{id:'INV', label:'1/X'}
+};
+function statNeed(){
+  if(S.mode !== 'STAT' || !S.stat) err('Syntax ERROR');
+  return S.stat;
+}
+function statTwoVar(){ return !!S.stat && S.stat.type !== '1VAR'; }
+/* One column as numbers. A blank cell is an error rather than a silent 0:
+   a forgotten Y would otherwise quietly bend a regression. */
+function statCol(key){
+  var st = statNeed();
+  if(key === 'y' && st.type === '1VAR') err('Syntax ERROR');
+  return st.rows.map(function(r){
+    if(r[key] === null || r[key] === undefined) err('Math ERROR');
+    return r[key];
+  });
+}
+function kSum(a){                 /* Neumaier compensated sum */
+  var s = 0, c = 0;
+  for(var i=0;i<a.length;i++){
+    var v = a[i], t = s + v;
+    c += Math.abs(s) >= Math.abs(v) ? (s - t) + v : (v - t) + s;
+    s = t;
+  }
+  return s + c;
+}
+function statMean(a){
+  if(!a.length) err('Math ERROR');
+  return kSum(a) / a.length;
+}
+function statSS(a, b){            /* Σ(a − ā)(b − b̄) */
+  var ma = statMean(a), mb = statMean(b), out = [];
+  for(var i=0;i<a.length;i++) out.push((a[i] - ma) * (b[i] - mb));
+  return kSum(out);
+}
+function statSd(a, ddof){
+  if(a.length - ddof < 1) err('Math ERROR');
+  return Math.sqrt(Math.max(0, statSS(a, a)) / (a.length - ddof));
+}
+/* A spread too small to tell from rounding noise counts as none at all -
+   three copies of 0.1 must not produce a slope of 10^17. */
+function statFlat(ss, a){
+  var m = 0;
+  for(var i=0;i<a.length;i++) m += a[i]*a[i];
+  return !(ss > 1e-20 * m);
+}
+function statMap(a, f){ return a.map(f); }
+
+/* Least squares for the current type. Every two-coefficient type is a
+   straight-line fit v = a + b·u after transforming the data. */
+function statFit(){
+  var st = statNeed(), t = st.type;
+  if(t === '1VAR') err('Syntax ERROR');
+  var xs = statCol('x'), ys = statCol('y');
+  if(t === 'QUAD') return statQuadFit(xs, ys);
+
+  var u = statMap(xs, function(x){
+    if(t === 'LOG' || t === 'POW'){ if(x <= 0) err('Math ERROR'); return Math.log(x); }
+    if(t === 'INV'){ if(x === 0) err('Math ERROR'); return 1 / x; }
+    return x;
+  });
+  var v = statMap(ys, function(y){
+    if(t === 'EEXP' || t === 'ABEXP' || t === 'POW'){ if(y <= 0) err('Math ERROR'); return Math.log(y); }
+    return y;
+  });
+  if(u.length < 2) err('Math ERROR');
+  var suu = statSS(u, u);
+  if(statFlat(suu, u)) err('Math ERROR');
+  var suv = statSS(u, v), svv = statSS(v, v);
+  var b = suv / suu, a = statMean(v) - b * statMean(u);
+  var f = {u:u, v:v, suu:suu, suv:suv, svv:svv, a:a, b:b};
+  if(t === 'EEXP' || t === 'POW'){ f.A = Math.exp(a); f.B = b; }
+  else if(t === 'ABEXP'){ f.A = Math.exp(a); f.B = Math.exp(b); }
+  else { f.A = a; f.B = b; }
+  return f;
+}
+/* y = A + Bx + Cx². Fitted on x − x̄ (so x and x² aren't nearly the same
+   column), then expanded back to A, B, C in x. */
+function statQuadFit(xs, ys){
+  if(xs.length < 3) err('Math ERROR');
+  var m = statMean(xs);
+  var u = statMap(xs, function(x){ return x - m; });
+  var w = statMap(u, function(z){ return z * z; });
+  var suu = statSS(u, u), sww = statSS(w, w), suw = statSS(u, w);
+  var suy = statSS(u, ys), swy = statSS(w, ys);
+  var det = suu * sww - suw * suw;
+  if(!(det > 1e-20 * suu * sww)) err('Math ERROR');   /* fewer than 3 distinct x */
+  var b1 = (suy * sww - swy * suw) / det;
+  var c1 = (swy * suu - suy * suw) / det;
+  var a1 = statMean(ys) - b1 * statMean(u) - c1 * statMean(w);
+  return {quad:true, A: a1 - b1 * m + c1 * m * m, B: b1 - 2 * c1 * m, C: c1};
+}
+function statCorrelation(){
+  var f = statFit();
+  if(f.quad) err('Syntax ERROR');                     /* the hardware has no r for _+CX² */
+  if(statFlat(f.svv, f.v)) err('Math ERROR');
+  return Math.max(-1, Math.min(1, f.suv / Math.sqrt(f.suu * f.svv)));
+}
+function statValue(nm){
+  var st = statNeed();
+  var sq = function(v){ return v*v; };
+  switch(nm){
+    case '§n':    return st.rows.length;
+    case '§Sx':   return kSum(statCol('x'));
+    case '§Sx2':  return kSum(statCol('x').map(sq));
+    case '§Sx3':  return kSum(statCol('x').map(function(v){ return v*v*v; }));
+    case '§Sx4':  return kSum(statCol('x').map(function(v){ return v*v*v*v; }));
+    case '§Sy':   return kSum(statCol('y'));
+    case '§Sy2':  return kSum(statCol('y').map(sq));
+    case '§Sxy':  { var xs = statCol('x'), ys = statCol('y'); return kSum(xs.map(function(v, i){ return v * ys[i]; })); }
+    case '§Sx2y': { var xs2 = statCol('x'), ys2 = statCol('y'); return kSum(xs2.map(function(v, i){ return v * v * ys2[i]; })); }
+    case '§xbar': return statMean(statCol('x'));
+    case '§xsn':  return statSd(statCol('x'), 0);
+    case '§xsn1': return statSd(statCol('x'), 1);
+    case '§ybar': return statMean(statCol('y'));
+    case '§ysn':  return statSd(statCol('y'), 0);
+    case '§ysn1': return statSd(statCol('y'), 1);
+    case '§minX': case '§maxX': case '§minY': case '§maxY':{
+      var col = statCol(nm.charAt(4) === 'X' ? 'x' : 'y');
+      if(!col.length) err('Math ERROR');
+      return (nm.slice(1, 4) === 'min' ? Math.min : Math.max).apply(null, col);
+    }
+    case '§A': return statFit().A;
+    case '§B': return statFit().B;
+    case '§C': { var q = statFit(); if(!q.quad) err('Syntax ERROR'); return q.C; }
+    case '§r': return statCorrelation();
+  }
+  err('Syntax ERROR');
+}
+/* ŷ at a given x, or x̂ at a given y, from the fitted curve. */
+function statEstimate(nm, val){
+  var st = statNeed(), t = st.type;
+  if(t === '1VAR') err('Syntax ERROR');
+  var f = statFit();
+
+  if(t === 'QUAD'){
+    if(nm === '§yh') return chk(f.A + f.B * val + f.C * val * val);
+    if(nm !== '§xh1' && nm !== '§xh2') err('Syntax ERROR');
+    if(f.C === 0) err('Math ERROR');
+    /* C·x² + B·x + (A − y) = 0; x̂₁ = (−B + √D)/2C, x̂₂ = (−B − √D)/2C,
+       computed the cancellation-free way. */
+    var c0 = f.A - val, D = f.B * f.B - 4 * f.C * c0;
+    if(D < 0) err('Math ERROR');
+    var sD = Math.sqrt(D);
+    if(f.B === 0 && sD === 0) return 0;
+    var q = f.B >= 0 ? -(f.B + sD) / 2 : (-f.B + sD) / 2;
+    var viaQ = q / f.C, viaC = c0 / q;
+    var plus = f.B >= 0 ? viaC : viaQ, minus = f.B >= 0 ? viaQ : viaC;
+    return chk(nm === '§xh1' ? plus : minus);
+  }
+  if(nm === '§xh1' || nm === '§xh2') err('Syntax ERROR');
+
+  if(nm === '§yh'){
+    switch(t){
+      case 'LIN': return chk(f.A + f.B * val);
+      case 'LOG': if(val <= 0) err('Math ERROR'); return chk(f.A + f.B * Math.log(val));
+      case 'EEXP': case 'ABEXP': return chk(Math.exp(f.a + f.b * val));
+      case 'POW':
+        if(val > 0) return chk(Math.exp(f.a + f.B * Math.log(val)));
+        if(val === 0){ if(f.B <= 0) err('Math ERROR'); return 0; }
+        if(f.B !== Math.round(f.B)) err('Math ERROR');
+        return chk(f.A * Math.pow(val, f.B));
+      case 'INV': if(val === 0) err('Math ERROR'); return chk(f.A + f.B / val);
+    }
+  }
+  switch(t){                                           /* x̂ */
+    case 'LIN': if(f.B === 0) err('Math ERROR'); return chk((val - f.A) / f.B);
+    case 'LOG': if(f.B === 0) err('Math ERROR'); return chk(Math.exp((val - f.A) / f.B));
+    case 'EEXP': case 'ABEXP':
+      if(val <= 0 || f.b === 0) err('Math ERROR');
+      return chk((Math.log(val) - f.a) / f.b);
+    case 'POW':
+      if(val <= 0 || f.B === 0) err('Math ERROR');
+      return chk(Math.exp((Math.log(val) - f.a) / f.B));
+    case 'INV': if(val === f.A) err('Math ERROR'); return chk(f.B / (val - f.A));
+  }
+  err('Syntax ERROR');
+}
+/* Any non-whole data value means the results should show as decimals, the
+   way a typed decimal point does in COMP. */
+/* Same rule for vectors: a non-whole element in any vector the expression
+   uses means decimal display. */
+function vctHasFraction(src){
+  if(!S.vct || src.indexOf('ʋ') < 0) return false;
+  return ['Ans', 'A', 'B', 'C'].some(function(k){
+    var used = k === 'Ans' ? src.indexOf('ʋAns') >= 0 : src.replace(/ʋAns/g, '').indexOf('ʋ' + k) >= 0;
+    return used && S.vct[k] && S.vct[k].e.some(function(x){ return x !== Math.floor(x); });
+  });
+}
+function matHasFraction(src){
+  if(!S.mat || src.indexOf('ɱ') < 0) return false;
+  return ['Ans', 'A', 'B', 'C'].some(function(k){
+    var used = k === 'Ans' ? src.indexOf('ɱAns') >= 0 : src.replace(/ɱAns/g, '').indexOf('ɱ' + k) >= 0;
+    return used && S.mat[k] && S.mat[k].e.some(function(row){
+      return row.some(function(x){ return x !== Math.floor(x); });
+    });
+  });
+}
+function statHasFraction(){
+  if(!S.stat) return false;
+  return S.stat.rows.some(function(r){
+    return [r.x, r.y].some(function(v){ return v !== null && v !== undefined && v !== Math.floor(v); });
+  });
+}
+
 function xenv(env, x){
   var o = {}; if(env) for(var k in env) o[k]=env[k];
   o.X = x; return o;
@@ -1347,13 +1785,40 @@ function roundToFormat(v){
 var PAIR = null;
 
 function evaluate(){
+  if(S.mode === 'BASE-N'){ evaluateBaseN(); return; }
   PAIR = null;
   var src = eRow(S.root);
   if(src.trim() === '') { S.err = null; return; }
   try{
     var v = ev(parse(src), null);
+    S.hadDot = src.indexOf('.') >= 0 || (src.indexOf('§') >= 0 && statHasFraction()) ||
+               vctHasFraction(src) || matHasFraction(src);
+    if(isM(v)){
+      /* A matrix answer goes to MatAns and is shown as a table (see
+         drawMatAns); Ans keeps the last number. */
+      v = mClean(v);
+      S.mat.Ans = v;
+      S.matView = {r:0, c:0};
+      S.dec = v; S.exact = null; S.showDec = false; S.pair = null; S.err = null;
+      S.hist.unshift(cloneRow(S.root));
+      if(S.hist.length > 30) S.hist.pop();
+      S.histIdx = -1;
+      S.done = true;
+      return;
+    }
+    if(isV(v)){
+      /* A vector answer goes to VctAns; Ans keeps the last number, as on the
+         hardware. */
+      v = vClean(v);
+      S.vct.Ans = v;
+      S.dec = v; S.exact = null; S.showDec = false; S.pair = null; S.err = null;
+      S.hist.unshift(cloneRow(S.root));
+      if(S.hist.length > 30) S.hist.pop();
+      S.histIdx = -1;
+      S.done = true;
+      return;
+    }
     v = clean(v);
-    S.hadDot = src.indexOf('.') >= 0;
     if(isC(v)){
       if(S.mode !== 'CMPLX') err('Math ERROR');
       chk(v);
@@ -1378,6 +1843,191 @@ function evaluate(){
   }
   S.done = true;
 }
+/* ============================================================
+   8b. BASE-N
+   Whole-number arithmetic in DEC, HEX, BIN or OCT, as the fx-991ES PLUS does
+   it: every value is a 32-bit two's-complement integer (-2147483648 ..
+   2147483647); BIN shows 16 bits, so it only covers -32768 .. 32767; a
+   division drops its remainder (toward zero); and anything that leaves the
+   range is a Math ERROR - never a silent wrap-round.
+   Hex digits are stored as '#A'..'#F' so they can never be read as the
+   memories A-F, which ALPHA / RCL / STO still reach in this mode.
+   ============================================================ */
+var BN_MIN = -2147483648, BN_MAX = 2147483647;
+var BN_RADIX = {DEC:10, HEX:16, BIN:2, OCT:8};
+var BN_PREFIX = {'ᵈ':'DEC', 'ʰ':'HEX', 'ᵇ':'BIN', 'ᵒ':'OCT'};
+var BN_BINOP = {'⋀':'and', '⋁':'or', '⊻':'xor', '⊙':'xnor'};
+
+function bnRange(v){
+  if(v < BN_MIN || v > BN_MAX) err('Math ERROR');
+  return v === 0 ? 0 : v;                  /* never -0 */
+}
+/* A number typed in a given base. HEX and OCT digits spell a 32-bit pattern
+   (FFFFFFFF is -1); BIN spells a 16-bit one (1111111111111111 is -1), since
+   16 bits is all BIN can show. */
+function bnLiteral(digits, base){
+  var radix = BN_RADIX[base], v = 0;
+  for(var i=0;i<digits.length;i++){
+    var d = parseInt(digits.charAt(i), 16);
+    if(isNaN(d) || d >= radix) err('Syntax ERROR');
+    v = v*radix + d;
+    if(v > 4294967295) err('Math ERROR');   /* more digits than 32 bits hold */
+  }
+  if(base === 'DEC') return bnRange(v);
+  if(base === 'BIN'){
+    if(v > 0xFFFF) err('Math ERROR');
+    return v > 0x7FFF ? v - 0x10000 : v;
+  }
+  return v > BN_MAX ? v - 4294967296 : v;
+}
+function bnLex(s){
+  var t = [], i = 0;
+  while(i < s.length){
+    var c = s.charAt(i);
+    if(c === ' ' || c === ' '){ i++; continue; }
+    var pre = null;
+    if(BN_PREFIX[c]){ pre = BN_PREFIX[c]; i++; }
+    var n = s.charAt(i);
+    if((n >= '0' && n <= '9') || n === '#'){
+      var digits = '';
+      while(i < s.length){
+        var h = s.charAt(i);
+        if(h >= '0' && h <= '9'){ digits += h; i++; }
+        else if(h === '#' && /[A-F]/.test(s.charAt(i+1))){ digits += s.charAt(i+1); i += 2; }
+        else break;
+      }
+      if(!digits) err('Syntax ERROR');
+      t.push({k:'num', digits:digits, base:pre});
+      continue;
+    }
+    if(pre) err('Syntax ERROR');            /* a prefix must be followed by digits */
+    if(s.startsWith('Ans', i)){ t.push({k:'var', v:'Ans'}); i += 3; continue; }
+    if(s.startsWith('Not(', i)){ t.push({k:'fn', v:'Not'}); i += 4; continue; }
+    if(s.startsWith('Neg(', i)){ t.push({k:'fn', v:'Neg'}); i += 4; continue; }
+    if(VARNAMES.indexOf(c) >= 0){ t.push({k:'var', v:c}); i++; continue; }
+    if(BN_BINOP[c]){ t.push({k:'op', v:BN_BINOP[c]}); i++; continue; }
+    if('+-*/()'.indexOf(c) >= 0){ t.push({k:'op', v:c}); i++; continue; }
+    err('Syntax ERROR');
+  }
+  return t;
+}
+/* Priority, lowest first: or / xor / xnor, then and, then + -, then * /,
+   then implicit multiplication, then unary minus, Not( and Neg(. */
+function bnParse(src){
+  var t = bnLex(src), p = 0;
+  function isOp(v){ var x = t[p]; return !!x && x.k === 'op' && x.v === v; }
+  function eat(v){ if(isOp(v)){ p++; return true; } return false; }
+  function startsPrimary(){
+    var x = t[p];
+    return !!x && (x.k === 'num' || x.k === 'var' || x.k === 'fn' || (x.k === 'op' && x.v === '('));
+  }
+  function primary(){
+    var x = t[p];
+    if(!x) err('Syntax ERROR');
+    if(x.k === 'num'){ p++; return {t:'n', digits:x.digits, base:x.base}; }
+    if(x.k === 'var'){ p++; return {t:'v', n:x.v}; }
+    if(x.k === 'fn'){ p++; var a = orx(); eat(')'); return {t:'f', n:x.v, a:a}; }
+    if(eat('(')){ var e = orx(); eat(')'); return e; }
+    err('Syntax ERROR');
+  }
+  function unary(){
+    if(eat('-')) return {t:'neg', a:unary()};
+    if(eat('+')) return unary();
+    return primary();
+  }
+  function implicit(){
+    var a = unary();
+    while(startsPrimary()) a = {t:'b', o:'*', l:a, r:unary()};
+    return a;
+  }
+  function muldiv(){
+    var a = implicit();
+    while(isOp('*') || isOp('/')){ var o = t[p].v; p++; a = {t:'b', o:o, l:a, r:implicit()}; }
+    return a;
+  }
+  function addsub(){
+    var a = muldiv();
+    while(isOp('+') || isOp('-')){ var o = t[p].v; p++; a = {t:'b', o:o, l:a, r:muldiv()}; }
+    return a;
+  }
+  function andx(){
+    var a = addsub();
+    while(isOp('and')){ p++; a = {t:'b', o:'and', l:a, r:addsub()}; }
+    return a;
+  }
+  function orx(){
+    var a = andx();
+    while(isOp('or') || isOp('xor') || isOp('xnor')){ var o = t[p].v; p++; a = {t:'b', o:o, l:a, r:andx()}; }
+    return a;
+  }
+  if(!t.length) err('Syntax ERROR');
+  var out = orx();
+  if(p < t.length) err('Syntax ERROR');
+  return out;
+}
+function bnEv(nd){
+  switch(nd.t){
+    case 'n': return bnLiteral(nd.digits, nd.base || S.base);
+    case 'v':{
+      /* A memory or Ans holding a fraction or a complex number from another
+         mode is refused rather than quietly truncated. */
+      var v = nd.n === 'Ans' ? S.ans : S.vars[nd.n];
+      if(typeof v !== 'number' || !isFinite(v) || v !== Math.floor(v)) err('Math ERROR');
+      return bnRange(v);
+    }
+    case 'neg': return bnRange(-bnEv(nd.a));
+    case 'f':{
+      var a = bnEv(nd.a);
+      return nd.n === 'Not' ? ~a : bnRange(-a);
+    }
+    case 'b':{
+      var l = bnEv(nd.l), r = bnEv(nd.r);
+      switch(nd.o){
+        case '+': return bnRange(l + r);
+        case '-': return bnRange(l - r);
+        case '*': return bnRange(l * r);
+        case '/':
+          if(r === 0) err('Math ERROR');
+          return bnRange((l - l % r) / r);   /* exact integer division, toward zero */
+        case 'and':  return l & r;
+        case 'or':   return l | r;
+        case 'xor':  return l ^ r;
+        case 'xnor': return ~(l ^ r);
+      }
+    }
+  }
+  err('Syntax ERROR');
+}
+function bnPad(s, n){ while(s.length < n) s = '0' + s; return s; }
+/* The display string for a value in a base, or null if the base can't show it. */
+function bnFormat(v, base){
+  if(base === 'DEC') return String(v);
+  if(base === 'BIN'){
+    if(v < -32768 || v > 32767) return null;
+    return bnPad((v & 0xFFFF).toString(2), 16);
+  }
+  var u = v >>> 0;
+  return base === 'HEX' ? bnPad(u.toString(16).toUpperCase(), 8) : bnPad(u.toString(8), 11);
+}
+function evaluateBaseN(){
+  PAIR = null;
+  var src = eRow(S.root);
+  if(src.trim() === ''){ S.err = null; return; }
+  try{
+    var v = bnEv(bnParse(src));
+    if(bnFormat(v, S.base) === null) err('Math ERROR');   /* e.g. 40000 in BIN */
+    S.ans = v; S.dec = v;
+    S.exact = null; S.showDec = true; S.pair = null; S.err = null;
+    S.hist.unshift(cloneRow(S.root));
+    if(S.hist.length > 30) S.hist.pop();
+    S.histIdx = -1;
+  }catch(e){
+    S.err = (e instanceof CalcError) ? e.msg : 'Syntax ERROR';
+    S.exact = null; S.dec = null; S.pair = null;
+  }
+  S.done = true;
+}
+
 function cloneRow(row){
   return row.map(function(it){
     var c = {t:it.t};
@@ -1389,6 +2039,10 @@ function cloneRow(row){
 }
 function resultHTML(){
   if(S.err) return S.err;
+  if(S.mode === 'BASE-N' && typeof S.dec === 'number'){
+    var bn = bnFormat(S.dec, S.base);
+    return bn === null ? 'Math ERROR' : bn;
+  }
   if(S.pair){
     return S.pair.map(function(p){
       return '<span class="pairv">' + p[0] + '=' + decHTML(p[1]) + '</span>';
@@ -1396,6 +2050,7 @@ function resultHTML(){
   }
   if(S.dec === null || S.dec === undefined) return '';
   if(isC(S.dec)) return complexHTML(S.dec);
+  if(isV(S.dec)) return '[' + S.dec.e.map(partHTML).join(', ') + ']';
   if(S.dms) return dmsHTML(S.dec);
   if(!S.showDec && S.exact) return S.exact;
   return decHTML(S.dec);
@@ -1414,11 +2069,24 @@ function clearAll(){
 }
 function freshIfDone(startWithAns){
   if(!S.done) return;
+  /* after a vector or matrix answer, carry on from VctAns / MatAns */
+  var vecAns = isV(S.dec), matAns = isM(S.dec);
   S.done = false;
   S.root.length = 0;
   S.cur = {row:S.root, i:0};
   S.exact = S.dec = null; S.err = null; S.dms = false; S.eng = 0; S.pair = null;
-  if(startWithAns) insCh('Ans','Ans');
+  if(startWithAns){
+    if(vecAns) insCh('ʋAns', 'VctAns');
+    else if(matAns) insCh('ɱAns', 'MatAns');
+    else insCh('Ans','Ans');
+  }
+}
+/* M+ and STO work on numbers; after a vector or matrix answer they must not
+   quietly use the previous number in Ans instead. */
+function refuseVectorAnswer(){
+  if(!isV(S.dec) && !isM(S.dec)) return false;
+  S.err = 'Syntax ERROR'; S.dec = null; S.done = true;
+  return true;
 }
 function editIfDone(){
   if(S.done){ S.done = false; S.err = null; }
@@ -1432,7 +2100,7 @@ function varAction(id){
   if(S.sto){
     S.sto = false;
     if(!S.done) evaluate();
-    if(S.err) return true;
+    if(S.err || refuseVectorAnswer()) return true;
     S.vars[name] = S.ans;
     return true;
   }
@@ -1503,15 +2171,272 @@ function openClr(){
   };
 }
 
+/* Numbered as on the fx-991ES PLUS, so muscle memory carries over; the dimmed
+   line is the modes this build doesn't have yet. */
+/* Leaving a mode drops its data (the STAT table, the vectors), as the
+   hardware does. */
+function resetModeData(){
+  S.stat = null; S.statEdit = false; S.vct = null; S.vctEdit = null;
+  S.mat = null; S.matEdit = null; S.matView = null;
+}
 function openMode(){
+  var leave = function(mode){ S.mode = mode; resetModeData(); clearAll(); };
   S.menu = {
-    lines:['1:COMP','2:CMPLX','3:STAT  (not in this build)'],
-    dim:[2],
+    lines:['1:COMP     2:CMPLX','3:STAT     4:BASE-N','6:MATRIX   8:VECTOR'],
     pick: function(d){
-      if(d === '1'){ S.mode = 'COMP'; clearAll(); }
-      else if(d === '2'){ S.mode = 'CMPLX'; clearAll(); }
+      if(d === '1') leave('COMP');
+      else if(d === '2') leave('CMPLX');
+      else if(d === '3') openStatType(true);
+      else if(d === '4'){ leave('BASE-N'); S.base = 'DEC'; }
+      else if(d === '6') openMatPick(function(n){ openMatDim(n, true); });
+      else if(d === '8') openVctPick(function(n){ openVctDim(n, true); });
     }
   };
+}
+
+/* ---- MATRIX menus ---- */
+function openMatPick(then){
+  S.menu = {
+    lines:['Matrix?','1:MatA  2:MatB  3:MatC'],
+    pick:function(d){ var n = {'1':'A','2':'B','3':'C'}[d]; if(n) then(n); }
+  };
+}
+/* The nine sizes over two pages, in the hardware's order. Setting a size
+   gives a zero matrix and opens it for editing; from MODE 6 it also switches
+   into MATRIX mode with every matrix cleared. */
+var MAT_DIMS = {'1':[3,3],'2':[3,2],'3':[3,1],'4':[2,3],'5':[2,2],'6':[2,1],'7':[1,3],'8':[1,2],'9':[1,1]};
+function openMatDim(name, enterMode){
+  var pick = function(d){
+    var rc = MAT_DIMS[d];
+    if(!rc) return;
+    if(enterMode){
+      S.mode = 'MATRIX';
+      resetModeData();
+      S.mat = {A:null, B:null, C:null, Ans:null};
+    }
+    var rows = [];
+    for(var i = 0; i < rc[0]; i++){ rows.push([]); for(var j = 0; j < rc[1]; j++) rows[i].push(0); }
+    S.mat[name] = M(rows);
+    clearAll();
+    S.matEdit = {name:name, r:0, c:0};
+  };
+  var head = 'Mat' + name + '(m&times;n) m&times;n?';
+  var page1 = {
+    lines:[head, '1:3&times;3  2:3&times;2  3:3&times;1', '4:2&times;3  5:2&times;2  6:2&times;1 &#9660;'],
+    pick:pick, turn:function(dir){ if(dir === 'down') S.menu = page2; }
+  };
+  var page2 = {
+    lines:[head, '7:1&times;3  8:1&times;2  9:1&times;1', '&#9650;'], dim:[2],
+    pick:pick, turn:function(dir){ if(dir === 'up') S.menu = page1; }
+  };
+  S.menu = page1;
+}
+function matInsert(v, d){
+  S.menu = null;
+  if(S.matEdit){ S.matEdit = null; clearAll(); }
+  freshIfDone(false);
+  insCh(v, d);
+}
+/* SHIFT 4 in MATRIX mode. All eight items can be picked from either page. */
+function openMatrix(){
+  var pick = function(d){
+    if(d === '1') openMatPick(function(n){ openMatDim(n, false); });
+    else if(d === '2') openMatPick(function(n){
+      if(!S.mat[n]){ openMatDim(n, false); return; }   /* no size yet: ask for one */
+      S.menu = null; clearAll();
+      S.matEdit = {name:n, r:0, c:0};
+    });
+    else if({'3':1,'4':1,'5':1,'6':1}[d]){
+      var tok = {'3':'ɱA','4':'ɱB','5':'ɱC','6':'ɱAns'}[d];
+      matInsert(tok, MAT_TOK[tok]);
+    }
+    else if(d === '7') matInsert('det(', 'det(');
+    else if(d === '8') matInsert('Trn(', 'Trn(');
+  };
+  var page1 = {
+    lines:['1:Dim     2:Data','3:MatA    4:MatB','5:MatC    6:MatAns &#9660;'],
+    pick:pick, turn:function(dir){ if(dir === 'down') S.menu = page2; }
+  };
+  var page2 = {
+    lines:['7:det     8:Trn','&#9650;'], dim:[1],
+    pick:pick, turn:function(dir){ if(dir === 'up') S.menu = page1; }
+  };
+  S.menu = page1;
+}
+
+/* ---- VECTOR menus ---- */
+function openVctPick(then){
+  S.menu = {
+    lines:['Vector?','1:VctA  2:VctB  3:VctC'],
+    pick:function(d){ var n = {'1':'A','2':'B','3':'C'}[d]; if(n) then(n); }
+  };
+}
+/* Setting a size gives a vector of zeros and opens it for editing. From MODE 8
+   it also switches into VECTOR mode with every vector cleared. */
+function openVctDim(name, enterMode){
+  S.menu = {
+    lines:['Vct' + name + '(m) m?','1:3  2:2'],
+    pick:function(d){
+      var dim = d === '1' ? 3 : d === '2' ? 2 : 0;
+      if(!dim) return;
+      if(enterMode){
+        S.mode = 'VECTOR';
+        resetModeData();
+        S.vct = {A:null, B:null, C:null, Ans:null};
+      }
+      S.vct[name] = V(dim === 3 ? [0, 0, 0] : [0, 0]);
+      clearAll();
+      S.vctEdit = {name:name, i:0};
+    }
+  };
+}
+function vctInsert(tok){
+  S.menu = null;
+  if(S.vctEdit){ S.vctEdit = null; clearAll(); }
+  freshIfDone(false);
+  insCh(tok, VCT_TOK[tok]);
+}
+/* SHIFT 5 in VECTOR mode. All seven items can be picked from either page. */
+function openVector(){
+  var pick = function(d){
+    if(d === '1') openVctPick(function(n){ openVctDim(n, false); });
+    else if(d === '2') openVctPick(function(n){
+      if(!S.vct[n]){ openVctDim(n, false); return; }   /* no size yet: ask for one */
+      S.menu = null; clearAll();
+      S.vctEdit = {name:n, i:0};
+    });
+    else if({'3':1,'4':1,'5':1,'6':1}[d]) vctInsert({'3':'ʋA','4':'ʋB','5':'ʋC','6':'ʋAns'}[d]);
+    else if(d === '7'){
+      S.menu = null;
+      if(S.vctEdit){ S.vctEdit = null; clearAll(); }
+      freshIfDone(true);
+      insCh('⋅', '·');
+    }
+  };
+  var page1 = {
+    lines:['1:Dim     2:Data','3:VctA    4:VctB','5:VctC    6:VctAns &#9660;'],
+    pick:pick, turn:function(dir){ if(dir === 'down') S.menu = page2; }
+  };
+  var page2 = {
+    lines:['7:Dot','&#9650;'], dim:[1],
+    pick:pick, turn:function(dir){ if(dir === 'up') S.menu = page1; }
+  };
+  S.menu = page1;
+}
+
+/* ---- STAT menus ---- */
+/* The type list. From MODE it starts a fresh, empty table; from SHIFT 1 1 it
+   only changes how the existing data is fitted. */
+function openStatType(fromMode){
+  var pick = function(d){
+    var T = STAT_TYPES[d];
+    if(!T) return;
+    if(fromMode || S.mode !== 'STAT' || !S.stat){
+      S.mode = 'STAT';
+      resetModeData();
+      S.stat = {type:T.id, rows:[], row:0, col:'x', top:0};
+      clearAll();
+      S.statEdit = true;
+      return;
+    }
+    S.stat.type = T.id;
+    if(T.id === '1VAR') S.stat.col = 'x';
+    S.menu = null;
+  };
+  var page1 = {
+    lines:['1:1-VAR    2:A+BX','3:_+CX²    4:ln X','5:e^X      6:A·B^X &#9660;'],
+    pick:pick, turn:function(dir){ if(dir === 'down') S.menu = page2; }
+  };
+  var page2 = {
+    lines:['7:A·X^B    8:1/X','&#9650;'], dim:[1],
+    pick:pick, turn:function(dir){ if(dir === 'up') S.menu = page1; }
+  };
+  S.menu = page1;
+}
+/* Picking a statistic leaves the editor and puts it on the calculation line,
+   where it can be used like any number (x̄ + 1, xσn², 6ŷ …). */
+function statInsert(tok, postfix){
+  S.menu = null;
+  if(S.statEdit){ S.statEdit = false; clearAll(); }
+  freshIfDone(!!postfix);
+  insCh(tok, STAT_VAL[tok] || STAT_POST[tok]);
+}
+function statMenu(lines, items, postfix){
+  S.menu = {
+    lines:lines,
+    pick:function(d){ if(items[d]) statInsert(items[d], postfix && postfix[d]); }
+  };
+}
+function openStat(){
+  var two = statTwoVar(), inEd = S.statEdit;
+  S.menu = {
+    lines:['1:Type     2:' + (inEd ? 'Edit' : 'Data'), '3:Sum      4:Var',
+           two ? '5:Reg      6:MinMax' : '<span class="dimmed">5:Distr</span>    6:MinMax'],
+    pick:function(d){
+      if(d === '1') openStatType(false);
+      else if(d === '2'){
+        if(inEd){
+          S.menu = {lines:['1:Ins   2:Del-A'], pick:function(e){
+            var st = S.stat;
+            /* a blank line, not zeros: an unfilled cell refuses to compute
+               rather than quietly counting as 0 */
+            if(e === '1'){ st.rows.splice(Math.min(st.row, st.rows.length), 0, {x:null, y:null}); S.menu = null; }
+            else if(e === '2'){ st.rows.length = 0; st.row = 0; st.top = 0; S.menu = null; }
+          }};
+        } else {
+          S.menu = null; clearAll();
+          S.stat.row = 0; S.stat.col = 'x'; S.stat.top = 0;
+          S.statEdit = true;
+        }
+      }
+      else if(d === '3'){
+        if(two) statMenu(['1:Σx²   2:Σx    3:Σy²','4:Σy    5:Σxy   6:Σx³','7:Σx²y  8:Σx⁴'],
+          {'1':'§Sx2','2':'§Sx','3':'§Sy2','4':'§Sy','5':'§Sxy','6':'§Sx3','7':'§Sx2y','8':'§Sx4'});
+        else statMenu(['1:Σx²   2:Σx'], {'1':'§Sx2','2':'§Sx'});
+      }
+      else if(d === '4'){
+        if(two) statMenu(['1:n    2:x̄    3:xσn','4:xσn−1  5:ȳ','6:yσn  7:yσn−1'],
+          {'1':'§n','2':'§xbar','3':'§xsn','4':'§xsn1','5':'§ybar','6':'§ysn','7':'§ysn1'});
+        else statMenu(['1:n      2:x̄','3:xσn    4:xσn−1'], {'1':'§n','2':'§xbar','3':'§xsn','4':'§xsn1'});
+      }
+      else if(d === '5' && two){
+        if(S.stat.type === 'QUAD') statMenu(['1:A    2:B    3:C','4:x̂₁   5:x̂₂   6:ŷ'],
+          {'1':'§A','2':'§B','3':'§C','4':'§xh1','5':'§xh2','6':'§yh'}, {'4':1,'5':1,'6':1});
+        else statMenu(['1:A    2:B    3:r','4:x̂    5:ŷ'],
+          {'1':'§A','2':'§B','3':'§r','4':'§xh','5':'§yh'}, {'4':1,'5':1});
+      }
+      else if(d === '6'){
+        if(two) statMenu(['1:minX   2:maxX','3:minY   4:maxY'], {'1':'§minX','2':'§maxX','3':'§minY','4':'§maxY'});
+        else statMenu(['1:minX   2:maxX'], {'1':'§minX','2':'§maxX'});
+      }
+    }
+  };
+}
+/* SHIFT 3 in BASE-N: the logical operators, and - one page down - the
+   d/h/b/o prefixes that mark a single number as being in another base. */
+function openBase(){
+  var OPS = {'1':['⋀','and'], '2':['⋁','or'], '3':['⊻','xor'], '4':['⊙','xnor']};
+  var PRE = {'1':['ᵈ','d'], '2':['ʰ','h'], '3':['ᵇ','b'], '4':['ᵒ','o']};
+  var page1 = {
+    lines:['1:and   2:or   3:xor','4:xnor  5:Not  6:Neg','&#9660; d/h/b/o'],
+    dim:[2],
+    pick:function(d){
+      if(OPS[d]){ S.menu = null; freshIfDone(true); insCh(OPS[d][0], ' ' + OPS[d][1] + ' '); }
+      else if(d === '5'){ S.menu = null; freshIfDone(false); insCh('Not(', 'Not('); }
+      else if(d === '6'){ S.menu = null; freshIfDone(false); insCh('Neg(', 'Neg('); }
+    },
+    turn:function(dir){ if(dir === 'down') S.menu = page2; }
+  };
+  var page2 = {
+    lines:['1:d   2:h   3:b   4:o','&#9650;'],
+    dim:[1],
+    pick:function(d){
+      if(!PRE[d]) return;
+      S.menu = null; freshIfDone(false); insCh(PRE[d][0], PRE[d][1]);
+    },
+    turn:function(dir){ if(dir === 'up') S.menu = page1; }
+  };
+  S.menu = page1;
 }
 /* SHIFT 2 in complex mode, exactly where the hardware puts it. */
 function openCmplx(){
@@ -1530,6 +2455,10 @@ function openCmplx(){
    11. PROMPTS (CALC / SOLVE)
    ============================================================ */
 function usedVars(src, skipX){
+  /* Ans and the STAT, vector and matrix tokens (§A, ʋA, ɱA…) contain capital
+     letters that are not memories; without this CALC would prompt for A on
+     "Ans+1" or "VctA+1". */
+  src = src.replace(/Ans/g, '').replace(/[§ʋɱ][A-Za-z0-9]+/g, '');
   var out = [];
   for(var i=0;i<VARNAMES.length;i++){
     var c = VARNAMES[i];
@@ -1660,7 +2589,7 @@ var HANDLERS = {
          },
   dms:   function(){
            if(varAction('dms')) return;
-           if(S.shift){ S.shift=false; if(S.done && S.dec!==null && !isC(S.dec)) S.dms = !S.dms; return; }
+           if(S.shift){ S.shift=false; if(S.done && S.dec!==null && !isC(S.dec) && !isV(S.dec) && !isM(S.dec)) S.dms = !S.dms; return; }
            freshIfDone(false); insCh('°');
          },
   hyp:   function(){
@@ -1679,7 +2608,7 @@ var HANDLERS = {
              if(S.mode === 'CMPLX'){ freshIfDone(false); insCh('i'); }
              return;
            }
-           if(S.dec === null || isC(S.dec)) return;
+           if(S.dec === null || isC(S.dec) || isV(S.dec) || isM(S.dec)) return;
            S.eng += S.shift ? -1 : 1; S.shift = false; S.showDec = true;
          },
   lp:    function(){ if(S.shift){ S.shift=false; freshIfDone(true); insCh('%'); return; } freshIfDone(false); insCh('('); },
@@ -1691,15 +2620,15 @@ var HANDLERS = {
   sd:    function(){
            if(varAction('sd')) return;
            if(S.dec === null) return;
-           if(isC(S.dec) || S.exact) S.showDec = !S.showDec;
+           if(isC(S.dec) || isV(S.dec) || isM(S.dec) || S.exact) S.showDec = !S.showDec;
            S.dms = false;
          },
   mplus: function(){
            if(S.alpha){ S.alpha=false; freshIfDone(false); insCh('M'); return; }
            if(S.rcl){ S.rcl=false; freshIfDone(false); insCh('M'); return; }
-           if(S.sto){ S.sto=false; if(!S.done) evaluate(); if(!S.err) S.vars.M = S.ans; return; }
+           if(S.sto){ S.sto=false; if(!S.done) evaluate(); if(!S.err && !refuseVectorAnswer()) S.vars.M = S.ans; return; }
            if(!S.done) evaluate();
-           if(S.err) return;
+           if(S.err || refuseVectorAnswer()) return;
            S.vars.M += (S.shift ? -S.ans : S.ans);
            S.shift = false;
          },
@@ -1763,6 +2692,298 @@ function grabPrev(){
   return taken;
 }
 
+/* ---- STAT data editor ---- */
+function statMaxRows(){ return statTwoVar() ? 40 : 80; }
+function statScroll(){
+  var st = S.stat;
+  if(st.row < st.top) st.top = st.row;
+  if(st.row > st.top + 2) st.top = st.row - 2;
+}
+function statMove(dir){
+  var st = S.stat;
+  st.row = Math.max(0, Math.min(st.rows.length, st.row + dir));   /* may rest on the blank next line */
+  statScroll();
+}
+function statClearInput(){ S.root.length = 0; S.cur = {row:S.root, i:0}; S.err = null; }
+/* Evaluates what's typed and stores it in the selected cell; a cell takes any
+   expression (1÷3, √2, sin 30…). Returns false, leaving the input to fix,
+   if it isn't a usable real number. */
+function statCommit(dir){
+  var st = S.stat, src = eRow(S.root);
+  if(src.trim() === '') return true;
+  var v;
+  try{
+    v = clean(ev(parse(src), null));
+    if(isC(v) || typeof v !== 'number' || !isFinite(v) || Math.abs(v) >= 1e100) err('Math ERROR');
+  }catch(e){
+    S.err = (e instanceof CalcError) ? e.msg : 'Syntax ERROR';
+    return false;
+  }
+  if(st.row >= st.rows.length){
+    if(st.rows.length >= statMaxRows()){ S.err = 'Memory ERROR'; return false; }
+    st.rows.push({x:null, y:null});
+    st.row = st.rows.length - 1;
+  }
+  st.rows[st.row][st.col] = v;
+  statClearInput();
+  if(dir) statMove(dir);
+  return true;
+}
+/* True when the editor has dealt with the key; false lets it type into the
+   cell through the normal handlers. */
+function statEditKey(id){
+  var st = S.stat, pending = S.root.length > 0;
+  if(id === 'eq'){ statCommit(1); return true; }
+  if(id === 'up' || id === 'down'){
+    var dir = id === 'up' ? -1 : 1;
+    if(pending && S.cur.row !== S.root && vmoveStruct(dir)) return true;   /* inside a fraction */
+    if(pending && !statCommit(0)) return true;
+    statMove(dir);
+    return true;
+  }
+  if(id === 'left' || id === 'right'){
+    if(pending){ hmove(id === 'left' ? -1 : 1); return true; }
+    if(statTwoVar()) st.col = id === 'left' ? 'x' : 'y';
+    return true;
+  }
+  if(id === 'del'){
+    if(S.shift){ S.shift = false; return true; }
+    if(pending){ S.err = null; del(); return true; }
+    if(st.row < st.rows.length){ st.rows.splice(st.row, 1); statScroll(); }   /* DEL on a line deletes it */
+    return true;
+  }
+  if(id === 'ac'){
+    S.shift = false;
+    if(pending || S.err){ statClearInput(); return true; }
+    S.statEdit = false; clearAll();                     /* AC leaves the editor; the data stays */
+    return true;
+  }
+  /* CALC, M+ and STO would evaluate the half-typed cell as a calculation */
+  if(id === 'calc' || id === 'mplus' || (id === 'rcl' && S.shift)){ S.shift = S.alpha = false; return true; }
+  S.err = null;
+  return false;
+}
+function statCell(v){
+  if(v === null || v === undefined) return '';
+  if(v === Math.round(v) && Math.abs(v) < 1e6) return String(v);
+  var s = v.toPrecision(5);
+  if(s.indexOf('e') >= 0){
+    var m = s.split('e');
+    return m[0].replace(/\.?0+$/, '') + 'E' + m[1].replace('+', '');
+  }
+  return s.indexOf('.') >= 0 ? s.replace(/0+$/, '').replace(/\.$/, '') : s;
+}
+function drawStatEditor(){
+  var st = S.stat, cols = statTwoVar() ? ['x', 'y'] : ['x'];
+  var h = '<div class="stable"><div class="srow shead"><span class="sn"></span>' +
+    cols.map(function(c){ return '<span class="sc">' + c.toUpperCase() + '</span>'; }).join('') + '</div>';
+  for(var i = st.top; i < st.top + 3; i++){
+    var r = st.rows[i];
+    h += '<div class="srow"><span class="sn">' + (i + 1) + '</span>';
+    cols.forEach(function(c){
+      h += '<span class="sc' + (i === st.row && c === st.col ? ' on' : '') + '">' + (r ? statCell(r[c]) : '') + '</span>';
+    });
+    h += '</div>';
+  }
+  elEntry.innerHTML = h + '</div>';
+  /* bottom line: what's being typed, else the selected cell in full */
+  var cur = st.rows[st.row];
+  if(S.err) elResult.innerHTML = S.err;
+  else if(S.root.length) elResult.innerHTML = rRow(S.root);
+  else elResult.innerHTML = (cur && cur[st.col] !== null && cur[st.col] !== undefined) ? decHTML(cur[st.col]) : '';
+  fitResult();
+}
+
+/* ---- VECTOR element editor ---- */
+/* Stores what's typed in the selected element; any expression that comes to
+   a real number will do (1÷3, √2, VctA·VctB…). */
+function vctCommit(){
+  var ed = S.vctEdit, src = eRow(S.root);
+  if(src.trim() === '') return true;
+  var v;
+  try{
+    v = clean(ev(parse(src), null));
+    if(isV(v)) err('Syntax ERROR');
+    if(isC(v) || typeof v !== 'number' || !isFinite(v) || Math.abs(v) >= 1e100) err('Math ERROR');
+  }catch(e){
+    S.err = (e instanceof CalcError) ? e.msg : 'Syntax ERROR';
+    return false;
+  }
+  S.vct[ed.name].e[ed.i] = v === 0 ? 0 : v;
+  statClearInput();
+  return true;
+}
+function vctEditKey(id){
+  var ed = S.vctEdit, n = S.vct[ed.name].e.length, pending = S.root.length > 0;
+  if(id === 'eq'){ if(vctCommit()) ed.i = Math.min(n - 1, ed.i + 1); return true; }
+  if(id === 'left' || id === 'right'){
+    if(pending){ hmove(id === 'left' ? -1 : 1); return true; }
+    ed.i = Math.max(0, Math.min(n - 1, ed.i + (id === 'left' ? -1 : 1)));
+    return true;
+  }
+  if(id === 'up' || id === 'down'){
+    if(pending && S.cur.row !== S.root && vmoveStruct(id === 'up' ? -1 : 1)) return true;
+    if(pending) vctCommit();
+    return true;
+  }
+  if(id === 'del'){
+    if(S.shift){ S.shift = false; return true; }
+    if(pending){ S.err = null; del(); }
+    return true;
+  }
+  if(id === 'ac'){
+    S.shift = false;
+    if(pending || S.err){ statClearInput(); return true; }
+    S.vctEdit = null; clearAll();              /* AC leaves the editor; the vector stays */
+    return true;
+  }
+  if(id === 'calc' || id === 'mplus' || (id === 'rcl' && S.shift)){ S.shift = S.alpha = false; return true; }
+  S.err = null;
+  return false;
+}
+function drawVctEditor(){
+  var ed = S.vctEdit, e = S.vct[ed.name].e;
+  var h = '<div class="stable"><div class="srow"><span>Vct' + ed.name + '(' + e.length + ')</span></div>' +
+    '<div class="srow shead"><span class="sn"></span>' +
+    e.map(function(_, i){ return '<span class="sc">' + (i + 1) + '</span>'; }).join('') + '</div>' +
+    '<div class="srow"><span class="sn"></span>' +
+    e.map(function(x, i){ return '<span class="sc' + (i === ed.i ? ' on' : '') + '">' + statCell(x) + '</span>'; }).join('') +
+    '</div></div>';
+  elEntry.innerHTML = h;
+  if(S.err) elResult.innerHTML = S.err;
+  else if(S.root.length) elResult.innerHTML = rRow(S.root);
+  else elResult.innerHTML = decHTML(e[ed.i]);
+  fitResult();
+}
+
+/* ---- MATRIX element editor ---- */
+function matCommit(){
+  var ed = S.matEdit, src = eRow(S.root);
+  if(src.trim() === '') return true;
+  var v;
+  try{
+    v = clean(ev(parse(src), null));
+    if(isV(v) || isM(v)) err('Syntax ERROR');
+    if(isC(v) || typeof v !== 'number' || !isFinite(v) || Math.abs(v) >= 1e100) err('Math ERROR');
+  }catch(e){
+    S.err = (e instanceof CalcError) ? e.msg : 'Syntax ERROR';
+    return false;
+  }
+  S.mat[ed.name].e[ed.r][ed.c] = v === 0 ? 0 : v;
+  statClearInput();
+  return true;
+}
+function matStep(ed, m, dr, dc){
+  ed.r = Math.max(0, Math.min(m.m - 1, ed.r + dr));
+  ed.c = Math.max(0, Math.min(m.n - 1, ed.c + dc));
+}
+function matEditKey(id){
+  var ed = S.matEdit, m = S.mat[ed.name], pending = S.root.length > 0;
+  if(id === 'eq'){
+    /* = stores and moves on: right along the row, then to the next row */
+    if(matCommit()){
+      if(ed.c < m.n - 1) ed.c++;
+      else if(ed.r < m.m - 1){ ed.r++; ed.c = 0; }
+    }
+    return true;
+  }
+  if(id === 'left' || id === 'right'){
+    if(pending){ hmove(id === 'left' ? -1 : 1); return true; }
+    matStep(ed, m, 0, id === 'left' ? -1 : 1);
+    return true;
+  }
+  if(id === 'up' || id === 'down'){
+    var dir = id === 'up' ? -1 : 1;
+    if(pending && S.cur.row !== S.root && vmoveStruct(dir)) return true;   /* inside a fraction */
+    if(pending && !matCommit()) return true;
+    matStep(ed, m, dir, 0);
+    return true;
+  }
+  if(id === 'del'){
+    if(S.shift){ S.shift = false; return true; }
+    if(pending){ S.err = null; del(); }
+    return true;
+  }
+  if(id === 'ac'){
+    S.shift = false;
+    if(pending || S.err){ statClearInput(); return true; }
+    S.matEdit = null; clearAll();              /* AC leaves the editor; the matrix stays */
+    return true;
+  }
+  if(id === 'calc' || id === 'mplus' || (id === 'rcl' && S.shift)){ S.shift = S.alpha = false; return true; }
+  S.err = null;
+  return false;
+}
+/* A matrix on the LCD: column numbers across the top, row numbers down the
+   side, the selected cell in inverse video. */
+function matTable(name, m, sel){
+  var h = '<div class="stable mtable"><div class="srow shead"><span class="sn">' + name + '</span>';
+  for(var j = 0; j < m.n; j++) h += '<span class="sc">' + (j + 1) + '</span>';
+  h += '</div>';
+  for(var i = 0; i < m.m; i++){
+    h += '<div class="srow"><span class="sn">' + (i + 1) + '</span>';
+    for(var k = 0; k < m.n; k++){
+      h += '<span class="sc' + (sel && sel.r === i && sel.c === k ? ' on' : '') + '">' + statCell(m.e[i][k]) + '</span>';
+    }
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function drawMatEditor(){
+  var ed = S.matEdit, m = S.mat[ed.name];
+  elEntry.innerHTML = matTable('Mat' + ed.name, m, ed);
+  if(S.err) elResult.innerHTML = S.err;
+  else if(S.root.length) elResult.innerHTML = rRow(S.root);
+  else elResult.innerHTML = decHTML(m.e[ed.r][ed.c]);
+  fitResult();
+}
+/* A matrix answer: the MatAns table, with the selected element in full
+   (exactly, e.g. 3/2, until S⇔D) on the bottom line. ◀▶▲▼ move the selection. */
+function drawMatAns(){
+  var m = S.dec, v = S.matView || (S.matView = {r:0, c:0});
+  elEntry.innerHTML = matTable('Ans', m, v);
+  elResult.innerHTML = partHTML(m.e[v.r][v.c]);
+  fitResult();
+}
+function matAnsKey(id){
+  if(!(S.done && !S.err && isM(S.dec))) return false;
+  var v = S.matView || (S.matView = {r:0, c:0});
+  if(id === 'left' || id === 'right'){ v.c = Math.max(0, Math.min(S.dec.n - 1, v.c + (id === 'left' ? -1 : 1))); return true; }
+  if(id === 'up' || id === 'down'){ v.r = Math.max(0, Math.min(S.dec.m - 1, v.r + (id === 'up' ? -1 : 1))); return true; }
+  return false;
+}
+
+/* ---- BASE-N key routing ---- */
+var BN_HEXKEY = {neg:'A', dms:'B', hyp:'C', sin:'D', cos:'E', tan:'F'};
+var BN_BASEKEY = {sq:'DEC', pow:'HEX', log:'BIN', ln:'OCT'};
+/* No meaning for whole numbers (fractions, roots, calculus, decimals, ENG…):
+   swallowed, as on the hardware, rather than half-working. */
+var BN_DEAD = {intg:1, inv:1, calc:1, logb:1, frac:1, sqrt:1, dot:1, exp:1, eng:1};
+
+/* True when BASE-N has dealt with the key; false passes it on to the normal
+   handler (digits, + - × ÷, brackets, =, DEL, AC, memories, arrows…). */
+function baseNKey(id){
+  if(BN_HEXKEY[id]){
+    if(varAction(id)) return true;          /* ALPHA / RCL / STO: the memory A-F */
+    if(S.shift){ S.shift = false; return true; }
+    freshIfDone(false);
+    insCh('#' + BN_HEXKEY[id], BN_HEXKEY[id]);
+    return true;
+  }
+  if(BN_BASEKEY[id]){
+    if(S.shift){ S.shift = false; return true; }
+    S.base = BN_BASEKEY[id];                /* also re-shows an answer in the new base */
+    return true;
+  }
+  if(BN_DEAD[id]){ S.shift = S.alpha = false; return true; }
+  if(id === 'sd'){ varAction('sd'); return true; }   /* memory Y still works; S⇔D does nothing */
+  if(S.shift && (id === 'add' || id === 'sub' || id === 'mul' || id === 'div' ||
+                 id === 'lp' || id === 'rp' || id === 'ans')){
+    S.shift = false; return true;           /* Pol( Rec( nPr nCr % , DRG▶ */
+  }
+  return false;
+}
+
 function trig(base){
   freshIfDone(false);
   var name = base;
@@ -1777,6 +2998,11 @@ function trig(base){
   HANDLERS['d'+d] = function(){
     if(S.menu){ S.menu.pick(d); return; }
     if(S.shift && d === '2' && S.mode === 'CMPLX'){ S.shift = false; openCmplx(); return; }
+    if(S.shift && d === '1' && S.mode === 'STAT'){ S.shift = false; openStat(); return; }
+    if(S.shift && d === '5' && S.mode === 'VECTOR'){ S.shift = false; openVector(); return; }
+    if(S.shift && d === '4' && S.mode === 'MATRIX'){ S.shift = false; openMatrix(); return; }
+    if(S.shift && d === '3' && S.mode === 'BASE-N'){ S.shift = false; openBase(); return; }
+    if(S.shift && d === '0' && S.mode === 'BASE-N'){ S.shift = false; return; }   /* no Rnd( here */
     if(S.shift && d === '0'){ S.shift = false; freshIfDone(false); insCh('Rnd(','Rnd('); return; }
     if(S.shift && d === '9'){ S.shift = false; openClr(); return; }
     if(S.sto || S.rcl){ S.sto=S.rcl=false; }
@@ -1793,18 +3019,23 @@ function hmove(dir){
   if(t < 0 || t >= list.length) return;
   S.cur = {row:list[t].row, i:list[t].i};
 }
-function vmove(dir){
+/* Up/down between the parts of a fraction, limits of an integral… Returns
+   false when there's nowhere to go. */
+function vmoveStruct(dir){
   var path = findPath(S.cur.row);
-  if(path){
-    for(var i=path.length-1; i>=0; i--){
-      var ks = parts(path[i].item), j = ks.indexOf(path[i].key), t = j + dir;
-      if(t >= 0 && t < ks.length){
-        var row = path[i].item[ks[t]];
-        S.cur = {row:row, i:row.length};
-        return;
-      }
+  if(!path) return false;
+  for(var i=path.length-1; i>=0; i--){
+    var ks = parts(path[i].item), j = ks.indexOf(path[i].key), t = j + dir;
+    if(t >= 0 && t < ks.length){
+      var row = path[i].item[ks[t]];
+      S.cur = {row:row, i:row.length};
+      return true;
     }
   }
+  return false;
+}
+function vmove(dir){
+  if(vmoveStruct(dir)) return;
   /* history browse */
   if(!S.hist.length) return;
   var n = S.histIdx + (dir<0 ? 1 : -1);
@@ -1825,18 +3056,19 @@ var TOP = [
   {nav:true},
   {id:'mode', main:'MODE', s:'SETUP', cls:'k fn sm'},
   {id:'on',   main:'ON', cls:'k on'},
+  /* as on the fx-991ES PLUS: CALC and ∫ left of the pad, x⁻¹ and log□ right */
+  {id:'calc', main:'CALC', s:'SOLVE', cls:'k fn sm'},
   {id:'intg', main:'&int;dx', s:'d/dx', cls:'k fn sm'},
   {id:'inv',  main:'x<span class="sup">⁻¹</span>', s:'x!', cls:'k fn sm'},
-  {id:'calc', main:'CALC', s:'SOLVE', cls:'k fn sm'},
   {id:'logb', main:'log<span class="sub">□</span>□', s:'Σ', cls:'k fn sm'}
 ];
 var FN = [
   {id:'frac', main:'<span class="frac"><span class="num">□</span><span class="den">□</span></span>', s:'a<sup>b</sup>/<sub>c</sub>', cls:'k fn'},
   {id:'sqrt', main:'&radic;□', s:'&#8731;□', cls:'k fn'},
-  {id:'sq',   main:'x<span class="sup">2</span>', s:'x<sup>3</sup>', cls:'k fn'},
-  {id:'pow',  main:'x<span class="sup">■</span>', s:'<sup>x</sup>&radic;□', cls:'k fn'},
-  {id:'log',  main:'log', s:'10<sup>x</sup>', cls:'k fn'},
-  {id:'ln',   main:'ln', s:'e<sup>x</sup>', cls:'k fn'},
+  {id:'sq',   main:'x<span class="sup">2</span>', s:'x<sup>3</sup>', b:'DEC', cls:'k fn'},
+  {id:'pow',  main:'x<span class="sup">■</span>', s:'<sup>x</sup>&radic;□', b:'HEX', cls:'k fn'},
+  {id:'log',  main:'log', s:'10<sup>x</sup>', b:'BIN', cls:'k fn'},
+  {id:'ln',   main:'ln', s:'e<sup>x</sup>', b:'OCT', cls:'k fn'},
 
   {id:'neg',  main:'(&minus;)', s:'&ang;', a:'A', cls:'k fn sm'},
   {id:'dms',  main:'°′″', s:'←°′″', a:'B', cls:'k fn sm'},
@@ -1856,10 +3088,10 @@ var NUM = [
   {id:'d7', main:'7', cls:'k num'}, {id:'d8', main:'8', cls:'k num'}, {id:'d9', main:'9', s:'CLR', cls:'k num'},
   {id:'del', main:'DEL', s:'INS', cls:'k ac sm'}, {id:'ac', main:'AC', s:'OFF', cls:'k ac sm'},
 
-  {id:'d4', main:'4', cls:'k num'}, {id:'d5', main:'5', cls:'k num'}, {id:'d6', main:'6', cls:'k num'},
+  {id:'d4', main:'4', s:'MATRIX', cls:'k num'}, {id:'d5', main:'5', s:'VECTOR', cls:'k num'}, {id:'d6', main:'6', cls:'k num'},
   {id:'mul', main:'&times;', s:'nPr', cls:'k'}, {id:'div', main:'&divide;', s:'nCr', cls:'k'},
 
-  {id:'d1', main:'1', cls:'k num'}, {id:'d2', main:'2', s:'CMPLX', cls:'k num'}, {id:'d3', main:'3', cls:'k num'},
+  {id:'d1', main:'1', s:'STAT', cls:'k num'}, {id:'d2', main:'2', s:'CMPLX', cls:'k num'}, {id:'d3', main:'3', s:'BASE', cls:'k num'},
   {id:'add', main:'+', s:'Pol(', cls:'k'}, {id:'sub', main:'&minus;', s:'Rec(', cls:'k'},
 
   {id:'d0', main:'0', s:'Rnd', cls:'k num'}, {id:'dot', main:'.', s:'Ran#', a:'RanInt', cls:'k num'},
@@ -1872,7 +3104,8 @@ function buildKey(k){
   wrap.className = 'kw';
   var lbl = document.createElement('div');
   lbl.className = 'lbl';
-  lbl.innerHTML = '<s>'+(k.s||'')+'</s><u>'+(k.a||'')+'</u>';
+  /* right-hand legend: the green BASE-N one if the key has it, else the red ALPHA one */
+  lbl.innerHTML = '<s>'+(k.s||'')+'</s>' + (k.b ? '<em>'+k.b+'</em>' : '<u>'+(k.a||'')+'</u>');
   var b = document.createElement('button');
   b.className = k.cls;
   b.type = 'button';
@@ -1915,14 +3148,22 @@ function mount(){
 function press(id){
   if(S.menu){
     if(id === 'ac' || id === 'on'){ S.menu = null; draw(); return; }
+    if((id === 'up' || id === 'down') && S.menu.turn){ S.menu.turn(id); draw(); return; }
     if(/^d[0-9]$/.test(id)){ S.menu.pick(id.slice(1)); draw(); return; }
     draw();
     return;
   }
-  var h = HANDLERS[id];
-  if(!h){ draw(); return; }
   var wasShift = S.shift, wasAlpha = S.alpha;
-  h();
+  var handled = (S.mode === 'BASE-N' && baseNKey(id)) ||
+                (S.mode === 'STAT' && S.statEdit && statEditKey(id)) ||
+                (S.mode === 'VECTOR' && S.vctEdit && vctEditKey(id)) ||
+                (S.mode === 'MATRIX' && S.matEdit && matEditKey(id)) ||
+                (S.mode === 'MATRIX' && !S.matEdit && matAnsKey(id));
+  if(!handled){
+    var h = HANDLERS[id];
+    if(!h){ draw(); return; }
+    h();
+  }
   if(id !== 'shift' && wasShift && S.shift) S.shift = false;
   if(id !== 'alpha' && wasAlpha && S.alpha) S.alpha = false;
   draw();
@@ -1969,6 +3210,10 @@ function draw(){
     '<b class="'+(S.rcl?'on':'')+'">RCL</b>'+
     '<b class="'+(S.hyp?'on':'')+'">hyp</b>'+
     (S.mode === 'CMPLX' ? '<b class="on">CMPLX</b>' : '')+
+    (S.mode === 'STAT' ? '<b class="on">STAT</b>' : '')+
+    (S.mode === 'VECTOR' ? '<b class="on">VCT</b>' : '')+
+    (S.mode === 'MATRIX' ? '<b class="on">MAT</b>' : '')+
+    (S.mode === 'BASE-N' ? '<b class="on">'+({DEC:'Dec',HEX:'Hex',BIN:'Bin',OCT:'Oct'})[S.base]+'</b>' : '')+
     '<span class="sp"></span>'+
     '<b class="on">'+(S.angle==='D'?'D':S.angle==='R'?'R':'G')+'</b>'+
     '<b class="'+(f.t!=='Norm'?'on':'')+'">'+(f.t==='Fix'?'FIX':f.t==='Sci'?'SCI':'FIX')+'</b>'+
@@ -1989,6 +3234,10 @@ function draw(){
     elResult.innerHTML = '';
     return;
   }
+  if(S.mode === 'STAT' && S.statEdit && S.stat){ drawStatEditor(); return; }
+  if(S.mode === 'VECTOR' && S.vctEdit && S.vct){ drawVctEditor(); return; }
+  if(S.mode === 'MATRIX' && S.matEdit && S.mat){ drawMatEditor(); return; }
+  if(S.done && !S.err && isM(S.dec)){ drawMatAns(); return; }
 
   var pre = '';
   if(S.prompt && S.prompt.list.length){
@@ -2046,6 +3295,7 @@ var ZKEY = 'sc.zoom.v1';
 
 function applyZoom(){
   document.documentElement.style.setProperty('--zoom', String(S.zoom));
+  document.documentElement.classList.toggle('fit', S.zoom === 1);
   var out = document.getElementById('zoomval');
   if(out) out.textContent = Math.round(S.zoom * 100) + '%';
   var minus = document.getElementById('zoomout'), plus = document.getElementById('zoomin');
@@ -2088,6 +3338,9 @@ function boot(){
   mount();
   initZoom();
   document.addEventListener('keydown', onKey);
+  /* Rotating, resizing a split-screen window or folding/unfolding changes the
+     display's width, so a long answer that was shrunk to fit must be re-fitted. */
+  window.addEventListener('resize', function(){ draw(); });
   draw();
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
@@ -2104,8 +3357,113 @@ window.__fx = {
   exact:function(x, hadDot){ return exactHTML(x, !!hadDot); },
   dec:decHTML,
   zoom:function(d){ stepZoom(d); return S.zoom; },
-  reset:function(){ clearAll(); S.mode='COMP'; S.polar=false; S.angle='D'; S.io='Math'; S.fmt={t:'Norm',n:1}; S.vars={A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0}; S.ans=0; S.hist=[]; draw(); }
+  reset:function(){ clearAll(); S.mode='COMP'; S.base='DEC'; S.stat=null; S.statEdit=false; S.vct=null; S.vctEdit=null; S.mat=null; S.matEdit=null; S.matView=null; S.polar=false; S.angle='D'; S.io='Math'; S.fmt={t:'Norm',n:1}; S.vars={A:0,B:0,C:0,D:0,E:0,F:0,X:0,Y:0,M:0}; S.ans=0; S.hist=[]; draw(); }
 };
+})();
+</script>
+
+<script>
+/* ---- keep the working state across visits ---- */
+(function(){
+  var KEY = 'sc.state.v1';
+  function save(){
+    try{
+      var S = window.__fx.S;
+      localStorage.setItem(KEY, JSON.stringify({
+        root:S.root, vars:S.vars, ans:S.ans, angle:S.angle, io:S.io, fmt:S.fmt,
+        mode:S.mode, base:S.base, stat:S.stat, statEdit:S.statEdit, vct:S.vct, vctEdit:S.vctEdit, mat:S.mat, matEdit:S.matEdit,
+        exact:S.exact, dec:S.dec, showDec:S.showDec, done:S.done, hist:S.hist.slice(0,10)
+      }));
+    }catch(e){}
+  }
+  function restore(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return;
+      var d = JSON.parse(raw), S = window.__fx.S;
+      S.root.length = 0;
+      (d.root || []).forEach(function(it){ S.root.push(it); });
+      S.cur = {row:S.root, i:S.root.length};
+      if(d.vars) S.vars = d.vars;
+      S.ans = d.ans || 0;
+      S.angle = d.angle || 'D';
+      S.io = d.io || 'Math';
+      if(d.fmt) S.fmt = d.fmt;
+      /* The mode comes back too: a saved BASE-N entry such as FF is not
+         valid input in COMP, and the hardware keeps its mode across power-off. */
+      if(['COMP','CMPLX','BASE-N','STAT','VECTOR','MATRIX'].indexOf(d.mode) >= 0) S.mode = d.mode;
+      var okNum = function(x){ return typeof x === 'number' && isFinite(x); };
+      var okMat = function(m){
+        return !!m && Array.isArray(m.e) && m.e.length >= 1 && m.e.length <= 3 &&
+          Array.isArray(m.e[0]) && m.e[0].length >= 1 && m.e[0].length <= 3 &&
+          m.e.every(function(row){ return Array.isArray(row) && row.length === m.e[0].length && row.every(okNum); });
+      };
+      if(S.mode === 'MATRIX'){
+        var sm = d.mat && typeof d.mat === 'object' ? d.mat : {};
+        S.mat = {};
+        ['A','B','C','Ans'].forEach(function(k){
+          S.mat[k] = okMat(sm[k]) ? {mat:1, m:sm[k].e.length, n:sm[k].e[0].length,
+                                     e:sm[k].e.map(function(row){ return row.slice(); })} : null;
+        });
+        var me = d.matEdit;
+        S.matEdit = (me && ['A','B','C'].indexOf(me.name) >= 0 && S.mat[me.name]) ? {name:me.name, r:0, c:0} : null;
+      }
+      if(S.mode === 'VECTOR'){
+        var okVec = function(v){
+          return !!v && Array.isArray(v.e) && (v.e.length === 2 || v.e.length === 3) &&
+            v.e.every(function(x){ return typeof x === 'number' && isFinite(x); });
+        };
+        var sv = d.vct && typeof d.vct === 'object' ? d.vct : {};
+        S.vct = {};
+        ['A','B','C','Ans'].forEach(function(k){ S.vct[k] = okVec(sv[k]) ? {vec:1, e:sv[k].e.slice()} : null; });
+        var ve = d.vctEdit;
+        S.vctEdit = (ve && ['A','B','C'].indexOf(ve.name) >= 0 && S.vct[ve.name]) ? {name:ve.name, i:0} : null;
+      }
+      if(['DEC','HEX','BIN','OCT'].indexOf(d.base) >= 0) S.base = d.base;
+      /* A data table is real work; losing it to the app being closed would be
+         worse than any calculation. Only well-formed rows come back. */
+      if(S.mode === 'STAT'){
+        var TYPES = ['1VAR','LIN','QUAD','LOG','EEXP','ABEXP','POW','INV'];
+        var ok = function(v){ return v === null || (typeof v === 'number' && isFinite(v)); };
+        var st = d.stat && typeof d.stat === 'object' ? d.stat : {};
+        S.stat = {
+          type: TYPES.indexOf(st.type) >= 0 ? st.type : '1VAR',
+          rows: (Array.isArray(st.rows) ? st.rows : [])
+            .filter(function(r){ return r && ok(r.x) && ok(r.y); })
+            .slice(0, 80)
+            .map(function(r){ return {x:r.x, y:r.y}; }),
+          row:0, col:'x', top:0
+        };
+        S.statEdit = !!d.statEdit;
+      }
+      S.exact = d.exact || null;
+      S.dec = (d.dec === undefined ? null : d.dec);
+      S.showDec = !!d.showDec;
+      S.done = !!d.done;
+      /* a saved vector or matrix answer comes back only in its own mode and
+         well-formed */
+      if(S.dec && typeof S.dec === 'object' && S.dec.vec === 1 &&
+         !(S.mode === 'VECTOR' && Array.isArray(S.dec.e) && S.dec.e.every(okNum))){
+        S.dec = S.exact = null; S.done = false;
+      }
+      if(S.dec && typeof S.dec === 'object' && S.dec.mat === 1){
+        if(S.mode === 'MATRIX' && okMat(S.dec)){
+          S.dec = {mat:1, m:S.dec.e.length, n:S.dec.e[0].length, e:S.dec.e.map(function(row){ return row.slice(); })};
+          S.matView = {r:0, c:0};
+        } else { S.dec = S.exact = null; S.done = false; }
+      }
+      S.hist = d.hist || [];
+      window.__fx.draw();
+    }catch(e){}
+  }
+  function start(){
+    restore();
+    document.addEventListener('visibilitychange', function(){ if(document.hidden) save(); });
+    window.addEventListener('pagehide', save);
+    setInterval(save, 4000);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 </script>
 
@@ -2129,6 +3487,10 @@ window.__fx = {
       CMPLX and work in <span class="mono">a+bi</span> &mdash; arithmetic, powers,
       roots of negatives, modulus, argument and conjugate, with an
       <span class="mono">r&ang;&theta;</span> polar view.</span></li>
+      <li><b>Statistics, matrices and more</b><span><kbd>MODE</kbd> also gives
+      STAT (averages, standard deviation and seven kinds of regression), BASE-N
+      (decimal, hex, binary and octal), and up to 3&times;3 MATRIX and 2D/3D
+      VECTOR work &mdash; determinants, inverses, dot and cross products.</span></li>
       <li><b>Nothing leaves your device</b><span>The calculator is one
       file running in your browser. No account, no ads, and not one of your
       calculations is sent anywhere. Visits are counted with a cookieless beacon that stores nothing about you personally.</span></li>

@@ -330,7 +330,23 @@ answer to give.</p>
 <tr><td class="mono">0.5!</td><td>Factorials are defined for whole numbers only.</td></tr>
 <tr><td class="mono">(&minus;8)^(1&frasl;3)</td><td>A negative to a fractional power is undefined in the reals &mdash; use the cube-root key, which gives &minus;2.</td></tr>
 <tr><td>Something enormous</td><td>Past roughly 10&sup3;&#x2070;&#x2070; there is nowhere to put the digits.</td></tr>
+<tr><td>The inverse of a matrix with determinant 0</td><td>A singular matrix has no inverse, just as 0 has no reciprocal.</td></tr>
 </tbody></table></div>
+
+<h2>Dimension ERROR: the sizes do not fit</h2>
+<p>Only in MATRIX and VECTOR modes. You asked for something between two objects
+whose sizes do not go together:</p>
+<ul>
+  <li>adding or subtracting a 2&times;2 matrix and a 2&times;3 one, or a 2D and a
+  3D vector;</li>
+  <li>multiplying matrices where the columns of the first do not match the rows of
+  the second;</li>
+  <li>a determinant, inverse or power of a matrix that is not square;</li>
+  <li>a cross product of 2D vectors (it only exists in 3D);</li>
+  <li>using a matrix or vector that has not been given a size yet.</li>
+</ul>
+<p>Mixing kinds that never go together &mdash; a matrix plus a plain number,
+<code>sin</code> of a vector &mdash; is a <strong>Syntax ERROR</strong> instead.</p>
 
 <h2>The angle-mode trap</h2>
 <p>If <code>tan(90)</code> errors and you expected a number, check the

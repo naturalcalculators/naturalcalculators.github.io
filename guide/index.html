@@ -426,6 +426,25 @@ under the keypad scale the whole calculator, from 70% up to 200%. Useful on a
 large monitor, on a phone, or if you are projecting it for a class. The size is
 remembered the next time you visit.</p>
 
+<h2>Modes</h2>
+<p><kbd>MODE</kbd> picks what kind of maths the calculator does. Switching mode
+clears the screen, and anything the old mode was holding (a data table, a
+matrix). A small tag at the top of the display shows the mode you are in.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Press</th><th>Mode</th><th>What it is for</th></tr></thead>
+<tbody>
+<tr><td><kbd>MODE</kbd> <kbd>1</kbd></td><td>COMP</td><td>Ordinary calculations. Where you start.</td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>2</kbd></td><td>CMPLX</td><td>Complex numbers. <a href="/complex-numbers/">Its own guide.</a></td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>3</kbd></td><td>STAT</td><td>Pick a type (1-VAR, or one of seven regressions such as A+BX), then type your data into the table, pressing <kbd>=</kbd> after each value. <kbd>AC</kbd> leaves the table. <kbd>SHIFT</kbd> <kbd>1</kbd> (STAT) then gives the sums, mean, standard deviations, regression coefficients and estimates like <span class="mono">&ycirc;</span>.</td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>4</kbd></td><td>BASE-N</td><td>Whole numbers in decimal, hex, binary or octal. The green DEC / HEX / BIN / OCT keys switch base; <kbd>SHIFT</kbd> <kbd>3</kbd> (BASE) gives and, or, xor, Not and Neg.</td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>6</kbd></td><td>MATRIX</td><td>Choose MatA, B or C and a size up to 3&times;3, then fill it in. <kbd>SHIFT</kbd> <kbd>4</kbd> (MATRIX) inserts the matrices, <span class="mono">det(</span> and <span class="mono">Trn(</span>; <span class="mono">x&#8315;&sup1;</span> gives the inverse. Answers appear as a table &mdash; move around it with the arrow keys.</td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>8</kbd></td><td>VECTOR</td><td>2D or 3D vectors VctA, B and C. <kbd>SHIFT</kbd> <kbd>5</kbd> (VECTOR) inserts them and <span class="mono">Dot</span>; <kbd>&times;</kbd> between two vectors is the cross product, and <span class="mono">Abs(</span> gives the length.</td></tr>
+</tbody></table></div>
+<p>Anything that makes no sense &mdash; adding a 2&times;2 matrix to a 2&times;3 one,
+or a vector to a plain number &mdash; gives an error rather than a guess:
+<span class="mono">Dimension ERROR</span> when the sizes do not fit,
+<span class="mono">Syntax ERROR</span> when the kinds do not mix.</p>
+
 <h2>SETUP</h2>
 <p><kbd>SHIFT</kbd> <kbd>MODE</kbd> opens the settings:</p>
 <ul>
