@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes</title>
-<meta name="description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
-<link rel="canonical" href="https://naturalcalculators.github.io/errors/index.html">
+<title>Statistics on a Scientific Calculator — Mean, Standard Deviation, Regression</title>
+<meta name="description" content="How to use STAT mode: enter data, get the mean and standard deviation, fit a line or curve of best fit, read the correlation r, and predict new values.">
+<link rel="canonical" href="https://naturalcalculators.github.io/statistics/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes">
-<meta property="og:description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
-<meta property="og:url" content="https://naturalcalculators.github.io/errors/index.html">
+<meta property="og:title" content="Statistics on a Scientific Calculator — Mean, Standard Deviation, Regression">
+<meta property="og:description" content="How to use STAT mode: enter data, get the mean and standard deviation, fit a line or curve of best fit, read the correlation r, and predict new values.">
+<meta property="og:url" content="https://naturalcalculators.github.io/statistics/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -282,115 +282,133 @@ td .mono{white-space:nowrap}
   <a href="/scientific-notation/">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
   <a href="/complex-numbers/">Complex numbers</a>
-  <a href="/statistics/">Statistics &amp; regression</a>
+  <a href="/statistics/" aria-current="page">Statistics &amp; regression</a>
   <a href="/matrices/">Matrices</a>
   <a href="/vectors/">Vectors</a>
   <a href="/base-n/">Binary, hex &amp; octal</a>
-  <a href="/errors/" aria-current="page">Errors &amp; fixes</a>
+  <a href="/errors/">Errors &amp; fixes</a>
 </div>
 </details>
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
 <p class="kicker">Guide</p>
-<h1>Math ERROR and Syntax ERROR</h1>
-<p class="standfirst">Two messages cover nearly every error a scientific calculator can produce. Each has a short, boring list of causes.</p>
+<h1>Statistics and regression</h1>
+<p class="standfirst">Type your data into a table once, then ask for any statistic you like &mdash; averages, spreads, and the line or curve that fits best.</p>
 
-<h2>First: you have not lost your work</h2>
-<p>When an error appears, press <kbd>&#9664;</kbd> or <kbd>&#9654;</kbd>. Your
-expression comes back with the cursor in it, ready to edit. You do not have to
-retype anything.</p>
-<p><kbd>AC</kbd> clears the line completely. Use it only when you actually want to
-start again.</p>
-
-<h2>Syntax ERROR: the expression is not valid</h2>
-<p>The calculator could not read what you typed. It has not attempted any
-arithmetic. Almost always one of these:</p>
+<h2>Getting into STAT mode</h2>
+<p>Press <kbd>MODE</kbd> <kbd>3</kbd>. The calculator asks what kind of
+statistics you want:</p>
 <div class="tablewrap"><table>
-<thead><tr><th>Cause</th><th>Looks like</th></tr></thead>
+<thead><tr><th>Press</th><th>Type</th><th>Fits</th></tr></thead>
 <tbody>
-<tr><td>Unbalanced brackets</td><td><code>(3+2))&times;4</code> &mdash; one too many closing brackets</td></tr>
-<tr><td>An operator with nothing to work on</td><td><code>5 &times; &divide; 2</code>, or a line ending in <code>+</code></td></tr>
-<tr><td>Two numbers with nothing between them</td><td>usually a stray digit left behind after editing</td></tr>
-<tr><td>A function with an empty bracket</td><td><code>sin( )</code></td></tr>
-<tr><td>Minus used as a negative sign</td><td><code>&minus;5</code> typed with the subtraction key where <kbd>(&minus;)</kbd> was needed</td></tr>
+<tr><td><kbd>1</kbd></td><td>1-VAR</td><td>One list of numbers &mdash; averages and spread, no fitting</td></tr>
+<tr><td><kbd>2</kbd></td><td>A+BX</td><td>A straight line, <span class="mono">y = A + Bx</span></td></tr>
+<tr><td><kbd>3</kbd></td><td>_+CX&sup2;</td><td>A parabola, <span class="mono">y = A + Bx + Cx&sup2;</span></td></tr>
+<tr><td><kbd>4</kbd></td><td>ln X</td><td><span class="mono">y = A + B&thinsp;ln&thinsp;x</span></td></tr>
+<tr><td><kbd>5</kbd></td><td>e^X</td><td><span class="mono">y = A&thinsp;e<sup>Bx</sup></span></td></tr>
+<tr><td><kbd>6</kbd></td><td>A&middot;B^X</td><td><span class="mono">y = A&middot;B<sup>x</sup></span></td></tr>
+<tr><td><kbd>&#9660;</kbd> <kbd>7</kbd></td><td>A&middot;X^B</td><td><span class="mono">y = A&middot;x<sup>B</sup></span></td></tr>
+<tr><td><kbd>&#9660;</kbd> <kbd>8</kbd></td><td>1/X</td><td><span class="mono">y = A + B&frasl;x</span></td></tr>
 </tbody></table></div>
-<p>Extra <em>closing</em> brackets are the most common by a distance, because
-functions like <kbd>sin</kbd> and <kbd>log</kbd> open a bracket for you
-automatically and it is easy to close it twice. You never need a closing bracket
-at the very end of a line &mdash; the calculator supplies them.</p>
+<p>A <strong>STAT</strong> marker appears at the top of the display. Changing to
+another mode throws the data away, so finish with it first.</p>
+<p>The ln X, e^X, A&middot;B^X and A&middot;X^B fits work through logarithms, so
+they need positive data &mdash; positive x for ln X and A&middot;X^B, positive y
+for e^X, A&middot;B^X and A&middot;X^B. A zero or negative value there gives Math
+ERROR.</p>
 
-<h2>Math ERROR: the expression is valid but the answer is not a number</h2>
-<p>Here the calculator understood you perfectly and tried. There is simply no
-answer to give.</p>
+<h2>Entering data</h2>
+<p>You land straight in a table. Type a value and press <kbd>=</kbd>; the value
+drops into the table and the cursor moves down a line. Keep going until the list
+is done. Anything that works out to a number will do, so <code>1&divide;3</code>
+or <code>&radic;2</code> is fine as an entry.</p>
+<p>For the two-variable types the table has an <strong>X</strong> and a
+<strong>Y</strong> column. The easy way: type every X value first, then press
+<kbd>&#9654;</kbd> to move to the Y column, <kbd>&#9650;</kbd> back up to line 1,
+and type the Y values the same way.</p>
+<ul>
+  <li><kbd>&#9650;</kbd> <kbd>&#9660;</kbd> <kbd>&#9664;</kbd> <kbd>&#9654;</kbd>
+  move around the table. Typing over a cell and pressing <kbd>=</kbd> replaces it.</li>
+  <li><kbd>DEL</kbd> on a line (with nothing typed) deletes that whole line.</li>
+  <li><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>2</kbd> (Edit) gives <strong>Ins</strong>,
+  a new blank line above the cursor, and <strong>Del-A</strong>, which empties
+  the whole table.</li>
+  <li><kbd>AC</kbd> leaves the table. The data stays; <kbd>SHIFT</kbd>
+  <kbd>1</kbd> <kbd>2</kbd> (Data) opens it again.</li>
+</ul>
+<div class="callout"><b>One value per line.</b> There is no frequency column, so a
+value that occurs three times is typed in three times. And a line left blank is
+never quietly treated as 0 &mdash; every statistic gives Math ERROR until you fill
+it in or delete it.</div>
+
+<h2>Reading the results</h2>
+<p>With the table closed, <kbd>SHIFT</kbd> <kbd>1</kbd> (STAT) opens the menu.
+Pick a group, then the value you want, and it is typed into the line like any
+other number &mdash; press <kbd>=</kbd> to see it, or keep calculating with it.</p>
 <div class="tablewrap"><table>
-<thead><tr><th>You asked for</th><th>Why there is no answer</th></tr></thead>
+<thead><tr><th>Press</th><th>Group</th><th>Holds</th></tr></thead>
 <tbody>
-<tr><td class="mono">1 &divide; 0</td><td>Division by zero is undefined. This includes dividing by a variable that happens to hold zero.</td></tr>
-<tr><td class="mono">&radic;&minus;4</td><td>No real number squares to a negative. Works in <a href="/complex-numbers/">CMPLX mode</a>, where it is 2i.</td></tr>
-<tr><td class="mono">log(&minus;2)</td><td>Logarithms of zero and negatives are undefined.</td></tr>
-<tr><td class="mono">tan(90&deg;)</td><td>The tangent is genuinely infinite there.</td></tr>
-<tr><td class="mono">sin&#8315;&sup1;(2)</td><td>Sine never exceeds 1, so nothing has a sine of 2.</td></tr>
-<tr><td class="mono">0.5!</td><td>Factorials are defined for whole numbers only.</td></tr>
-<tr><td class="mono">(&minus;8)^(1&frasl;3)</td><td>A negative to a fractional power is undefined in the reals &mdash; use the cube-root key, which gives &minus;2.</td></tr>
-<tr><td>Something enormous</td><td>Past roughly 10&sup3;&#x2070;&#x2070; there is nowhere to put the digits.</td></tr>
-<tr><td>The inverse of a matrix with determinant 0</td><td>A singular matrix has no inverse, just as 0 has no reciprocal.</td></tr>
+<tr><td><kbd>3</kbd></td><td>Sum</td><td><span class="mono">&Sigma;x, &Sigma;x&sup2;</span>, and for paired data <span class="mono">&Sigma;y, &Sigma;y&sup2;, &Sigma;xy, &Sigma;x&sup3;, &Sigma;x&sup2;y, &Sigma;x&#8308;</span></td></tr>
+<tr><td><kbd>4</kbd></td><td>Var</td><td><span class="mono">n</span>, the mean <span class="mono">x&#772;</span>, and the two standard deviations <span class="mono">x&sigma;n</span> and <span class="mono">x&sigma;n&minus;1</span> (plus the same for y)</td></tr>
+<tr><td><kbd>5</kbd></td><td>Reg</td><td>The fitted <span class="mono">A</span>, <span class="mono">B</span> (and <span class="mono">C</span>), the correlation <span class="mono">r</span>, and the estimates <span class="mono">x&#770;</span> and <span class="mono">y&#770;</span></td></tr>
+<tr><td><kbd>6</kbd></td><td>MinMax</td><td>The smallest and largest x (and y)</td></tr>
 </tbody></table></div>
 
-<h2>Dimension ERROR: the sizes do not fit</h2>
-<p>Only in MATRIX and VECTOR modes. You asked for something between two objects
-whose sizes do not go together:</p>
-<ul>
-  <li>adding or subtracting a 2&times;2 matrix and a 2&times;3 one, or a 2D and a
-  3D vector;</li>
-  <li>multiplying matrices where the columns of the first do not match the rows of
-  the second;</li>
-  <li>a determinant, inverse or power of a matrix that is not square;</li>
-  <li>a cross product of 2D vectors (it only exists in 3D);</li>
-  <li>using a matrix or vector that has not been given a size yet.</li>
-</ul>
-<p>Mixing kinds that never go together &mdash; a matrix plus a plain number,
-<code>sin</code> of a vector &mdash; is a <strong>Syntax ERROR</strong> instead.</p>
+<h2>Example: one list of numbers</h2>
+<p><kbd>MODE</kbd> <kbd>3</kbd> <kbd>1</kbd>, then enter
+<code>2 4 4 4 5 5 7 9</code>, pressing <kbd>=</kbd> after each, and
+<kbd>AC</kbd>.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>You press</th><th>You get</th></tr></thead>
+<tbody>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>4</kbd> <kbd>1</kbd> <kbd>=</kbd> &nbsp;(n)</td><td class="mono">8</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>4</kbd> <kbd>2</kbd> <kbd>=</kbd> &nbsp;(x&#772;)</td><td class="mono">5</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>4</kbd> <kbd>3</kbd> <kbd>=</kbd> &nbsp;(x&sigma;n)</td><td class="mono">2</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>4</kbd> <kbd>4</kbd> <kbd>=</kbd> &nbsp;(x&sigma;n&minus;1)</td><td class="mono">4&radic;14&frasl;7 &nbsp;= 2.138089935</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>3</kbd> <kbd>2</kbd> <kbd>=</kbd> &nbsp;(&Sigma;x)</td><td class="mono">40</td></tr>
+</tbody></table></div>
+<h3>Which standard deviation?</h3>
+<p><span class="mono">x&sigma;n</span> divides by <em>n</em>: use it when your
+numbers are the whole population. <span class="mono">x&sigma;n&minus;1</span>
+divides by <em>n&minus;1</em>: use it when they are a sample and you want to
+estimate the spread of the population they came from. Most statistics courses
+want <span class="mono">x&sigma;n&minus;1</span> unless told otherwise.</p>
 
-<h2>The angle-mode trap</h2>
-<p>If <code>tan(90)</code> errors and you expected a number, check the
-<strong>D</strong> or <strong>R</strong> at the top of the display. In degrees,
-tan 90&deg; is undefined and the error is correct. In radians, 90 radians is
-about 14 full turns and gives a perfectly ordinary answer.</p>
-<p>The reverse bites harder: in the wrong mode you often get <em>no</em> error at
-all, just a wrong number. <a href="/degrees-radians/">That is worth a page of its
-own.</a></p>
+<h2>Example: a line of best fit</h2>
+<p><kbd>MODE</kbd> <kbd>3</kbd> <kbd>2</kbd> (A+BX). Enter X as
+<code>1 2 3 4 5</code> and Y as <code>2 4 5 4 5</code>, then <kbd>AC</kbd>.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>You press</th><th>You get</th></tr></thead>
+<tbody>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>5</kbd> <kbd>1</kbd> <kbd>=</kbd> &nbsp;(A, the intercept)</td><td class="mono">11&frasl;5 = 2.2</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>5</kbd> <kbd>2</kbd> <kbd>=</kbd> &nbsp;(B, the slope)</td><td class="mono">3&frasl;5 = 0.6</td></tr>
+<tr><td><kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>5</kbd> <kbd>3</kbd> <kbd>=</kbd> &nbsp;(r)</td><td class="mono">&radic;15&frasl;5 = 0.7745966692</td></tr>
+<tr><td><code>6</code> <kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>5</kbd> <kbd>5</kbd> <kbd>=</kbd> &nbsp;(y&#770; at x = 6)</td><td class="mono">29&frasl;5 = 5.8</td></tr>
+<tr><td><code>5</code> <kbd>SHIFT</kbd> <kbd>1</kbd> <kbd>5</kbd> <kbd>4</kbd> <kbd>=</kbd> &nbsp;(x&#770; for y = 5)</td><td class="mono">14&frasl;3 = 4.666666667</td></tr>
+</tbody></table></div>
+<p>So the line is <span class="mono">y = 2.2 + 0.6x</span>. Note that the value
+goes <em>before</em> <span class="mono">y&#770;</span> and
+<span class="mono">x&#770;</span>, the way it does on the real calculator:
+<code>6y&#770;</code> reads &ldquo;the y predicted at 6&rdquo;.</p>
+<p><span class="mono">r</span> runs from &minus;1 to 1. Near 1 or &minus;1 the
+points sit close to the line; near 0 the line tells you very little.</p>
 
-<h2>Errors that are really typing mistakes</h2>
-<p>Three specific ones account for most of the confusing cases:</p>
-<ul>
-  <li><strong>Still inside the exponent box.</strong> After
-  <span class="mono">x&#9632;</span> everything you type stays raised until you
-  press <kbd>&#9654;</kbd>. A whole expression trapped up there produces a number
-  large enough to overflow. <a href="/powers-roots/">More on that here.</a></li>
-  <li><strong>Still under the root bar.</strong> Same idea. Half your expression
-  ends up inside <span class="mono">&radic;</span>, and if it turns negative you
-  get a Math ERROR from a calculation that should have been fine.</li>
-  <li><strong>Subtraction sign used as a negative.</strong> <kbd>&minus;</kbd>
-  needs something on both sides; <kbd>(&minus;)</kbd> makes a number negative.
-  They look almost identical on screen.</li>
-</ul>
+<h2>Example: a curve</h2>
+<p><kbd>MODE</kbd> <kbd>3</kbd> <kbd>3</kbd> (_+CX&sup2;). X:
+<code>0 1 2 3</code>, Y: <code>1 2 5 10</code>. The fit comes back as
+<span class="mono">A = 1</span>, <span class="mono">B = 0</span>,
+<span class="mono">C = 1</span> &mdash; the data is exactly
+<span class="mono">y = 1 + x&sup2;</span>. A parabola usually meets a given
+height twice, so the quadratic Reg menu has two estimates:
+<code>5x&#770;&#8321;</code> gives <span class="mono">2</span> and
+<code>5x&#770;&#8322;</code> gives <span class="mono">&minus;2</span>, and
+<code>4y&#770;</code> gives <span class="mono">17</span>.</p>
 
-<h2>When there is no error and the answer is still wrong</h2>
-<p>The genuinely dangerous case, because nothing warns you. Run through:</p>
-<ul>
-  <li><strong>Angle mode</strong> &mdash; D, R or G in the display.</li>
-  <li><strong>A leftover variable</strong> &mdash; if the expression uses A or X,
-  is the value in it the one you meant? <a href="/memory/">Recall it and check.</a></li>
-  <li><strong>Implicit multiplication</strong> &mdash;
-  <code>6 &divide; 2(1+2)</code> is 1, not 9, because a number pressed straight
-  against a bracket binds more tightly than a written &divide;.</li>
-  <li><strong>A rounding setting</strong> &mdash; Fix or Sci left on from an
-  earlier problem. SETUP, then Norm, puts it back.</li>
-</ul>
-<div class="callout"><b>A rough estimate is the best check there is.</b> If you
-expected about 40 and the screen says 0.04, something structural is wrong, and no
-amount of retyping the same keys will find it.</div>
+<div class="callout"><b>A good r does not make a good model.</b> Try a few
+different types on the same data and compare <span class="mono">r</span>, but
+also plot the points if you can. A curve can fit five points beautifully and
+still predict nonsense outside them.</div>
 
 <p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
 </article>
@@ -417,14 +435,14 @@ amount of retyping the same keys will find it.</div>
       <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
     <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
       <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
-    <a class="card" href="/statistics/"><h3>Statistics and regression</h3>
-      <p>STAT mode: mean and standard deviation, lines and curves of best fit, and predictions from them.</p></a>
     <a class="card" href="/matrices/"><h3>Matrices</h3>
       <p>MATRIX mode: entering a matrix, multiplying, determinants, inverses, and solving simultaneous equations.</p></a>
     <a class="card" href="/vectors/"><h3>Vectors</h3>
       <p>VECTOR mode: adding and scaling vectors, dot and cross products, lengths and the angle between two vectors.</p></a>
     <a class="card" href="/base-n/"><h3>Binary, hex and octal</h3>
       <p>BASE-N mode: converting between bases, hex digits, and the and / or / xor logic operations.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
   </div>
 </section>
 </main>

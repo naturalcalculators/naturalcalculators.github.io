@@ -282,6 +282,10 @@ td .mono{white-space:nowrap}
   <a href="/scientific-notation/">Scientific notation</a>
   <a href="/degrees-radians/">Degrees &amp; radians</a>
   <a href="/complex-numbers/">Complex numbers</a>
+  <a href="/statistics/">Statistics &amp; regression</a>
+  <a href="/matrices/">Matrices</a>
+  <a href="/vectors/">Vectors</a>
+  <a href="/base-n/">Binary, hex &amp; octal</a>
   <a href="/errors/">Errors &amp; fixes</a>
 </div>
 </details>
@@ -435,10 +439,10 @@ matrix). A small tag at the top of the display shows the mode you are in.</p>
 <tbody>
 <tr><td><kbd>MODE</kbd> <kbd>1</kbd></td><td>COMP</td><td>Ordinary calculations. Where you start.</td></tr>
 <tr><td><kbd>MODE</kbd> <kbd>2</kbd></td><td>CMPLX</td><td>Complex numbers. <a href="/complex-numbers/">Its own guide.</a></td></tr>
-<tr><td><kbd>MODE</kbd> <kbd>3</kbd></td><td>STAT</td><td>Pick a type (1-VAR, or one of seven regressions such as A+BX), then type your data into the table, pressing <kbd>=</kbd> after each value. <kbd>AC</kbd> leaves the table. <kbd>SHIFT</kbd> <kbd>1</kbd> (STAT) then gives the sums, mean, standard deviations, regression coefficients and estimates like <span class="mono">&ycirc;</span>.</td></tr>
-<tr><td><kbd>MODE</kbd> <kbd>4</kbd></td><td>BASE-N</td><td>Whole numbers in decimal, hex, binary or octal. The green DEC / HEX / BIN / OCT keys switch base; <kbd>SHIFT</kbd> <kbd>3</kbd> (BASE) gives and, or, xor, Not and Neg.</td></tr>
-<tr><td><kbd>MODE</kbd> <kbd>6</kbd></td><td>MATRIX</td><td>Choose MatA, B or C and a size up to 3&times;3, then fill it in. <kbd>SHIFT</kbd> <kbd>4</kbd> (MATRIX) inserts the matrices, <span class="mono">det(</span> and <span class="mono">Trn(</span>; <span class="mono">x&#8315;&sup1;</span> gives the inverse. Answers appear as a table &mdash; move around it with the arrow keys.</td></tr>
-<tr><td><kbd>MODE</kbd> <kbd>8</kbd></td><td>VECTOR</td><td>2D or 3D vectors VctA, B and C. <kbd>SHIFT</kbd> <kbd>5</kbd> (VECTOR) inserts them and <span class="mono">Dot</span>; <kbd>&times;</kbd> between two vectors is the cross product, and <span class="mono">Abs(</span> gives the length.</td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>3</kbd></td><td>STAT</td><td>Pick a type (1-VAR, or one of seven regressions such as A+BX), then type your data into the table, pressing <kbd>=</kbd> after each value. <kbd>AC</kbd> leaves the table. <kbd>SHIFT</kbd> <kbd>1</kbd> (STAT) then gives the sums, mean, standard deviations, regression coefficients and estimates like <span class="mono">&ycirc;</span>. <a href="/statistics/">Full guide.</a></td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>4</kbd></td><td>BASE-N</td><td>Whole numbers in decimal, hex, binary or octal. The green DEC / HEX / BIN / OCT keys switch base; <kbd>SHIFT</kbd> <kbd>3</kbd> (BASE) gives and, or, xor, Not and Neg. <a href="/base-n/">Full guide.</a></td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>6</kbd></td><td>MATRIX</td><td>Choose MatA, B or C and a size up to 3&times;3, then fill it in. <kbd>SHIFT</kbd> <kbd>4</kbd> (MATRIX) inserts the matrices, <span class="mono">det(</span> and <span class="mono">Trn(</span>; <span class="mono">x&#8315;&sup1;</span> gives the inverse. Answers appear as a table &mdash; move around it with the arrow keys. <a href="/matrices/">Full guide.</a></td></tr>
+<tr><td><kbd>MODE</kbd> <kbd>8</kbd></td><td>VECTOR</td><td>2D or 3D vectors VctA, B and C. <kbd>SHIFT</kbd> <kbd>5</kbd> (VECTOR) inserts them and <span class="mono">Dot</span>; <kbd>&times;</kbd> between two vectors is the cross product, and <span class="mono">Abs(</span> gives the length. <a href="/vectors/">Full guide.</a></td></tr>
 </tbody></table></div>
 <p>Anything that makes no sense &mdash; adding a 2&times;2 matrix to a 2&times;3 one,
 or a vector to a plain number &mdash; gives an error rather than a guess:
@@ -485,6 +489,14 @@ error.</p>
       <p>How to switch, which to use when, and the single most common wrong answer in trigonometry.</p></a>
     <a class="card" href="/complex-numbers/"><h3>Complex numbers</h3>
       <p>CMPLX mode: entering <span class="mono">i</span>, arithmetic, modulus and argument, and polar form.</p></a>
+    <a class="card" href="/statistics/"><h3>Statistics and regression</h3>
+      <p>STAT mode: mean and standard deviation, lines and curves of best fit, and predictions from them.</p></a>
+    <a class="card" href="/matrices/"><h3>Matrices</h3>
+      <p>MATRIX mode: entering a matrix, multiplying, determinants, inverses, and solving simultaneous equations.</p></a>
+    <a class="card" href="/vectors/"><h3>Vectors</h3>
+      <p>VECTOR mode: adding and scaling vectors, dot and cross products, lengths and the angle between two vectors.</p></a>
+    <a class="card" href="/base-n/"><h3>Binary, hex and octal</h3>
+      <p>BASE-N mode: converting between bases, hex digits, and the and / or / xor logic operations.</p></a>
     <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
       <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
   </div>

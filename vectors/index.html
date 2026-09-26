@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes</title>
-<meta name="description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
-<link rel="canonical" href="https://naturalcalculators.github.io/errors/index.html">
+<title>Vectors on a Scientific Calculator — Dot Product, Cross Product, Magnitude</title>
+<meta name="description" content="How to use VECTOR mode: enter 2D and 3D vectors, add and scale them, take dot and cross products, find a vector's length, and the angle between two vectors.">
+<link rel="canonical" href="https://naturalcalculators.github.io/vectors/index.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Math ERROR and Syntax ERROR on a Calculator — Causes and Fixes">
-<meta property="og:description" content="What Math ERROR and Syntax ERROR mean on a scientific calculator, the handful of causes behind almost every one, and how to get your expression back to fix it.">
-<meta property="og:url" content="https://naturalcalculators.github.io/errors/index.html">
+<meta property="og:title" content="Vectors on a Scientific Calculator — Dot Product, Cross Product, Magnitude">
+<meta property="og:description" content="How to use VECTOR mode: enter 2D and 3D vectors, add and scale them, take dot and cross products, find a vector's length, and the angle between two vectors.">
+<meta property="og:url" content="https://naturalcalculators.github.io/vectors/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -284,113 +284,92 @@ td .mono{white-space:nowrap}
   <a href="/complex-numbers/">Complex numbers</a>
   <a href="/statistics/">Statistics &amp; regression</a>
   <a href="/matrices/">Matrices</a>
-  <a href="/vectors/">Vectors</a>
+  <a href="/vectors/" aria-current="page">Vectors</a>
   <a href="/base-n/">Binary, hex &amp; octal</a>
-  <a href="/errors/" aria-current="page">Errors &amp; fixes</a>
+  <a href="/errors/">Errors &amp; fixes</a>
 </div>
 </details>
 </nav>
 </div></header>
 <main class="wrap"><article class="article">
 <p class="kicker">Guide</p>
-<h1>Math ERROR and Syntax ERROR</h1>
-<p class="standfirst">Two messages cover nearly every error a scientific calculator can produce. Each has a short, boring list of causes.</p>
+<h1>Vectors</h1>
+<p class="standfirst">2D and 3D vectors: sums, dot and cross products, lengths, and the angle between two of them in one line.</p>
 
-<h2>First: you have not lost your work</h2>
-<p>When an error appears, press <kbd>&#9664;</kbd> or <kbd>&#9654;</kbd>. Your
-expression comes back with the cursor in it, ready to edit. You do not have to
-retype anything.</p>
-<p><kbd>AC</kbd> clears the line completely. Use it only when you actually want to
-start again.</p>
+<h2>Setting up a vector</h2>
+<p>Press <kbd>MODE</kbd> <kbd>8</kbd>. Choose which vector
+(<strong>1</strong> VctA, <strong>2</strong> VctB, <strong>3</strong> VctC), then
+its size: <strong>1</strong> for 3D, <strong>2</strong> for 2D. Type each
+component and press <kbd>=</kbd>; the cursor moves to the next one.
+<kbd>&#9664;</kbd> <kbd>&#9654;</kbd> move back to fix one, and <kbd>AC</kbd>
+leaves with the vector kept.</p>
+<p>For the others, <kbd>SHIFT</kbd> <kbd>5</kbd> (VECTOR) <kbd>1</kbd> (Dim).
+<kbd>SHIFT</kbd> <kbd>5</kbd> <kbd>2</kbd> (Data) edits one you already have.</p>
 
-<h2>Syntax ERROR: the expression is not valid</h2>
-<p>The calculator could not read what you typed. It has not attempted any
-arithmetic. Almost always one of these:</p>
+<h2>The VECTOR menu</h2>
 <div class="tablewrap"><table>
-<thead><tr><th>Cause</th><th>Looks like</th></tr></thead>
+<thead><tr><th>Press <kbd>SHIFT</kbd> <kbd>5</kbd> then</th><th>Gives</th></tr></thead>
 <tbody>
-<tr><td>Unbalanced brackets</td><td><code>(3+2))&times;4</code> &mdash; one too many closing brackets</td></tr>
-<tr><td>An operator with nothing to work on</td><td><code>5 &times; &divide; 2</code>, or a line ending in <code>+</code></td></tr>
-<tr><td>Two numbers with nothing between them</td><td>usually a stray digit left behind after editing</td></tr>
-<tr><td>A function with an empty bracket</td><td><code>sin( )</code></td></tr>
-<tr><td>Minus used as a negative sign</td><td><code>&minus;5</code> typed with the subtraction key where <kbd>(&minus;)</kbd> was needed</td></tr>
+<tr><td><kbd>1</kbd> Dim / <kbd>2</kbd> Data</td><td>Size a vector / edit one</td></tr>
+<tr><td><kbd>3</kbd> <kbd>4</kbd> <kbd>5</kbd></td><td><span class="mono">VctA</span>, <span class="mono">VctB</span>, <span class="mono">VctC</span></td></tr>
+<tr><td><kbd>6</kbd></td><td><span class="mono">VctAns</span>, the last vector answer</td></tr>
+<tr><td><kbd>&#9660;</kbd> <kbd>7</kbd></td><td><span class="mono">&middot;</span> &mdash; the dot product</td></tr>
 </tbody></table></div>
-<p>Extra <em>closing</em> brackets are the most common by a distance, because
-functions like <kbd>sin</kbd> and <kbd>log</kbd> open a bracket for you
-automatically and it is easy to close it twice. You never need a closing bracket
-at the very end of a line &mdash; the calculator supplies them.</p>
+<p>Everything else is on the ordinary keys:</p>
+<ul>
+  <li><kbd>+</kbd> and <kbd>&minus;</kbd> add and subtract vectors of the same size.</li>
+  <li>A number <kbd>&times;</kbd> a vector scales it; a vector <kbd>&divide;</kbd>
+  a number divides it.</li>
+  <li><kbd>&times;</kbd> <em>between two vectors</em> is the cross product (3D only).</li>
+  <li><kbd>SHIFT</kbd> <kbd>hyp</kbd> (Abs) gives a vector's length.</li>
+</ul>
 
-<h2>Math ERROR: the expression is valid but the answer is not a number</h2>
-<p>Here the calculator understood you perfectly and tried. There is simply no
-answer to give.</p>
+<h2>Worked examples</h2>
+<p>With <span class="mono">VctA = (1, 2, 3)</span> and
+<span class="mono">VctB = (4, 5, 6)</span>:</p>
 <div class="tablewrap"><table>
-<thead><tr><th>You asked for</th><th>Why there is no answer</th></tr></thead>
+<thead><tr><th>You type</th><th>You get</th><th>Because</th></tr></thead>
 <tbody>
-<tr><td class="mono">1 &divide; 0</td><td>Division by zero is undefined. This includes dividing by a variable that happens to hold zero.</td></tr>
-<tr><td class="mono">&radic;&minus;4</td><td>No real number squares to a negative. Works in <a href="/complex-numbers/">CMPLX mode</a>, where it is 2i.</td></tr>
-<tr><td class="mono">log(&minus;2)</td><td>Logarithms of zero and negatives are undefined.</td></tr>
-<tr><td class="mono">tan(90&deg;)</td><td>The tangent is genuinely infinite there.</td></tr>
-<tr><td class="mono">sin&#8315;&sup1;(2)</td><td>Sine never exceeds 1, so nothing has a sine of 2.</td></tr>
-<tr><td class="mono">0.5!</td><td>Factorials are defined for whole numbers only.</td></tr>
-<tr><td class="mono">(&minus;8)^(1&frasl;3)</td><td>A negative to a fractional power is undefined in the reals &mdash; use the cube-root key, which gives &minus;2.</td></tr>
-<tr><td>Something enormous</td><td>Past roughly 10&sup3;&#x2070;&#x2070; there is nowhere to put the digits.</td></tr>
-<tr><td>The inverse of a matrix with determinant 0</td><td>A singular matrix has no inverse, just as 0 has no reciprocal.</td></tr>
+<tr><td class="mono">VctA + VctB</td><td class="mono">[5, 7, 9]</td><td>component by component</td></tr>
+<tr><td class="mono">3 &times; VctA</td><td class="mono">[3, 6, 9]</td><td>every component tripled</td></tr>
+<tr><td class="mono">VctA &middot; VctB</td><td class="mono">32</td><td>1&times;4 + 2&times;5 + 3&times;6</td></tr>
+<tr><td class="mono">VctA &times; VctB</td><td class="mono">[&minus;3, 6, &minus;3]</td><td>the cross product</td></tr>
+<tr><td class="mono">VctB &times; VctA</td><td class="mono">[3, &minus;6, 3]</td><td>reversing the order flips the sign</td></tr>
+<tr><td class="mono">Abs(VctA)</td><td class="mono">&radic;14</td><td>&radic;(1&sup2; + 2&sup2; + 3&sup2;)</td></tr>
 </tbody></table></div>
+<p>A dot product is a plain number, so it goes into <span class="mono">Ans</span>
+and you can keep calculating with it. A vector answer goes into
+<span class="mono">VctAns</span> instead, and pressing an operator straight after
+it carries on from <span class="mono">VctAns</span>.</p>
 
-<h2>Dimension ERROR: the sizes do not fit</h2>
-<p>Only in MATRIX and VECTOR modes. You asked for something between two objects
-whose sizes do not go together:</p>
+<h2>Things you can work out in one line</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>To find</th><th>Type</th><th>For A and B above</th></tr></thead>
+<tbody>
+<tr><td>The angle between two vectors</td><td class="mono">cos&#8315;&sup1;(VctA&middot;VctB &divide; (Abs(VctA) &times; Abs(VctB)))</td><td class="mono">12.93315449&deg;</td></tr>
+<tr><td>The unit vector in A's direction</td><td class="mono">VctA &divide; Abs(VctA)</td><td class="mono">[0.2672612419, 0.5345224838, 0.8017837257]</td></tr>
+<tr><td>The area of the triangle A and B span</td><td class="mono">Abs(VctA &times; VctB) &divide; 2</td><td class="mono">3&radic;6&frasl;2 &asymp; 3.674234614</td></tr>
+<tr><td>How far A reaches along B</td><td class="mono">VctA&middot;VctB &divide; Abs(VctB)</td><td class="mono">32&radic;77&frasl;77 &asymp; 3.646738447</td></tr>
+</tbody></table></div>
+<p>The angle comes out in whatever unit you are working in &mdash; check the
+<strong>D</strong> or <strong>R</strong> at the top of the display
+(<a href="/degrees-radians/">more on that</a>).</p>
+<div class="callout"><b>Two quick checks.</b> The cross product is at right angles
+to both vectors, so <span class="mono">VctA&middot;(VctA&times;VctB)</span> is
+always 0. And two vectors are perpendicular exactly when their dot product is 0.</div>
+
+<h2>When it will not work</h2>
 <ul>
-  <li>adding or subtracting a 2&times;2 matrix and a 2&times;3 one, or a 2D and a
-  3D vector;</li>
-  <li>multiplying matrices where the columns of the first do not match the rows of
-  the second;</li>
-  <li>a determinant, inverse or power of a matrix that is not square;</li>
-  <li>a cross product of 2D vectors (it only exists in 3D);</li>
-  <li>using a matrix or vector that has not been given a size yet.</li>
+  <li>Adding, subtracting or dotting a 2D vector with a 3D one:
+  <span class="mono">Dimension ERROR</span>.</li>
+  <li>A cross product of two 2D vectors: <span class="mono">Dimension ERROR</span>
+  &mdash; it only exists in 3D.</li>
+  <li>A vector plus a plain number, a number divided by a vector, or
+  <span class="mono">sin</span> of a vector: <span class="mono">Syntax ERROR</span>.</li>
+  <li>A vector that has not been given a size yet:
+  <span class="mono">Dimension ERROR</span>.</li>
 </ul>
-<p>Mixing kinds that never go together &mdash; a matrix plus a plain number,
-<code>sin</code> of a vector &mdash; is a <strong>Syntax ERROR</strong> instead.</p>
-
-<h2>The angle-mode trap</h2>
-<p>If <code>tan(90)</code> errors and you expected a number, check the
-<strong>D</strong> or <strong>R</strong> at the top of the display. In degrees,
-tan 90&deg; is undefined and the error is correct. In radians, 90 radians is
-about 14 full turns and gives a perfectly ordinary answer.</p>
-<p>The reverse bites harder: in the wrong mode you often get <em>no</em> error at
-all, just a wrong number. <a href="/degrees-radians/">That is worth a page of its
-own.</a></p>
-
-<h2>Errors that are really typing mistakes</h2>
-<p>Three specific ones account for most of the confusing cases:</p>
-<ul>
-  <li><strong>Still inside the exponent box.</strong> After
-  <span class="mono">x&#9632;</span> everything you type stays raised until you
-  press <kbd>&#9654;</kbd>. A whole expression trapped up there produces a number
-  large enough to overflow. <a href="/powers-roots/">More on that here.</a></li>
-  <li><strong>Still under the root bar.</strong> Same idea. Half your expression
-  ends up inside <span class="mono">&radic;</span>, and if it turns negative you
-  get a Math ERROR from a calculation that should have been fine.</li>
-  <li><strong>Subtraction sign used as a negative.</strong> <kbd>&minus;</kbd>
-  needs something on both sides; <kbd>(&minus;)</kbd> makes a number negative.
-  They look almost identical on screen.</li>
-</ul>
-
-<h2>When there is no error and the answer is still wrong</h2>
-<p>The genuinely dangerous case, because nothing warns you. Run through:</p>
-<ul>
-  <li><strong>Angle mode</strong> &mdash; D, R or G in the display.</li>
-  <li><strong>A leftover variable</strong> &mdash; if the expression uses A or X,
-  is the value in it the one you meant? <a href="/memory/">Recall it and check.</a></li>
-  <li><strong>Implicit multiplication</strong> &mdash;
-  <code>6 &divide; 2(1+2)</code> is 1, not 9, because a number pressed straight
-  against a bracket binds more tightly than a written &divide;.</li>
-  <li><strong>A rounding setting</strong> &mdash; Fix or Sci left on from an
-  earlier problem. SETUP, then Norm, puts it back.</li>
-</ul>
-<div class="callout"><b>A rough estimate is the best check there is.</b> If you
-expected about 40 and the screen says 0.04, something structural is wrong, and no
-amount of retyping the same keys will find it.</div>
+<p>Leaving VECTOR mode with <kbd>MODE</kbd> clears all three vectors.</p>
 
 <p style="margin-top:2.5rem"><a class="cta" href="/">Open the calculator &rarr;</a></p>
 </article>
@@ -421,10 +400,10 @@ amount of retyping the same keys will find it.</div>
       <p>STAT mode: mean and standard deviation, lines and curves of best fit, and predictions from them.</p></a>
     <a class="card" href="/matrices/"><h3>Matrices</h3>
       <p>MATRIX mode: entering a matrix, multiplying, determinants, inverses, and solving simultaneous equations.</p></a>
-    <a class="card" href="/vectors/"><h3>Vectors</h3>
-      <p>VECTOR mode: adding and scaling vectors, dot and cross products, lengths and the angle between two vectors.</p></a>
     <a class="card" href="/base-n/"><h3>Binary, hex and octal</h3>
       <p>BASE-N mode: converting between bases, hex digits, and the and / or / xor logic operations.</p></a>
+    <a class="card" href="/errors/"><h3>Math ERROR and Syntax ERROR</h3>
+      <p>What each one means, the handful of causes behind almost all of them, and how to fix them.</p></a>
   </div>
 </section>
 </main>
